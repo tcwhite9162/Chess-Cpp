@@ -185,3 +185,14 @@ std::vector<Move> generateAllMoves(const Board &board) {
     }
     return moves;
 }
+
+std::vector<Move> generateLegalMoves(const Board &board) {
+    std::vector<Move> moves;
+
+    
+
+
+
+
+    return moves;
+}

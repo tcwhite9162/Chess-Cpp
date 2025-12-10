@@ -12,6 +12,8 @@ private:
     int en_passant;
     int halfmove;
     int fullmove;
+    int blackKingPosition;
+    int whiteKingPosition;
 
 public:
 
@@ -22,6 +24,9 @@ public:
     void setTurn(int t) {turn = t;}
     void setCastlingRights(int c) {castling = c;}
     void setEnPassant(int sq) {en_passant = sq;}
+
+    bool isInCheck(int color);
+    bool isSquareAttacked(int square, int attackingColor);
 
     Board();
     void setPiece(int square, int piece);

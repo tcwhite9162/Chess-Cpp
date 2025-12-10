@@ -1,5 +1,7 @@
 #include <iostream>
 #include "board.h"
+#include "constants.h"
+#include <cstdlib>
 
 char pieceToChar(int piece) {
     switch (piece) {
@@ -24,37 +26,8 @@ char pieceToChar(int piece) {
 
 inline int rank(int square) { return square / 8; }
 inline int file(int square) { return square % 8; }
+inline bool isValidSquare(int square) {return square >= 0 && square < 64;}
 
-struct Move {
-    unsigned int data;
-
-    Move(int from_sq, int to_sq, int flags = 0) {
-        data = from_sq | (to_sq << 6) | (flags << 12);
-    }
-    
-    static unsigned int encode(int from_sq, int to_sq, int flags = 0) {
-        return from_sq | (to_sq << 6) | (flags << 12);
-    }
-
-    int from_square() const {return data & 0x3f;}
-    int to_square() const {return (data >> 6) & 0x3f;}
-    int flags() const {return (data >> 12) & 0x3f;}
-
-    std::string to_string() {
-        auto squareToString = [](int sq) {
-            char file = 'a' + (sq % 8);
-            char rank = '8' - (sq / 8);
-            return std::string{file} + rank;
-        };
-        return squareToString(from_square()) + squareToString(to_square());
-    }
-
-    void print() const {
-        std::cout << "Move(" << from_square() << " -> " << to_square()
-                  << ", flags= " << flags() << ")" << std::endl; 
-    }
-
-};
 
 Board::Board() {
     squares.fill(EMPTY);
@@ -63,6 +36,8 @@ Board::Board() {
     en_passant = -1;
     halfmove = 0;
     fullmove = 1;
+    whiteKingPosition = WHITE_KING_START;
+    blackKingPosition = BLACK_KING_START;
 }
 
 void Board::setPiece(int square, int piece) {
@@ -114,4 +89,118 @@ void Board::setupStartPosition() {
     // kings
     squares[4] = B_KING;    squares[60] = W_KING;
 
+}
+
+bool Board::isInCheck(int color) {
+    int kingPosition;
+    kingPosition = (color == 1) ? whiteKingPosition : blackKingPosition;
+
+    return isSquareAttacked(kingPosition, color * -1);
+}
+
+bool Board::isSquareAttacked(int square, int attackingColor) {
+    int squareRank = rank(square);
+    int squareFile = file(square);
+    
+    // pawns
+    if (attackingColor == 1) { // white attacking
+        int offsets[2] = {DOWN_LEFT, DOWN_RIGHT};
+        for (int offset : offsets) {
+            int target = square + offset;
+            if (isValidSquare(target)) {
+                int targetFile = file(target);
+                int dFile = targetFile - squareFile;
+
+                if (abs(dFile) == 1 && squares[target] == W_PAWN) {
+                    return true;
+                }
+            }
+        }
+    }
+    else { // black attacking
+        int offsets[2] = {UP_LEFT, UP_RIGHT};
+        for (int offset : offsets) {
+            int target = square + offset;
+            if (isValidSquare(target)) {
+                int targetFile = file(target);
+                
+                int dFile = abs(targetFile - squareFile);
+                if (dFile == 1 && squares[target] == B_PAWN) {
+                    return true;
+                }
+            }
+        }
+    }
+
+
+    // knights
+    for (int offset : KNIGHT_DIRS) {
+        int target = square + offset;
+        if (!(isValidSquare(target))) {
+            continue;
+        }
+        int targetFile = file(target);
+        
+        int dFile = abs(targetFile - squareFile);
+        if (dFile <= 2) {
+            if (attackingColor == 1  && squares[target] == W_KNIGHT) { return true; }
+            if (attackingColor == -1 && squares[target] == B_KNIGHT) { return true; }
+        }
+    }
+
+    // bishops / queens (diagonal)
+    for (int direction : BISHOP_DIRS) {
+        int currentSquare = square + direction;
+        while (isValidSquare(currentSquare)) {
+            int currentFile = file(currentSquare);
+            int prevFile    = file(currentSquare - direction);
+
+            // file difference should always be one unless we wrap
+            int dFile = abs(currentFile - prevFile);
+            if (dFile != 1) { break; }
+
+            int currentPiece = squares[currentSquare];
+            if (currentPiece != EMPTY) {
+                if      (attackingColor ==  1 && ((currentPiece == W_BISHOP) || (currentPiece == W_QUEEN))) { return true; }
+                else if (attackingColor == -1 && ((currentPiece == B_BISHOP) || (currentPiece == B_QUEEN))) { return true; }
+                else { break; } // break if we hit another piece
+            }
+            currentSquare += direction;
+        }
+    }
+
+    // rooks / queens (orthogonal)
+    for (int direction : ROOK_DIRS) {
+        int currentSquare = square + direction;
+        while (isValidSquare(currentSquare)) {
+            int currentFile = file(currentSquare);
+
+            if ((direction == LEFT)  && (currentFile == 7)) { break; } // moving left, break if we wrap from file 0 to 7
+            if ((direction == RIGHT) && (currentFile == 0)) { break; } // same for moving right
+
+            int currentPiece = squares[currentSquare];
+            if (currentPiece != EMPTY) {
+                if      (attackingColor ==  1 && ((currentPiece == W_ROOK) || (currentPiece == W_QUEEN))) { return true; }
+                else if (attackingColor == -1 && ((currentPiece == B_ROOK) || (currentPiece == B_QUEEN))) { return true; }
+                else { break; }
+            }
+            currentSquare += direction;
+        }
+    }
+
+    // kings
+    for (int direction : KING_DIRS) {
+        int targetSquare = square + direction;
+        if (!(isValidSquare(targetSquare))) { continue; }
+
+        int targetFile = file(targetSquare);
+        int dFile = abs(targetFile - squareFile);
+        if (dFile <= 1) {
+            int currentPiece = squares[targetSquare];
+            if      (attackingColor ==  1 && currentPiece == W_KING) { return true; }
+            else if (attackingColor == -1 && currentPiece == B_KING) { return true; }
+        }
+    }
+    
+    return false;
 }
