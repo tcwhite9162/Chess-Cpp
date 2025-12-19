@@ -1,19 +1,30 @@
 #include <vector>
 #include <iostream>
+#include <string>
 
 #include "moveGen.h"
 #include "board.h"
+#include "tests.h"
 
-int main() {
+int main(int argc, char* argv[]) {
     Board board = Board();
-    
     board.setupStartPosition();
-    board.printBoard();
+    
+    for (int i = 0; i < argc; i++) {
+        std::string arg = argv[i];
+        
+        if (arg == "-d") { 
+            board.printBoard();
 
-    std::vector<Move> moves = generateAllMoves(board);
-    std::cout << moves.size() << std::endl;
+            std::vector<Move> moves = generateLegalMoves(board);
+            std::cout << moves.size() << std::endl;
+        }
+        if (arg == "-p") {
+            testPerft(board, 5);
+        }
+    }
 
-    std::cout << board.isSquareAttacked(42, 1) << std::endl;
+
 
     return 0;
 }

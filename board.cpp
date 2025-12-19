@@ -1,7 +1,8 @@
 #include <iostream>
-#include "board.h"
-#include "constants.h"
 #include <cstdlib>
+
+#include "constants.h"
+#include "board.h"
 
 char pieceToChar(int piece) {
     switch (piece) {
@@ -28,6 +29,16 @@ inline int rank(int square) { return square / 8; }
 inline int file(int square) { return square % 8; }
 inline bool isValidSquare(int square) {return square >= 0 && square < 64;}
 
+inline bool isCapture(int flags)     { return flags & FLAG_CAPTURE; }
+inline bool isPromotion(int flags)   { return flags & FLAG_PROMOTION; }
+
+inline int promotionPiece(int flags, int turn) {
+    if (flags & FLAG_PROMO_N) { return (turn == WHITE) ? W_KNIGHT : B_KNIGHT; }
+    if (flags & FLAG_PROMO_B) { return (turn == WHITE) ? W_BISHOP : B_BISHOP; }
+    if (flags & FLAG_PROMO_R) { return (turn == WHITE) ? W_ROOK : B_ROOK; }
+    if (flags & FLAG_PROMO_Q) { return (turn == WHITE) ? W_QUEEN : B_QUEEN; }
+    return EMPTY;
+}
 
 Board::Board() {
     squares.fill(EMPTY);
@@ -91,14 +102,14 @@ void Board::setupStartPosition() {
 
 }
 
-bool Board::isInCheck(int color) {
+bool Board::isInCheck(int color) const {
     int kingPosition;
     kingPosition = (color == 1) ? whiteKingPosition : blackKingPosition;
 
     return isSquareAttacked(kingPosition, color * -1);
 }
 
-bool Board::isSquareAttacked(int square, int attackingColor) {
+bool Board::isSquareAttacked(int square, int attackingColor) const {
     int squareRank = rank(square);
     int squareFile = file(square);
     
@@ -203,4 +214,170 @@ bool Board::isSquareAttacked(int square, int attackingColor) {
     }
     
     return false;
+}
+
+bool Board::enPassantAvailable() const{
+    if (en_passant == -1) return false;
+
+    int enPassantRank = en_passant / 8;
+    int enPassantFile = en_passant % 8;
+
+    int fileOffsets[2] = {1, -1};
+    for (int dFile : fileOffsets) {
+        int adjacentFile = enPassantFile + dFile;
+        if (adjacentFile < 0 || adjacentFile > 7) continue;
+
+        int pawnRank = (turn == WHITE) ? enPassantRank + 1 : enPassantRank - 1;
+        if (pawnRank < 0 || pawnRank > 7) continue;
+
+        int square = pawnRank * 8 + adjacentFile;
+        int pawn = (turn == WHITE) ? W_PAWN : B_PAWN;
+
+        if (squares[square] == pawn) return true;
+    }
+
+    return false;
+}
+
+void Board::updateCastlingRights(int fromSquare, int toSquare, int movedPiece, int capturedPiece) {
+    // clear castling if king moves
+    if (movedPiece == W_KING)      { castling &= ~(CASTLE_WK | CASTLE_WQ); }
+    else if (movedPiece == B_KING) { castling &= ~(CASTLE_BK | CASTLE_BQ); }
+
+    // if rook moves
+    if (fromSquare == W_ROOK_H1) { castling &= ~CASTLE_WK; }
+    if (fromSquare == W_ROOK_A1) { castling &= ~CASTLE_WQ; }
+    if (fromSquare == B_ROOK_H8) { castling &= ~CASTLE_BK; }
+    if (fromSquare == B_ROOK_A8) { castling &= ~CASTLE_BQ; }
+
+    // rook captured on starting square
+    if (capturedPiece == W_ROOK) {
+        if (toSquare == W_ROOK_H1) castling &= ~CASTLE_WK;
+        if (toSquare == W_ROOK_A1) castling &= ~CASTLE_WQ;
+    }
+    else if (capturedPiece == B_ROOK) {
+        if (toSquare == B_ROOK_H8) castling &= ~CASTLE_BK;
+        if (toSquare == B_ROOK_A8) castling &= ~CASTLE_BQ;
+    }
+}
+
+void Board::makeMove(Move move) {
+    int fromSquare = move.from_square();
+    int toSquare   = move.to_square();
+    int flags      = move.flags();
+
+    int piece    = squares[fromSquare];
+    int captured = squares[toSquare];
+
+    undoInfo ui {
+        move,
+        captured,
+        castling,
+        en_passant,
+        halfmove,
+        fullmove,
+        whiteKingPosition,
+        blackKingPosition
+    };
+    history.push_back(ui);
+
+    squares[fromSquare] = EMPTY;
+
+    if (isPromotion(flags)) {
+        squares[toSquare] = promotionPiece(flags, turn);}
+    else {
+        squares[toSquare] = piece;
+    }
+
+    // default en passant before checking flags
+    en_passant = -1;
+    if (flags & FLAG_EN_PASSANT && !isPromotion(flags)) {
+        squares[toSquare] = piece;
+        squares[(turn == WHITE) ? toSquare + DOWN : toSquare + UP] = EMPTY;
+    }
+
+    if (flags & FLAG_DOUBLE_PUSH && !isPromotion(flags)) {
+        squares[toSquare] = piece;
+        en_passant = (turn == WHITE) ? toSquare + DOWN : toSquare + UP;
+    }
+    
+    if (flags & FLAG_CASTLE_WK && !isPromotion(flags)) {
+        squares[W_ROOK_H1] = EMPTY;
+        squares[W_ROOK_F1_END] = W_ROOK;
+        whiteKingPosition = toSquare;
+    }
+
+    if (flags & FLAG_CASTLE_WQ && !isPromotion(flags)) {
+        squares[W_ROOK_A1] = EMPTY;
+        squares[W_ROOK_D1_END] = W_ROOK;
+        whiteKingPosition = toSquare;
+    }
+
+    if (flags & FLAG_CASTLE_BK && !isPromotion(flags)) {
+        squares[B_ROOK_H8] = EMPTY;
+        squares[B_ROOK_F8_END] = B_ROOK;
+        blackKingPosition = toSquare;
+    }
+
+    if (flags & FLAG_CASTLE_BQ && !isPromotion(flags)) {
+        squares[B_ROOK_A8] = EMPTY;
+        squares[B_ROOK_D8_END] = B_ROOK;
+        blackKingPosition = toSquare;
+    }
+
+    if (piece == W_KING) whiteKingPosition = toSquare;
+    if (piece == B_KING) blackKingPosition = toSquare;
+
+    halfmove = (piece == W_PAWN || piece == B_PAWN || captured != EMPTY) ? 0 : halfmove + 1;
+    if (turn == BLACK) fullmove++;
+
+    updateCastlingRights(fromSquare, toSquare, piece, captured);
+
+    flipTurn();
+}
+
+void Board::unmakeMove(Move move) {
+    if (history.empty()) return;
+
+    undoInfo ui = history.back();
+    history.pop_back();
+
+    int flags      = ui.move.flags();
+    int fromSquare = move.from_square();
+    int toSquare   = move.to_square();
+    int piece      = squares[toSquare];
+    
+    // flip turn before undoing en passant
+    flipTurn(); // now 'turn' is the side that just moved
+    if (flags & FLAG_EN_PASSANT) {
+        int capSq = (turn == WHITE) ? toSquare + DOWN : toSquare + UP;
+        squares[capSq] = (turn == WHITE ? B_PAWN : W_PAWN);
+    }
+
+
+    if (isPromotion(flags)) {
+        squares[fromSquare] = (turn == WHITE ? W_PAWN : B_PAWN);}
+    else {
+        squares[fromSquare] = piece;
+    }
+
+    if (isCapture(flags)) {
+        squares[toSquare] = ui.capturedPiece;}
+    else {
+        squares[toSquare] = EMPTY;
+    }
+
+    if (flags & FLAG_CASTLE_WK) { squares[W_ROOK_H1] = W_ROOK; squares[W_ROOK_F1_END] = EMPTY; }
+    if (flags & FLAG_CASTLE_WQ) { squares[W_ROOK_A1] = W_ROOK; squares[W_ROOK_D1_END] = EMPTY; }
+    if (flags & FLAG_CASTLE_BK) { squares[B_ROOK_H8] = B_ROOK; squares[B_ROOK_F8_END] = EMPTY; }
+    if (flags & FLAG_CASTLE_BQ) { squares[B_ROOK_A8] = B_ROOK; squares[B_ROOK_D8_END] = EMPTY; }
+
+    // restore state
+    castling   = ui.castlingRights;
+    en_passant = ui.enPassantSquare;
+    halfmove   = ui.halfmoveClock;
+    fullmove   = ui.fullmoveNumber;
+    
+    whiteKingPosition = ui.whiteKingPos;
+    blackKingPosition = ui.blackKingPos;
 }

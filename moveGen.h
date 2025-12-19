@@ -11,6 +11,6 @@ std::vector<Move> generateSlidingMoves(const Board& board, int square);
 std::vector<Move> generateKingMoves(const Board& board, int square);
 std::vector<Move> generateAllMoves(const Board& board);
 
-std::vector<Move> generateLegalMoves(const Board& board);
+std::vector<Move> generateLegalMoves(Board& board);
 
 #endif
