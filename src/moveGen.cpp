@@ -1,7 +1,6 @@
-
-#include "moveGen.h"
-#include "constants.h"
-#include "move.h"
+#include "moveGen.hpp"
+#include "../data/constants.hpp"
+#include "move.hpp"
 
 inline bool isOpponent(int piece, int targetPiece) {
     return (piece > 0 && targetPiece < 0) || (piece < 0 && targetPiece > 0);

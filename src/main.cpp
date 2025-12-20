@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
 
-#include "moveGen.h"
-#include "board.h"
-#include "tests.h"
+#include "moveGen.hpp"
+#include "board.hpp"
+#include "../tests/tests.h"
 
 int main(int argc, char* argv[]) {
     Board board = Board();

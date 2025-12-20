@@ -1,6 +1,5 @@
 #ifndef constexprANTS_H
 #define constexprANTS_H
-#include <array>
 
 // index offsets for orthogonal moves
 constexpr int UP    = -8;

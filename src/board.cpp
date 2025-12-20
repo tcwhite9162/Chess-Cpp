@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "constants.h"
-#include "board.h"
+#include "../data/constants.hpp"
+#include "board.hpp"
 
 char pieceToChar(int piece) {
     switch (piece) {

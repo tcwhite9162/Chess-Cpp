@@ -1,7 +1,8 @@
 #include <iostream>
 
-#include "board.h"
-#include "moveGen.h"
+#include "../src/board.hpp"
+#include "../src/moveGen.hpp"
+
 
 long long perft(Board &board, int depth) {
     if (depth == 0) return 1;

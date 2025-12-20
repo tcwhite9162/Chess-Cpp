@@ -1,6 +1,6 @@
 #ifndef UNDOINFO_H
 
-#include "move.h"
+#include "move.hpp"
 
 struct undoInfo {
     Move move;

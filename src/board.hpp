@@ -4,9 +4,9 @@
 #include <vector>
 #include <array>
 
-#include "constants.h"
-#include "move.h"
-#include "undoInfo.h"
+#include "../data/constants.hpp"
+#include "move.hpp"
+#include "undoInfo.hpp"
 
 class Board {
 private:

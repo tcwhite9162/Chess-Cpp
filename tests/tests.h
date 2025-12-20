@@ -2,7 +2,7 @@
 #define TESTS_H
 
 #include <string>
-#include "board.h"
+#include "../src/board.hpp"
 
 long long perft(Board &board, int depth);
 long long testPerft(Board &board, int depth);
