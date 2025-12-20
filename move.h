@@ -6,6 +6,8 @@
 struct Move {
     unsigned int data;
 
+    Move() : data(0) {};
+
     Move(int from_sq, int to_sq, int flags = 0) {
         data = from_sq | (to_sq << 6) | (flags << 12);
     }

@@ -1,4 +1,3 @@
-#include <vector>
 #include <iostream>
 #include <string>
 
@@ -16,11 +15,12 @@ int main(int argc, char* argv[]) {
         if (arg == "-d") { 
             board.printBoard();
 
-            std::vector<Move> moves = generateLegalMoves(board);
-            std::cout << moves.size() << std::endl;
+            MoveList moves;
+            generateLegalMoves(board, moves);
+            std::cout << moves.count << std::endl;
         }
         if (arg == "-p") {
-            testPerft(board, 5);
+            testPerft(board, 6);
         }
     }
 

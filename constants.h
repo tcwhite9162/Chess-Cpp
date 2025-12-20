@@ -15,12 +15,12 @@ constexpr int DOWN_LEFT  =  7;
 constexpr int DOWN_RIGHT =  9;
 
 // piece move directions
-constexpr std::array<int, 4> ROOK_DIRS   = {-8, 8, -1, 1};
-constexpr std::array<int, 4> BISHOP_DIRS = {-9, 9, -7, 7};
-constexpr std::array<int, 8> QUEEN_DIRS  = {-9, 9, -8, 8, -7, 7, -1, 1};
+constexpr int ROOK_DIRS[4]   = {-8, 8, -1, 1};
+constexpr int BISHOP_DIRS[4] = {-9, 9, -7, 7};
+constexpr int QUEEN_DIRS[8]  = {-9, 9, -8, 8, -7, 7, -1, 1};
 
-constexpr std::array<int, 8> KING_DIRS   = QUEEN_DIRS;
-constexpr std::array<int, 8> KNIGHT_DIRS = {-17, 17, -15, 15, -10, 10, -6, 6};
+constexpr int KING_DIRS[8]   = {-9, 9, -8, 8, -7, 7, -1, 1};
+constexpr int KNIGHT_DIRS[8] = {-17, 17, -15, 15, -10, 10, -6, 6};
 
 // pawn ranks
 constexpr int WHITE_PAWN_START = 6;
@@ -30,7 +30,14 @@ constexpr int BLACK_PROMOTION_RANK = 7;
 
 
 // piece values
-constexpr int EMPTY    = 0;
+constexpr int EMPTY  = 0;
+constexpr int PAWN   = 1;
+constexpr int KNIGHT = 2;
+constexpr int BISHOP = 3;
+constexpr int ROOK   = 4;
+constexpr int QUEEN  = 5;
+constexpr int KING   = 6;
+
 constexpr int W_PAWN   = 1;
 constexpr int W_KNIGHT = 2;
 constexpr int W_BISHOP = 3;
@@ -74,16 +81,16 @@ constexpr int WHITE_KING_START = 60;
 constexpr int BLACK_KING_START = 4;
 
 // squares passed through during castling
-constexpr int WHITE_KINGSIDE_PATH[]  = {60, 61, 62}; // E1, F1, G1
-constexpr int WHITE_QUEENSIDE_PATH[] = {60, 59, 58}; // E1, D1, C1
-constexpr int BLACK_KINGSIDE_PATH[]  = {4, 5, 6};    // E8, F8, G8
-constexpr int BLACK_QUEENSIDE_PATH[] = {4, 3, 2};    // E8, D8, C8
+constexpr int WHITE_KINGSIDE_PATH[3]  = {60, 61, 62}; // E1, F1, G1
+constexpr int WHITE_QUEENSIDE_PATH[3] = {60, 59, 58}; // E1, D1, C1
+constexpr int BLACK_KINGSIDE_PATH[3]  = {4, 5, 6};    // E8, F8, G8
+constexpr int BLACK_QUEENSIDE_PATH[3] = {4, 3, 2};    // E8, D8, C8
 
 // squares that must be empty when castling
-constexpr int WHITE_KINGSIDE_EMPTY[]  = {61, 62};     // F1, G1
-constexpr int WHITE_QUEENSIDE_EMPTY[] = {59, 58, 57}; // D1, C1, B1
-constexpr int BLACK_KINGSIDE_EMPTY[]  = {5, 6};       // F8, G8
-constexpr int BLACK_QUEENSIDE_EMPTY[] = {3, 2, 1};    // D8, C8, B8
+constexpr int WHITE_KINGSIDE_EMPTY[2]  = {61, 62};     // F1, G1
+constexpr int WHITE_QUEENSIDE_EMPTY[3] = {59, 58, 57}; // D1, C1, B1
+constexpr int BLACK_KINGSIDE_EMPTY[2]  = {5, 6};       // F8, G8
+constexpr int BLACK_QUEENSIDE_EMPTY[3] = {3, 2, 1};    // D8, C8, B8
 
 // king end positions when castling
 constexpr int WHITE_KINGSIDE_END  = 62;

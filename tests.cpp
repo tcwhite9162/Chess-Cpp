@@ -1,4 +1,3 @@
-#include <vector>
 #include <iostream>
 
 #include "board.h"
@@ -8,9 +7,12 @@ long long perft(Board &board, int depth) {
     if (depth == 0) return 1;
 
     long long nodes = 0;
-    std::vector<Move> moves = generateLegalMoves(board);
 
-    for (const Move &move : moves) {
+    MoveList movesList;
+    generateLegalMoves(board, movesList);
+
+    for (int i = 0; i < movesList.count; i++) {
+        Move move = movesList.moves[i];
         board.makeMove(move);
         nodes += perft(board, depth - 1);
         board.unmakeMove(move);
@@ -27,9 +29,12 @@ void testPerft(Board &board, int depth) {
 }
 
 long long perft_divide(Board &board, int depth) {
-    auto moves = generateLegalMoves(board);
+    MoveList movesList;
+    generateLegalMoves(board, movesList);
+
     long long total = 0;
-    for (const Move &m : moves) {
+    for (int i = 0; i < movesList.count; i++) {
+        Move m = movesList.moves[i];
         board.makeMove(m);
         long long nodes = perft(board, depth - 1);
         board.unmakeMove(m);
