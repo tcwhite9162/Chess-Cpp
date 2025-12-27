@@ -3,6 +3,7 @@
 
 #include "moveGen.hpp"
 #include "board.hpp"
+#include "evaluate.hpp"
 #include "../tests/tests.h"
 
 int main(int argc, char* argv[]) {
@@ -21,6 +22,11 @@ int main(int argc, char* argv[]) {
         }
         if (arg == "-p") {
             testPerft(board, 6);
+        }
+        if (arg == "-e") {
+            int eval = evaluate(board);
+            std::cout << "eval: " << eval << std::endl;
+
         }
     }
 

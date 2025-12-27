@@ -1,5 +1,5 @@
-#ifndef constexprANTS_H
-#define constexprANTS_H
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
 
 // index offsets for orthogonal moves
 constexpr int UP    = -8;
@@ -115,5 +115,79 @@ constexpr int FLAG_CASTLE_WK   = 1 << 8;  // white king-side castle
 constexpr int FLAG_CASTLE_WQ   = 1 << 9;  // white queen-side castle
 constexpr int FLAG_CASTLE_BK   = 1 << 10; // black king-side castle
 constexpr int FLAG_CASTLE_BQ   = 1 << 11; // black queen-side castle
+
+//piece values
+constexpr int PAWN_VAL   = 100;
+constexpr int KNIGHT_VAL = 320;
+constexpr int BISHOP_VAL = 330;
+constexpr int ROOK_VAL   = 500;
+constexpr int QUEEN_VAL  = 900;
+constexpr int KING_VAL   = 20000;
+
+// PST values
+constexpr int PAWN_PST[64] = {
+   0,   0,   0,   0,   0,   0,   0,   0,
+  50,  50,  50,  50,  50,  50,  50,  50,
+  10,  10,  20,  30,  30,  20,  10,  10,
+   5,   5,  10,  25,  25,  10,   5,   5,
+   0,   0,   0,  20,  20,   0,   0,   0,
+   5, - 5, -10,   0,   0, -10, - 5,   5,
+   5,  10,  10, -20, -20,  10,  10,   5,
+   0,   0,   0,   0,   0,   0,   0,   0
+};
+constexpr int KNIGHT_PST[64] = {
+ -50, -40, -30, -30, -30, -30, -40, -50,
+ -40, -20,   0,   0,   0,   0, -20, -40,
+ -30,   0,  10,  15,  15,  10,   0, -30,
+ -30,   5,  15,  20,  20,  15,   5, -30,
+ -30,   0,  15,  20,  20,  15,   0, -30,
+ -30,   5,  10,  15,  15,  10,   5, -30,
+ -40, -20,   0,   5,   5,   0, -20, -40,
+ -50, -40, -30, -30, -30, -30, -40, -50
+};
+constexpr int BISHOP_PST[64] = {
+ -20, -10, -10, -10, -10, -10, -10, -20,
+ -10,   0,   0,   0,   0,   0,   0, -10,
+ -10,   0,   5,  10,  10,   5,   0, -10,
+ -10,   5,   5,  10,  10,   5,   5, -10,
+ -10,   0,  10,  10,  10,  10,   0, -10,
+ -10,  10,  10,  10,  10,  10,  10, -10,
+ -10,   5,   0,   0,   0,   0,   5, -10,
+ -20, -10, -10, -10, -10, -10, -10, -20
+};
+constexpr int ROOK_PST[64] = {
+   0,   0,   0,   0,   0,   0,   0,   0,
+   5,  10,  10,  10,  10,  10,  10,   5,
+  -5,   0,   0,   0,   0,   0,   0,  -5,
+  -5,   0,   0,   0,   0,   0,   0,  -5,
+  -5,   0,   0,   0,   0,   0,   0,  -5,
+  -5,   0,   0,   0,   0,   0,   0,  -5,
+  -5,   0,   0,   0,   0,   0,   0,  -5,
+   0,   0,   0,   5,   5,   0,   0,   0
+};
+constexpr int QUEEN_PST[64] = {
+ -20, -10, -10,  -5,  -5, -10, -10, -20,
+ -10,   0,   0,   0,   0,   0,   0, -10,
+ -10,   0,   5,   5,   5,   5,   0, -10,
+  -5,   0,   5,   5,   5,   5,   0,  -5,
+   0,   0,   5,   5,   5,   5,   0,  -5,
+ -10,   5,   5,   5,   5,   5,   0, -10,
+ -10,   0,   5,   0,   0,   0,   0, -10,
+ -20, -10, -10,  -5,  -5, -10, -10, -20
+};
+constexpr int KING_PST[64] = {
+ -30, -40, -40, -50, -50, -40, -40, -30,
+ -30, -40, -40, -50, -50, -40, -40, -30,
+ -30, -40, -40, -50, -50, -40, -40, -30,
+ -30, -40, -40, -50, -50, -40, -40, -30,
+ -20, -30, -30, -40, -40, -30, -30, -20,
+ -10, -20, -20, -20, -20, -20, -20, -10,
+  20,  20,   0,   0,   0,   0,  20,  20,
+  20,  30,  10,   0,   0,  10,  30,  20
+};
+
+// evaluation factors
+constexpr int MOBILITY_FACTOR = 10;
+constexpr int PAWN_PENALTY    = 25;
 
 #endif 

@@ -3,6 +3,7 @@
 
 #include "../data/constants.hpp"
 #include "board.hpp"
+#include "evaluate.hpp"
 
 char pieceToChar(int piece) {
     switch (piece) {

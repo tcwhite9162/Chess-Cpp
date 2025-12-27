@@ -34,6 +34,9 @@ public:
     bool canCastleBlackKingside()  const { return castling & CASTLE_BK; }
     bool canCastleBlackQueenside() const { return castling & CASTLE_BQ; }
 
+    int getWhiteKingPos() const { return whiteKingPosition; }
+    int getBlackKingPos() const { return blackKingPosition; }
+
     void setTurn(int t) {turn = t;}
     void setCastlingRights(int c) {castling = c;}
     void setEnPassant(int sq) {en_passant = sq;}
