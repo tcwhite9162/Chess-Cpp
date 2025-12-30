@@ -1,44 +1,13 @@
+#include <cstdint>
 #include <iostream>
 #include <cstdlib>
 
 #include "../data/constants.hpp"
+#include "moveGen.hpp"
 #include "board.hpp"
-
-char pieceToChar(int piece) {
-    switch (piece) {
-        case W_PAWN:   return 'P';
-        case W_KNIGHT: return 'N';
-        case W_BISHOP: return 'B';
-        case W_ROOK:   return 'R';
-        case W_QUEEN:  return 'Q';
-        case W_KING:   return 'K';
-
-        case B_PAWN:   return 'p';
-        case B_KNIGHT: return 'n';
-        case B_BISHOP: return 'b';
-        case B_ROOK:   return 'r';
-        case B_QUEEN:  return 'q';
-        case B_KING:   return 'k';
-
-        case EMPTY:    return '.';
-        default:       return '?'; // unknown
-    }
-}
-
-inline int rank(int square) { return square / 8; }
-inline int file(int square) { return square % 8; }
-inline bool isValidSquare(int square) {return square >= 0 && square < 64;}
-
-inline bool isCapture(int flags)     { return flags & FLAG_CAPTURE; }
-inline bool isPromotion(int flags)   { return flags & FLAG_PROMOTION; }
-
-inline int promotionPiece(int flags, int turn) {
-    if (flags & FLAG_PROMO_N) { return (turn == WHITE) ? W_KNIGHT : B_KNIGHT; }
-    if (flags & FLAG_PROMO_B) { return (turn == WHITE) ? W_BISHOP : B_BISHOP; }
-    if (flags & FLAG_PROMO_R) { return (turn == WHITE) ? W_ROOK : B_ROOK; }
-    if (flags & FLAG_PROMO_Q) { return (turn == WHITE) ? W_QUEEN : B_QUEEN; }
-    return EMPTY;
-}
+#include "moveGen.hpp"
+#include "zobrist.hpp"
+#include "utils.hpp"
 
 Board::Board() {
     squares.fill(EMPTY);
@@ -49,6 +18,11 @@ Board::Board() {
     fullmove = 1;
     whiteKingPosition = WHITE_KING_START;
     blackKingPosition = BLACK_KING_START;
+    lastIrreversiblePly = 0;
+
+    zobristKey = computeZobrist();
+    repetitionHistory.clear();
+    repetitionHistory.push_back(zobristKey);
 }
 
 void Board::setPiece(int square, int piece) {
@@ -63,6 +37,7 @@ int Board::getPiece(int square) const {
     }
     return EMPTY;
 }
+
 void Board::flipTurn() {
     turn = -turn;
 }
@@ -76,6 +51,7 @@ void Board::printBoard() const {
         std::cout << std::endl;
     }
 }
+
 void Board::setupStartPosition() {
     // pawns
     for (int i = 8; i < 16; i++) {
@@ -99,6 +75,20 @@ void Board::setupStartPosition() {
 
     // kings
     squares[4] = B_KING;    squares[60] = W_KING;
+
+    // reset state
+    turn = WHITE;
+    castling = CASTLE_WK | CASTLE_WQ | CASTLE_BK | CASTLE_BQ;
+    en_passant = -1;
+    halfmove = 0;
+    fullmove = 1;
+    whiteKingPosition = WHITE_KING_START;
+    blackKingPosition = BLACK_KING_START;
+
+    // reset hash
+    zobristKey = computeZobrist();
+    repetitionHistory.clear();
+    repetitionHistory.push_back(zobristKey);
 
 }
 
@@ -239,6 +229,104 @@ bool Board::enPassantAvailable() const{
     return false;
 }
 
+bool Board::hasLegalMoves() {
+    MoveList moves;
+    generateLegalMoves(*this, moves);
+    return (moves.count > 0);
+}
+
+bool Board::isCheckmate() {
+    return (isInCheck(turn) && !hasLegalMoves());
+}
+
+bool Board::isDraw() {
+    return (isStalemate() ||
+            isThreefoldRepetition() ||
+            isInsuffucientMaterial() ||
+            halfmove >= 100);
+}
+
+bool Board::isStalemate() {
+    return (!isInCheck(turn) && !hasLegalMoves());
+}
+
+bool Board::isThreefoldRepetition() {
+    uint64_t current = zobristKey;
+    int count = 0;
+
+    for (int i = lastIrreversiblePly; i < (int)repetitionHistory.size(); i++) {
+        if (repetitionHistory[i] == current) {
+            count++;
+            if (count >= 3) return true;
+        }
+    }
+    return false;
+}
+
+bool Board::isInsuffucientMaterial() {
+    int whiteBishops = 0; int blackBishops = 0;
+    int whiteKnights = 0; int blackKnights = 0;
+    bool whiteBishopLight = false; bool whiteBishopDark = false; 
+    bool blackBishopLight = false; bool blackBishopDark = false; 
+
+    for (int sq = 0; sq < 64; sq++) {
+        int piece = squares[sq];
+        if (piece == EMPTY) continue;
+
+        switch (piece) {
+            // pawns/rooks/queens always have possible mate
+            case W_PAWN: case B_PAWN:
+            case W_ROOK: case B_ROOK:
+            case W_QUEEN: case B_QUEEN:
+                return false;
+
+            case W_BISHOP:
+                whiteBishops++;
+                // if row + col % 2 == 0, bishop is light
+                if ((sq / 8 + sq % 8) % 2 == 0) whiteBishopLight = true;
+                else whiteBishopDark = true;
+                break;
+            
+            case B_BISHOP:
+                blackBishops++;
+                if ((sq / 8 + sq % 8) % 2 == 0) blackBishopLight = true;
+                else blackBishopDark = true;
+                break;
+
+            case W_KNIGHT: whiteKnights++; break;
+            case B_KNIGHT: blackKnights++; break;
+
+            default: break; // kings dont matter
+        }
+    }
+
+    int totalBishops = whiteBishops + blackBishops;
+    int totalKnights = whiteKnights + blackKnights;
+
+    // king vs king
+    if (totalBishops == 0 && totalKnights == 0) return true;
+
+    // king + bishop vs king
+    if (totalBishops == 1 && totalKnights == 0) return true;
+
+    // king + knight vs king
+    if (totalBishops == 0 && totalKnights == 1) return true;
+
+    // king + bishop vs king + bishop (same color bishops)
+    if (totalBishops == 2 && totalKnights == 0) {
+        if ((whiteBishopLight && blackBishopLight) ||
+            (whiteBishopDark && blackBishopDark)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Board::isTerminal() {
+    return (isDraw() || isCheckmate());
+}
+
 void Board::updateCastlingRights(int fromSquare, int toSquare, int movedPiece, int capturedPiece) {
     // clear castling if king moves
     if (movedPiece == W_KING)      { castling &= ~(CASTLE_WK | CASTLE_WQ); }
@@ -261,7 +349,7 @@ void Board::updateCastlingRights(int fromSquare, int toSquare, int movedPiece, i
     }
 }
 
-void Board::makeMove(Move move) {
+void Board::makeMove(Move move, bool updateHash) {
     int fromSquare = move.from_square();
     int toSquare   = move.to_square();
     int flags      = move.flags();
@@ -271,6 +359,7 @@ void Board::makeMove(Move move) {
 
     undoInfo ui {
         move,
+        piece,
         captured,
         castling,
         en_passant,
@@ -334,9 +423,45 @@ void Board::makeMove(Move move) {
     updateCastlingRights(fromSquare, toSquare, piece, captured);
 
     flipTurn();
+
+    if (piece == W_PAWN || piece == B_PAWN || captured != EMPTY) {
+        lastIrreversiblePly = repetitionHistory.size();
+    }
+
+    if (updateHash) {
+        // remove piece from fromSquare
+        zobristKey ^= Zobrist::piece[pieceToIndex(piece)][fromSquare];
+
+        // remove captured piece
+        if (captured != EMPTY) {
+            zobristKey ^= Zobrist::piece[pieceToIndex(captured)][toSquare];
+        }
+
+        // add moved piece to toSquare
+        int newPiece = squares[toSquare];
+        zobristKey ^= Zobrist::piece[pieceToIndex(newPiece)][toSquare];
+
+        // castling rights
+        zobristKey ^= Zobrist::castling[ui.castlingRights];
+        zobristKey ^= Zobrist::castling[castling];
+
+        // en passant
+        if (ui.enPassantSquare != -1) {
+            zobristKey ^= Zobrist::enpassant[ui.enPassantSquare % 8];
+        }
+
+        if (en_passant != -1) {
+            zobristKey ^= Zobrist::enpassant[en_passant % 8];
+        }
+
+        // side to move
+        zobristKey ^= Zobrist::side;
+
+        repetitionHistory.push_back(zobristKey);
+    }
 }
 
-void Board::unmakeMove(Move move) {
+void Board::unmakeMove(Move move, bool updateHash) {
     if (history.empty()) return;
 
     undoInfo ui = history.back();
@@ -380,4 +505,64 @@ void Board::unmakeMove(Move move) {
     
     whiteKingPosition = ui.whiteKingPos;
     blackKingPosition = ui.blackKingPos;
+
+    if (updateHash) {
+        // side to move
+        zobristKey ^= Zobrist::side;
+
+        // en passant
+        if (en_passant != -1) {
+            zobristKey ^= Zobrist::enpassant[en_passant];
+        }
+        if (ui.enPassantSquare != -1) {
+            zobristKey ^= Zobrist::enpassant[ui.enPassantSquare];
+        }
+
+        // castling
+        zobristKey ^= Zobrist::castling[castling];
+        zobristKey ^= Zobrist::castling[ui.castlingRights];
+
+        // remove piece from fromSquare
+        int piece = squares[fromSquare];
+        zobristKey ^= Zobrist::piece[pieceToIndex(piece)][fromSquare];
+
+        // add piece back to toSquare
+        if (ui.capturedPiece != EMPTY) {
+            zobristKey ^= Zobrist::piece[pieceToIndex(ui.capturedPiece)][toSquare];
+        }
+        zobristKey ^= Zobrist::piece[pieceToIndex(ui.movedPiece)][toSquare];
+
+        // pop
+        repetitionHistory.pop_back();
+
+    }
+}
+
+uint64_t Board::computeZobrist() const {
+    uint64_t key = 0;
+
+    // pieces
+    for (int sq = 0; sq < 64; sq++) {
+        int piece = squares[sq];
+        if (piece != EMPTY) {
+            int index = pieceToIndex(piece);
+            key ^= Zobrist::piece[index][sq];
+        }
+    }
+
+    // castling
+    key ^= Zobrist::castling[castling];
+
+    // en passant file
+    if (en_passant != -1) {
+        int file = en_passant % 8;
+        key ^= Zobrist::enpassant[file];
+    }
+
+    // side to move
+    if (turn == BLACK) {
+        key ^= Zobrist::side;
+    }
+
+    return key;
 }

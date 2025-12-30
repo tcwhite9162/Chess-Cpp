@@ -1,6 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include <cstdint>
 #include <vector>
 #include <array>
 
@@ -18,6 +19,10 @@ private:
     int fullmove;
     int blackKingPosition;
     int whiteKingPosition;
+
+    uint64_t zobristKey;
+    std::vector<uint64_t> repetitionHistory;
+    int lastIrreversiblePly;
 
     std::vector<undoInfo> history;
 
@@ -45,6 +50,16 @@ public:
     bool isSquareAttacked(int square, int attackingColor) const;
     bool enPassantAvailable() const;
 
+    uint64_t computeZobrist() const;
+    
+    bool hasLegalMoves();
+    bool isDraw();
+    bool isCheckmate();
+    bool isStalemate();
+    bool isInsuffucientMaterial();
+    bool isThreefoldRepetition();
+    bool isTerminal();
+
     Board();
     void setPiece(int square, int piece);
     int getPiece(int square) const;
@@ -52,8 +67,8 @@ public:
     void printBoard() const;
     void setupStartPosition();
 
-    void makeMove(Move move);
-    void unmakeMove(Move move);
+    void makeMove(Move move, bool updateHash=true);
+    void unmakeMove(Move move, bool updateHash=true);
 };
 
 

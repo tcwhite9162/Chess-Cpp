@@ -1,9 +1,11 @@
 #ifndef UNDOINFO_H
+#define UNDOINFO_H
 
 #include "move.hpp"
 
 struct undoInfo {
     Move move;
+    int movedPiece;
     int capturedPiece;
     int castlingRights;
     int enPassantSquare;

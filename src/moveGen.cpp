@@ -1,10 +1,7 @@
 #include "moveGen.hpp"
 #include "../data/constants.hpp"
 #include "move.hpp"
-
-inline bool isOpponent(int piece, int targetPiece) {
-    return (piece > 0 && targetPiece < 0) || (piece < 0 && targetPiece > 0);
-}
+#include "utils.hpp"
 
 void generatePawnMoves(const Board &board, int square, MoveList& moves) {
     int piece = board.getPiece(square);
@@ -257,9 +254,9 @@ void generateLegalMoves(Board &board, MoveList& legalMoves) {
         Move m = pseudoLegal.moves[i];
         int side = board.getTurn();
 
-        board.makeMove(m);
+        board.makeMove(m, false);
         if (!board.isInCheck(side)) { legalMoves.add(m); }
-        board.unmakeMove(m);
+        board.unmakeMove(m, false);
     }
 }
 
