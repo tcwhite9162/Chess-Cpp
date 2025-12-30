@@ -190,4 +190,6 @@ constexpr int KING_PST[64] = {
 constexpr int MOBILITY_FACTOR = 10;
 constexpr int PAWN_PENALTY    = 25;
 
+static constexpr int INF = 1000000000; // arbitrary large number for search
+
 #endif 
