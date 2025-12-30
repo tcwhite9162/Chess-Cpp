@@ -6,19 +6,16 @@
 
 long long perft(Board &board, int depth) {
     if (depth == 0) return 1;
-
     long long nodes = 0;
-
     MoveList movesList;
     generateLegalMoves(board, movesList);
-
+    if (depth == 1) return movesList.count;
     for (int i = 0; i < movesList.count; i++) {
         Move move = movesList.moves[i];
-        board.makeMove(move);
+        board.makeMove(move, false);
         nodes += perft(board, depth - 1);
-        board.unmakeMove(move);
+        board.unmakeMove(move, false);
     }
-
     return nodes;
 }
 
@@ -27,6 +24,11 @@ void testPerft(Board &board, int depth) {
         long long n = perft(board, d);
         std::cout << "perft(" << d << ") = " << n << std::endl;
     }
+}
+
+void testSinglePerft(Board &board, int depth) {
+    long long n = perft(board, depth);
+    std::cout << "perft(" << depth << ") = " << n << std::endl;
 }
 
 long long perft_divide(Board &board, int depth) {
@@ -45,9 +47,3 @@ long long perft_divide(Board &board, int depth) {
     std::cout << "Total: " << total << "\n";
     return total;
 }
-
-
-
-
-
-

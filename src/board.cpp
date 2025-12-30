@@ -100,107 +100,159 @@ bool Board::isInCheck(int color) const {
 }
 
 bool Board::isSquareAttacked(int square, int attackingColor) const {
-    int squareRank = rank(square);
-    int squareFile = file(square);
+    int squareFile = square & 7;  // Equivalent to square % 8, but faster
+    int squareRank = square >> 3;  // Equivalent to square / 8, but faster
     
-    // pawns
-    if (attackingColor == 1) { // white attacking
-        int offsets[2] = {DOWN_LEFT, DOWN_RIGHT};
-        for (int offset : offsets) {
-            int target = square + offset;
-            if (isValidSquare(target)) {
-                int targetFile = file(target);
-                int dFile = targetFile - squareFile;
-
-                if (abs(dFile) == 1 && squares[target] == W_PAWN) {
-                    return true;
-                }
-            }
+    // pawns are most common attackers, check them first
+    if (attackingColor == WHITE) {
+        if (squareFile != 0) {  // Not on left edge
+            int sq = square + 7;
+            if (sq < 64 && squares[sq] == W_PAWN) return true;
+        }
+        if (squareFile != 7) {  // Not on right edge
+            int sq = square + 9;
+            if (sq < 64 && squares[sq] == W_PAWN) return true;
+        }
+    } else {
+        if (squareFile != 0) {  // Not on left edge
+            int sq = square - 9;
+            if (sq >= 0 && squares[sq] == B_PAWN) return true;
+        }
+        if (squareFile != 7) {  // Not on right edge
+            int sq = square - 7;
+            if (sq >= 0 && squares[sq] == B_PAWN) return true;
         }
     }
-    else { // black attacking
-        int offsets[2] = {UP_LEFT, UP_RIGHT};
-        for (int offset : offsets) {
-            int target = square + offset;
-            if (isValidSquare(target)) {
-                int targetFile = file(target);
-                
-                int dFile = abs(targetFile - squareFile);
-                if (dFile == 1 && squares[target] == B_PAWN) {
-                    return true;
-                }
-            }
-        }
-    }
-
-
+    
     // knights
-    for (int offset : KNIGHT_DIRS) {
+    static const int knightOffsets[8] = {-17, -15, -10, -6, 6, 10, 15, 17};
+    int knightPiece = (attackingColor == WHITE) ? W_KNIGHT : B_KNIGHT;
+    
+    for (int offset : knightOffsets) {
         int target = square + offset;
-        if (!(isValidSquare(target))) {
-            continue;
-        }
-        int targetFile = file(target);
+        if (target < 0 || target >= 64) continue;
         
-        int dFile = abs(targetFile - squareFile);
-        if (dFile <= 2) {
-            if (attackingColor == 1  && squares[target] == W_KNIGHT) { return true; }
-            if (attackingColor == -1 && squares[target] == B_KNIGHT) { return true; }
-        }
+        // knights move 1-2 or 2-1, so file diff is at most 2
+        int fileDiff = ((target & 7) - squareFile);
+        if (fileDiff < -2 || fileDiff > 2) continue;
+        
+        if (squares[target] == knightPiece) return true;
     }
-
-    // bishops / queens (diagonal)
-    for (int direction : BISHOP_DIRS) {
-        int currentSquare = square + direction;
-        while (isValidSquare(currentSquare)) {
-            int currentFile = file(currentSquare);
-            int prevFile    = file(currentSquare - direction);
-
-            // file difference should always be one unless we wrap
-            int dFile = abs(currentFile - prevFile);
-            if (dFile != 1) { break; }
-
-            int currentPiece = squares[currentSquare];
-            if (currentPiece != EMPTY) {
-                if      (attackingColor ==  1 && ((currentPiece == W_BISHOP) || (currentPiece == W_QUEEN))) { return true; }
-                else if (attackingColor == -1 && ((currentPiece == B_BISHOP) || (currentPiece == B_QUEEN))) { return true; }
-                else { break; } // break if we hit another piece
+    
+    // Bishops and Queens
+    int bishopPiece = (attackingColor == WHITE) ? W_BISHOP : B_BISHOP;
+    int queenPiece = (attackingColor == WHITE) ? W_QUEEN : B_QUEEN;
+    
+    if (squareFile != 7) {
+        for (int sq = square + 9; sq < 64; sq += 9) {
+            int sqFile = sq & 7;
+            if (sqFile <= squareFile) break;  // Wrapped
+            
+            int piece = squares[sq];
+            if (piece != EMPTY) {
+                if (piece == bishopPiece || piece == queenPiece) return true;
+                break;
             }
-            currentSquare += direction;
+            if (sqFile == 7) break;  // Hit right edge
         }
     }
-
-    // rooks / queens (orthogonal)
-    for (int direction : ROOK_DIRS) {
-        int currentSquare = square + direction;
-        while (isValidSquare(currentSquare)) {
-            int currentFile = file(currentSquare);
-
-            if ((direction == LEFT)  && (currentFile == 7)) { break; } // moving left, break if we wrap from file 0 to 7
-            if ((direction == RIGHT) && (currentFile == 0)) { break; } // same for moving right
-
-            int currentPiece = squares[currentSquare];
-            if (currentPiece != EMPTY) {
-                if      (attackingColor ==  1 && ((currentPiece == W_ROOK) || (currentPiece == W_QUEEN))) { return true; }
-                else if (attackingColor == -1 && ((currentPiece == B_ROOK) || (currentPiece == B_QUEEN))) { return true; }
-                else { break; }
+    
+    if (squareFile != 0) {
+        for (int sq = square + 7; sq < 64; sq += 7) {
+            int sqFile = sq & 7;
+            if (sqFile >= squareFile) break;  // Wrapped
+            
+            int piece = squares[sq];
+            if (piece != EMPTY) {
+                if (piece == bishopPiece || piece == queenPiece) return true;
+                break;
             }
-            currentSquare += direction;
+            if (sqFile == 0) break;  // Hit left edge
         }
     }
-
+    
+    if (squareFile != 7) {
+        for (int sq = square - 7; sq >= 0; sq -= 7) {
+            int sqFile = sq & 7;
+            if (sqFile <= squareFile) break;  // Wrapped
+            
+            int piece = squares[sq];
+            if (piece != EMPTY) {
+                if (piece == bishopPiece || piece == queenPiece) return true;
+                break;
+            }
+            if (sqFile == 7) break;  // Hit right edge
+        }
+    }
+    
+    if (squareFile != 0) {
+        for (int sq = square - 9; sq >= 0; sq -= 9) {
+            int sqFile = sq & 7;
+            if (sqFile >= squareFile) break;  // Wrapped
+            
+            int piece = squares[sq];
+            if (piece != EMPTY) {
+                if (piece == bishopPiece || piece == queenPiece) return true;
+                break;
+            }
+            if (sqFile == 0) break;  // Hit left edge
+        }
+    }
+    
+    // Rooks and Queens
+    int rookPiece = (attackingColor == WHITE) ? W_ROOK : B_ROOK;
+    
+    for (int sq = square - 8; sq >= 0; sq -= 8) {
+        int piece = squares[sq];
+        if (piece != EMPTY) {
+            if (piece == rookPiece || piece == queenPiece) return true;
+            break;
+        }
+    }
+    
+    for (int sq = square + 8; sq < 64; sq += 8) {
+        int piece = squares[sq];
+        if (piece != EMPTY) {
+            if (piece == rookPiece || piece == queenPiece) return true;
+            break;
+        }
+    }
+    
+    if (squareFile != 0) {
+        int minSq = squareRank * 8;  // Leftmost square on this rank
+        for (int sq = square - 1; sq >= minSq; sq--) {
+            int piece = squares[sq];
+            if (piece != EMPTY) {
+                if (piece == rookPiece || piece == queenPiece) return true;
+                break;
+            }
+        }
+    }
+    
+    if (squareFile != 7) {
+        int maxSq = squareRank * 8 + 7;  // Rightmost square on this rank
+        for (int sq = square + 1; sq <= maxSq; sq++) {
+            int piece = squares[sq];
+            if (piece != EMPTY) {
+                if (piece == rookPiece || piece == queenPiece) return true;
+                break;
+            }
+        }
+    }
+    
     // kings
-    for (int direction : KING_DIRS) {
-        int targetSquare = square + direction;
-        if (!(isValidSquare(targetSquare))) { continue; }
-
-        int targetFile = file(targetSquare);
-        int dFile = abs(targetFile - squareFile);
-        if (dFile <= 1) {
-            int currentPiece = squares[targetSquare];
-            if      (attackingColor ==  1 && currentPiece == W_KING) { return true; }
-            else if (attackingColor == -1 && currentPiece == B_KING) { return true; }
-        }
+    static const int kingOffsets[8] = {-9, -8, -7, -1, 1, 7, 8, 9};
+    int kingPiece = (attackingColor == WHITE) ? W_KING : B_KING;
+    
+    for (int offset : kingOffsets) {
+        int target = square + offset;
+        if (target < 0 || target >= 64) continue;
+        
+        // For horizontal moves (-1, 1), check we didn't wrap
+        int fileDiff = ((target & 7) - squareFile);
+        if (fileDiff < -1 || fileDiff > 1) continue;
+        
+        if (squares[target] == kingPiece) return true;
     }
     
     return false;
