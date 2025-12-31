@@ -47,3 +47,4 @@ long long perft_divide(Board &board, int depth) {
     std::cout << "Total: " << total << "\n";
     return total;
 }
+

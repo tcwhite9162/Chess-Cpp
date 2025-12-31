@@ -1,6 +1,9 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include <cstdint>
+using u64 = uint64_t;
+
 // index offsets for orthogonal moves
 constexpr int UP    = -8;
 constexpr int DOWN  =  8;
@@ -116,7 +119,7 @@ constexpr int FLAG_CASTLE_WQ   = 1 << 9;  // white queen-side castle
 constexpr int FLAG_CASTLE_BK   = 1 << 10; // black king-side castle
 constexpr int FLAG_CASTLE_BQ   = 1 << 11; // black queen-side castle
 
-//piece values
+// piece values
 constexpr int PAWN_VAL   = 100;
 constexpr int KNIGHT_VAL = 320;
 constexpr int BISHOP_VAL = 330;
@@ -124,7 +127,7 @@ constexpr int ROOK_VAL   = 500;
 constexpr int QUEEN_VAL  = 900;
 constexpr int KING_VAL   = 20000;
 
-// PST values
+// PST values //
 constexpr int PAWN_PST[64] = {
    0,   0,   0,   0,   0,   0,   0,   0,
   50,  50,  50,  50,  50,  50,  50,  50,
@@ -191,5 +194,32 @@ constexpr int MOBILITY_FACTOR = 10;
 constexpr int PAWN_PENALTY    = 25;
 
 static constexpr int INF = 1000000000; // arbitrary large number for search
+
+// bitboard stuff //
+
+// file masks
+constexpr u64 FILE_A = 0x0101010101010101ULL;
+constexpr u64 FILE_B = FILE_A << 1;
+constexpr u64 FILE_C = FILE_A << 2;
+constexpr u64 FILE_D = FILE_A << 3;
+constexpr u64 FILE_E = FILE_A << 4;
+constexpr u64 FILE_F = FILE_A << 5;
+constexpr u64 FILE_G = FILE_A << 6;
+constexpr u64 FILE_H = FILE_A << 7;
+
+constexpr u64 NOT_FILE_A = ~FILE_A;
+constexpr u64 NOT_FILE_H = ~FILE_H;
+
+// rank masks
+constexpr u64 RANK_8 = 0x00000000000000FFULL;      // a8–h8 (top)
+constexpr u64 RANK_7 = RANK_8 << 8;               // a7–h7
+constexpr u64 RANK_6 = RANK_8 << 16;
+constexpr u64 RANK_5 = RANK_8 << 24;
+constexpr u64 RANK_4 = RANK_8 << 32;
+constexpr u64 RANK_3 = RANK_8 << 40;
+constexpr u64 RANK_2 = RANK_8 << 48;
+constexpr u64 RANK_1 = RANK_8 << 56;              // a1–h1 (bottom)
+
+
 
 #endif 

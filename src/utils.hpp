@@ -39,7 +39,14 @@ inline int pieceToIndex(int piece) {
     return -1; // should never happen
 }
 
+inline int popLeastSigBit(u64 &bitboard) {
+    int sq = __builtin_ctzll(bitboard); // gcc
+    bitboard &= bitboard - 1;
+    return sq;
+}
 
+inline bool hasBits(u64 bitboard) { return bitboard != 0; }
+inline int bitCount(u64 bitboard) { return __builtin_popcountll(bitboard);}
 
 
 inline char pieceToChar(int piece) {

@@ -16,23 +16,14 @@ struct MoveList {
     }
 };
 
-void generatePawnMoves(const Board& board, int square, MoveList& moves);
-void generateKnightMoves(const Board& board, int square, MoveList& moves);
-void generateSlidingMoves(const Board& board, int square, MoveList& moves);
-void generateKingMoves(const Board& board, int square, MoveList& moves);
+void generatePawnMoves(const Board& board, int color, MoveList& moves);
+void generateKnightMoves(const Board& board, int color, MoveList& moves);
+void generateSlidingMoves(const Board& board, int color, MoveList& moves);
+void generateKingMoves(const Board& board, int color, MoveList& moves);
 
 void generatePseudoLegalMoves(const Board& board, MoveList& moves);
 void generateLegalMoves(Board& board, MoveList& moves);
 
 int countPseudoLegalMoves(Board& board, int turn);
-
-int countMobility(const Board& board, int side);
-int countPawnMobility(const Board& board, int square, int piece);
-int countKnightMobility(const Board& board, int square, int piece);
-int countBishopMobility(const Board& board, int square, int piece);
-int countRookMobility(const Board& board, int square, int piece);
-int countQueenMobility(const Board& board, int square, int piece);
-int countKingMobility(const Board& board, int square, int piece);
-
 
 #endif

@@ -20,16 +20,31 @@ private:
     int blackKingPosition;
     int whiteKingPosition;
 
+    
     uint64_t zobristKey;
     std::vector<uint64_t> repetitionHistory;
     int lastIrreversiblePly;
-
+    
     std::vector<undoInfo> history;
-
+    
     void updateCastlingRights(int fromSquare, int toSquare, int piece, int capturedPiece);
-
+    
+    // bitboards
+    void setPieceAndBitboard(int square, int piece);
+    
+    void removePieceBB(int square, int piece);
+    void addPieceBB(int square, int piece);
+    void movePieceBB(int from, int to, int piece);
+    void removeCapturedPieceBB(int square, int piece);
+    void handlePromotionBB(int from, int to, int promotionPiece, int color);
+    void updateOccupancy();
+    
 public:
 
+    u64 whitePawns, whiteKnights, whiteBishops, whiteRooks, whiteQueens, whiteKing;
+    u64 blackPawns, blackKnights, blackBishops, blackRooks, blackQueens, blackKing;
+    u64 occupancyWhite, occupancyBlack, occupancyAll;
+    
     int getTurn() const {return turn;}
     int getCastlingRights() const {return castling;}
     int getEnPassant() const {return en_passant;}
