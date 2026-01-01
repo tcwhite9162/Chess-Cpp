@@ -2,7 +2,11 @@
 
 #include "../src/board.hpp"
 #include "../src/moveGen.hpp"
+#include "../src/utils.hpp"
+#include "../src/move.hpp"
 
+#include <iostream>
+#include <string>
 
 long long perft(Board &board, int depth) {
     if (depth == 0) return 1;
@@ -18,6 +22,23 @@ long long perft(Board &board, int depth) {
     }
     return nodes;
 }
+
+// long long perft_path(Board& board, int depth, std::string path) {
+//     if (depth == 0) return 1;
+
+//     MoveList moves;
+//     generateLegalMoves(board, moves);
+
+//     long long nodes = 0;
+//     for (int i = 0; i < moves.count; i++) {
+//         Move m = moves.moves[i];
+//         board.makeMove(m);
+
+//         std::string newPath = path + " " + m.to_string();
+
+//     }
+// }
+
 
 void testPerft(Board &board, int depth) {
     for (int d = 1; d <= depth; d++) {
@@ -38,9 +59,9 @@ long long perft_divide(Board &board, int depth) {
     long long total = 0;
     for (int i = 0; i < movesList.count; i++) {
         Move m = movesList.moves[i];
-        board.makeMove(m);
+        board.makeMove(m, false);
         long long nodes = perft(board, depth - 1);
-        board.unmakeMove(m);
+        board.unmakeMove(m, false);
         std::cout << m.to_string() << ": " << nodes << "\n";
         total += nodes;
     }
@@ -48,3 +69,65 @@ long long perft_divide(Board &board, int depth) {
     return total;
 }
 
+
+// convert square index to algebraic notation (0=a8, 63=h1)
+std::string squareToStr(int sq) {
+    int r = sq / 8;
+    int f = sq % 8;
+    char fileChar = 'a' + f;
+    char rankChar = '8' - r;
+    return std::string{fileChar, rankChar};
+}
+
+long long perft_debug(Board &board, int depth) {
+    if (depth == 0) return 1;
+    long long nodes = 0;
+    MoveList movesList;
+    generateLegalMoves(board, movesList);
+
+    for (int i = 0; i < movesList.count; i++) {
+        Move move = movesList.moves[i];
+        board.makeMove(move, false);
+
+        // check legality after the move
+        if (board.isInCheck(board.getTurn())) {
+            std::cout << "Illegal move (king in check): " << move.to_string() 
+                      << " at depth " << depth << "\n";
+            board.unmakeMove(move, false);
+            continue;
+        }
+
+        nodes += perft_debug(board, depth - 1);
+        board.unmakeMove(move, false);
+    }
+    return nodes;
+}
+
+
+void debugGeneratePawnMoves(const Board &board, int color) {
+    MoveList moves;
+    generatePawnMoves(board, color, moves);
+
+    std::cout << "count: " << moves.count << "\n";
+
+    std::cout << (color == WHITE ? "White pawn moves:\n" : "Black pawn moves:\n");
+
+    for (int i = 0; i < moves.count; i++) {
+        Move m = moves.moves[i];
+        std::string from = squareToStr(m.from_square());
+        std::string to   = squareToStr(m.to_square());
+        std::string flags;
+
+        if (isCapture(m.flags())) flags += "x";
+        if (isPromotion(m.flags())) {
+            int promo = promotionPiece(m.flags(), color);
+            flags += "=";
+            flags += pieceToChar(promo);
+        }
+        if (m.flags() & FLAG_EN_PASSANT) flags += " e.p.";
+
+        std::cout << from << to << flags << "\n";
+    }
+
+    std::cout << "Total pawn moves: " << moves.count << "\n";
+}

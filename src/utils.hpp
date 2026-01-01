@@ -1,5 +1,8 @@
-#include "../data/constants.hpp"
+#pragma once
 
+#include "../data/constants.hpp"
+#include "bitboard/bitboard.hpp"
+#include "zobrist.hpp"
 
 inline int rank(int square) { return square / 8; }
 inline int file(int square) { return square % 8; }
@@ -69,3 +72,19 @@ inline char pieceToChar(int piece) {
         default:       return '?'; // unknown
     }
 }
+
+inline void initMatch() {
+    Zobrist::initZobrist();
+    initAttackTables();
+}
+
+inline u64 random64() {
+    static u64 seed = 0x9e3779b97f4a7c15ULL; // any non-zero seed
+
+    seed ^= seed >> 12;
+    seed ^= seed << 25;
+    seed ^= seed >> 27;
+    return seed * 0x2545F4914F6CDD1DULL;
+}
+
+inline u64 randomMagic() { return random64() & random64() & random64(); }

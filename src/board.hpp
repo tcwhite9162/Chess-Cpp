@@ -1,5 +1,4 @@
-#ifndef BOARD_H
-#define BOARD_H
+#pragma once
 
 #include <cstdint>
 #include <vector>
@@ -86,5 +85,3 @@ public:
     void unmakeMove(Move move, bool updateHash=true);
 };
 
-
-#endif

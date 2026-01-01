@@ -1,5 +1,4 @@
-#ifndef ZOBRIST_H
-#define ZOBRIST_H
+#pragma once
 
 #include <cstdint>
 
@@ -11,4 +10,3 @@ namespace Zobrist {
 
     void initZobrist();
 }
-#endif

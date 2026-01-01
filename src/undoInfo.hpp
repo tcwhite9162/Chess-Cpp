@@ -1,5 +1,4 @@
-#ifndef UNDOINFO_H
-#define UNDOINFO_H
+#pragma once
 
 #include "move.hpp"
 
@@ -15,5 +14,3 @@ struct undoInfo {
     int whiteKingPos;
     int blackKingPos;
 };
-
-#endif

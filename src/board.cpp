@@ -232,56 +232,72 @@ void Board::updateOccupancy() {
 // old
 bool Board::isInCheck(int color) const {
     int kingSq = (color == WHITE) ? whiteKingPosition : blackKingPosition;
-    return isSquareAttacked(kingSq, -color);
+    int enemy = (color == WHITE ? BLACK : WHITE);
+    return isSquareAttacked(kingSq, enemy);
 }
 
 bool Board::isSquareAttacked(int square, int attackingColor) const {
     u64 occ = occupancyAll;
 
+    int r = square / 8;
+    int f = square % 8;
+
+
     // pawns
     if (attackingColor == WHITE) {
-        if (whitePawns & pawnAttacks[0][square]) return true;
-    }
-    else {
-        if (blackPawns & pawnAttacks[1][square]) return true;
+        u64 attackers = 0ULL;
+
+        // White pawns attack from squares one rank *below* the target:
+        // from = square + 7 (down-left) or square + 9 (down-right)
+        if (r < 7 && f > 0) attackers |= 1ULL << (square + 7);  // from file-1, rank+1 (d2 -> e3)
+        if (r < 7 && f < 7) attackers |= 1ULL << (square + 9);  // from file+1, rank+1 (f2 -> e3)
+
+        if (whitePawns & attackers) return true;
+
+    } else { // attackingColor == BLACK
+        u64 attackers = 0ULL;
+
+        // Black pawns attack from squares one rank *above* the target:
+        // from = square - 7 (up-right) or square - 9 (up-left)
+        if (r > 0 && f < 7) attackers |= 1ULL << (square - 7);  // from file+1, rank-1 (e4 -> d5)
+        if (r > 0 && f > 0) attackers |= 1ULL << (square - 9);  // from file-1, rank-1 (c4 -> d5)
+
+        if (blackPawns & attackers) return true;
     }
 
     // knights
     if (attackingColor == WHITE) {
         if (whiteKnights & knightAttacks[square]) return true;
-    }
-    else {
+    } else {
         if (blackKnights & knightAttacks[square]) return true;
     }
 
     // bishops + queens (diagonal)
-    u64 diag = bishopAttacks(square, occ);
     if (attackingColor == WHITE) {
-        if ((whiteBishops | whiteQueens) & diag) return true;
-    }
-    else {
-        if ((blackBishops | blackQueens) & diag) return true;
+        if (bishopAttacksMagic(square, occ) & (whiteBishops | whiteQueens)) return true;
+    } else {
+        if (bishopAttacksMagic(square, occ) & (blackBishops | blackQueens)) return true;
     }
 
     // rooks + queens (orthogonal)
-    u64 ortho = rookAttacks(square, occ);
     if (attackingColor == WHITE) {
-        if ((whiteRooks | whiteQueens) & ortho) return true;
-    }
-    else {
-        if ((blackRooks | blackQueens) & ortho) return true;
+        if (rookAttacksMagic(square, occ) & (whiteRooks | whiteQueens)) return true;
+    } else {
+        if (rookAttacksMagic(square, occ) & (blackRooks | blackQueens)) return true;
     }
 
     // kings
     if (attackingColor == WHITE) {
         if (whiteKing & kingAttacks[square]) return true;
-    }
-    else {
+    } else {
         if (blackKing & kingAttacks[square]) return true;
     }
 
     return false;
 }
+
+
+
 
 bool Board::enPassantAvailable() const{
     if (en_passant == -1) return false;
@@ -655,16 +671,11 @@ void Board::unmakeMove(Move move, bool updateHash) {
                 addPieceBB(capSq, captured);
                 squares[capSq] = captured;
             }
-            // ensure toSquare is empty (attacker moved to toSquare originally)
-            squares[toSquare] = EMPTY;
         } else {
             // normal capture on toSquare
             addPieceBB(toSquare, captured);
             squares[toSquare] = captured;
         }
-    } else {
-        // no captured piece -> ensure toSquare is empty
-        squares[toSquare] = EMPTY;
     }
 
     // restore state values from undo info

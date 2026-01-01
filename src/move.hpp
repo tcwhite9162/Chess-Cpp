@@ -1,5 +1,4 @@
-#ifndef MOVE_H
-#define MOVE_H
+#pragma once
 
 #include <string>
 
@@ -29,5 +28,3 @@ struct Move {
         return squareToString(from_square()) + squareToString(to_square());
     }
 };
-
-#endif

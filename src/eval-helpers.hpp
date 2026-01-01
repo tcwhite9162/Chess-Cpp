@@ -1,9 +1,6 @@
-#ifndef EVAL_HELPERS_H
-#define EVAL_HELPERS_H
+#pragma once
 
 #include "board.hpp"
-#include "utils.hpp"
-
 
 int countMobility(const Board& board, int side);
 int countPawnMobility(const Board& board, int square, int piece);
@@ -12,5 +9,3 @@ int countBishopMobility(const Board& board, int square, int piece);
 int countRookMobility(const Board& board, int square, int piece);
 int countQueenMobility(const Board& board, int square, int piece);
 int countKingMobility(const Board& board, int square, int piece);
-
-#endif

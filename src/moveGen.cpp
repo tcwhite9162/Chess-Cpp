@@ -1,6 +1,7 @@
 #include "moveGen.hpp"
 #include "../data/constants.hpp"
 #include "bitboard/bitboard.hpp"
+#include "bitboard/magic.hpp"
 #include "move.hpp"
 #include "utils.hpp"
 
@@ -45,8 +46,8 @@ void generatePawnMoves(const Board &board, int color, MoveList& moves) {
         }
 
         // captures
-        u64 left  = (pawns >> 9) & board.occupancyBlack & NOT_FILE_H;
-        u64 right = (pawns >> 7) & board.occupancyBlack & NOT_FILE_A;
+        u64 left  = ((pawns & NOT_FILE_A) >> 9) & board.occupancyBlack;
+        u64 right = ((pawns & NOT_FILE_H) >> 7) & board.occupancyBlack;
 
         // promotion captures
         u64 promoLeft  = left  & RANK_8;
@@ -97,21 +98,10 @@ void generatePawnMoves(const Board &board, int color, MoveList& moves) {
         // en passant
         int ep = board.getEnPassant();
         if (ep != -1) {
-            u64 epMask = 1ULL << ep;
-
-            if (epMask & NOT_FILE_H) {
-                u64 fromBB = (epMask << 9) & pawns;
-                while (fromBB) {
-                    int from = popLeastSigBit(fromBB);
-                    moves.add(Move(from, ep, FLAG_CAPTURE | FLAG_EN_PASSANT));
-                }
-            }
-            if (epMask & NOT_FILE_A) {
-                u64 fromBB = (epMask << 7) & pawns;
-                while (fromBB) {
-                    int from = popLeastSigBit(fromBB);
-                    moves.add(Move(from, ep, FLAG_CAPTURE | FLAG_EN_PASSANT));
-                }
+            u64 attackers = pawnAttacks[0][ep] & pawns; // white pawns attacking ep
+            while (attackers) {
+                int from = popLeastSigBit(attackers);
+                moves.add(Move(from, ep, FLAG_CAPTURE | FLAG_EN_PASSANT));
             }
         }
 
@@ -159,8 +149,8 @@ void generatePawnMoves(const Board &board, int color, MoveList& moves) {
         }
 
         // captures
-        u64 left  = (pawns << 7) & board.occupancyWhite & NOT_FILE_H;
-        u64 right = (pawns << 9) & board.occupancyWhite & NOT_FILE_A;
+        u64 left  = ((pawns & NOT_FILE_A) << 7) & board.occupancyWhite;
+        u64 right = ((pawns & NOT_FILE_H) << 9) & board.occupancyWhite;
 
         // promotion captures
         u64 promoLeft  = left  & RANK_1;
@@ -209,24 +199,13 @@ void generatePawnMoves(const Board &board, int color, MoveList& moves) {
 
         }
 
-        // en passant
+     // en passant
         int ep = board.getEnPassant();
         if (ep != -1) {
-            u64 epMask = 1ULL << ep;
-
-            if (epMask & NOT_FILE_H) {
-                u64 fromBB = (epMask >> 7) & pawns;
-                while (fromBB) {
-                    int from = popLeastSigBit(fromBB);
-                    moves.add(Move(from, ep, FLAG_CAPTURE | FLAG_EN_PASSANT));
-                }
-            }
-            if (epMask & NOT_FILE_A) {
-                u64 fromBB = (epMask >> 9) & pawns;
-                while (fromBB) {
-                    int from = popLeastSigBit(fromBB);
-                    moves.add(Move(from, ep, FLAG_CAPTURE | FLAG_EN_PASSANT));
-                }
+            u64 attackers = pawnAttacks[1][ep] & pawns; // black pawns attacking ep
+            while (attackers) {
+                int from = popLeastSigBit(attackers);
+                moves.add(Move(from, ep, FLAG_CAPTURE | FLAG_EN_PASSANT));
             }
         }
     }
@@ -337,6 +316,7 @@ void generateKingMoves(const Board &board, int color, MoveList& moves) {
 }
 
 void generateSlidingMoves(const Board &board, int color, MoveList& moves) {
+    // TODO: change this to use bitboards
     u64 own   = (color == WHITE) ? board.occupancyWhite : board.occupancyBlack;
     u64 enemy = (color == WHITE) ? board.occupancyBlack : board.occupancyWhite;
     
@@ -348,7 +328,8 @@ void generateSlidingMoves(const Board &board, int color, MoveList& moves) {
         while (bb) {
             int from = popLeastSigBit(bb);
 
-            u64 attacks = rookAttacks(from, board.occupancyAll) & ~own;
+            // u64 attacks = rookAttacksMagic(from, board.occupancyAll) & ~own;
+            u64 attacks = rookAttacksMagic(from, board.occupancyAll) & ~own;
 
             u64 atk = attacks;
             while (atk) {
@@ -370,7 +351,8 @@ void generateSlidingMoves(const Board &board, int color, MoveList& moves) {
         while (bb) {
             int from = popLeastSigBit(bb);
 
-            u64 attacks = bishopAttacks(from, board.occupancyAll) & ~own;
+            // u64 attacks = bishopAttacksMagic(from, board.occupancyAll) & ~own;
+            u64 attacks = bishopAttacksMagic(from, board.occupancyAll) & ~own;
 
             u64 atk = attacks;
             while (atk) {
@@ -392,7 +374,8 @@ void generateSlidingMoves(const Board &board, int color, MoveList& moves) {
         while (bb) {
             int from = popLeastSigBit(bb);
 
-            u64 attacks = queenAttacks(from, board.occupancyAll) & ~own;
+            u64 attacks = (rookAttacksMagic(from, board.occupancyAll) | 
+                           bishopAttacksMagic(from, board.occupancyAll)) & ~own;
 
             u64 atk = attacks;
             while (atk) {

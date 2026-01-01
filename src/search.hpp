@@ -1,5 +1,4 @@
-#ifndef SEARCH_H
-#define SEARCH_H
+#pragma once
 
 #include "move.hpp"
 #include "board.hpp"
@@ -11,5 +10,3 @@ struct SearchResult {
 
 int negamax(Board& board, int depth, int alpha, int beta);
 SearchResult searchBestMove(Board& board, int depth);
-
-#endif

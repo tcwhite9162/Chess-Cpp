@@ -1,5 +1,4 @@
-#ifndef MOVEGEN_H
-#define MOVEGEN_H
+#pragma once
 
 #include <assert.h>
 
@@ -25,5 +24,3 @@ void generatePseudoLegalMoves(const Board& board, MoveList& moves);
 void generateLegalMoves(Board& board, MoveList& moves);
 
 int countPseudoLegalMoves(Board& board, int turn);
-
-#endif

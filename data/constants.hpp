@@ -1,5 +1,4 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#pragma once
 
 #include <cstdint>
 using u64 = uint64_t;
@@ -220,6 +219,3 @@ constexpr u64 RANK_3 = RANK_8 << 40;
 constexpr u64 RANK_2 = RANK_8 << 48;
 constexpr u64 RANK_1 = RANK_8 << 56;              // a1–h1 (bottom)
 
-
-
-#endif 
