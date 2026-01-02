@@ -1,9 +1,6 @@
+#include "utils.hpp"
 #include "moveGen.hpp"
 #include "../data/constants.hpp"
-#include "bitboard/bitboard.hpp"
-#include "bitboard/magic.hpp"
-#include "move.hpp"
-#include "utils.hpp"
 
 void generatePawnMoves(const Board &board, int color, MoveList& moves) {
     u64 empty = ~board.occupancyAll;

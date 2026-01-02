@@ -2,6 +2,7 @@
 
 #include "../data/constants.hpp"
 #include "bitboard/bitboard.hpp"
+#include "board.hpp"
 #include "zobrist.hpp"
 
 inline int rank(int square) { return square / 8; }
@@ -88,3 +89,5 @@ inline u64 random64() {
 }
 
 inline u64 randomMagic() { return random64() & random64() & random64(); }
+
+void setFromFen(Board& board);

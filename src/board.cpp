@@ -1,14 +1,11 @@
-#include <cstdint>
+#include <cctype>
 #include <iostream>
+#include <sstream>
 
-#include "../data/constants.hpp"
-#include "bitboard/bitboard.hpp"
-#include "moveGen.hpp"
+
 #include "board.hpp"
-#include "moveGen.hpp"
-#include "zobrist.hpp"
-#include "bitboard/bitboard.hpp"
 #include "utils.hpp"
+#include "moveGen.hpp"
 
 Board::Board() {
     squares.fill(EMPTY);
@@ -72,6 +69,10 @@ void Board::printBoard() const {
 }
 
 void Board::setupStartPosition() {
+    setupFromFen(startFen);
+}
+
+void Board::setupFromFen(const std::string& fen) {
     // clear everything
     squares.fill(EMPTY);
 
@@ -85,56 +86,64 @@ void Board::setupStartPosition() {
 
     occupancyWhite = occupancyBlack = occupancyAll = 0ULL;
 
-    // pawns
-    for (int i = 8; i < 16; i++) {
-        setPieceAndBitboard(i, B_PAWN);
-        setPieceAndBitboard(i + 40, W_PAWN);
+    std::stringstream ss(fen);
+    std::string boardPart, turnPart, castlingPart, epPart, halfmovePart, fullmovePart;
+
+    ss >> boardPart >> turnPart >> castlingPart >> epPart >> halfmovePart >> fullmovePart;
+    
+    int squareIndex = 0;
+    for (char c : boardPart) {
+        if (c == '/') {
+            continue;
+        }
+        else if (std::isdigit(c)) {
+            squareIndex += (c - '0');
+        }
+        else {
+            switch (c) {
+                case 'p': setPieceAndBitboard(squareIndex, B_PAWN);   break;
+                case 'n': setPieceAndBitboard(squareIndex, B_KNIGHT); break;
+                case 'b': setPieceAndBitboard(squareIndex, B_BISHOP); break;
+                case 'r': setPieceAndBitboard(squareIndex, B_ROOK);   break;
+                case 'q': setPieceAndBitboard(squareIndex, B_QUEEN);  break;
+                case 'k': setPieceAndBitboard(squareIndex, B_KING); blackKingPosition = squareIndex;   break;
+
+                case 'P': setPieceAndBitboard(squareIndex, W_PAWN);   break;
+                case 'N': setPieceAndBitboard(squareIndex, W_KNIGHT); break;
+                case 'B': setPieceAndBitboard(squareIndex, W_BISHOP); break;
+                case 'R': setPieceAndBitboard(squareIndex, W_ROOK);   break;
+                case 'Q': setPieceAndBitboard(squareIndex, W_QUEEN);  break;
+                case 'K': setPieceAndBitboard(squareIndex, W_KING); whiteKingPosition = squareIndex;   break;
+            }
+            squareIndex++;
+        }
+    }
+    
+    turn = (turnPart == "w") ? WHITE : BLACK;
+
+    castling = 0;
+    if (castlingPart.find('K') != std::string::npos) castling |= CASTLE_WK; 
+    if (castlingPart.find('Q') != std::string::npos) castling |= CASTLE_WQ; 
+    if (castlingPart.find('k') != std::string::npos) castling |= CASTLE_BK; 
+    if (castlingPart.find('q') != std::string::npos) castling |= CASTLE_BQ; 
+
+    if (epPart == "-") {
+        en_passant = -1;
+    }
+    else {
+        int file   = (epPart[0] - 'a');
+        int rank   = (epPart[1] - '0');
+        en_passant = rank * 8 + file;
     }
 
-    // knights
-    setPieceAndBitboard(1,  B_KNIGHT);
-    setPieceAndBitboard(6,  B_KNIGHT);
-    setPieceAndBitboard(57, W_KNIGHT);
-    setPieceAndBitboard(62, W_KNIGHT);
+    halfmove = std::stoi(halfmovePart);
+    fullmove = std::stoi(fullmovePart);
 
-    // bishops
-    setPieceAndBitboard(2,  B_BISHOP);
-    setPieceAndBitboard(5,  B_BISHOP);
-    setPieceAndBitboard(58, W_BISHOP);
-    setPieceAndBitboard(61, W_BISHOP);
-
-    // rooks
-    setPieceAndBitboard(0,  B_ROOK);
-    setPieceAndBitboard(7,  B_ROOK);
-    setPieceAndBitboard(56, W_ROOK);
-    setPieceAndBitboard(63, W_ROOK);
-    
-    // queens
-    setPieceAndBitboard(3,  B_QUEEN);
-    setPieceAndBitboard(59, W_QUEEN);
-
-    // kings
-    setPieceAndBitboard(4,  B_KING);
-    setPieceAndBitboard(60, W_KING);
-
-
-    // reset state
-    turn = WHITE;
-    castling = CASTLE_WK | CASTLE_WQ | CASTLE_BK | CASTLE_BQ;
-    en_passant = -1;
-    halfmove = 0;
-    fullmove = 1;
-    whiteKingPosition = WHITE_KING_START;
-    blackKingPosition = BLACK_KING_START;
-
-    // rebuild occupancy from pieces
     updateOccupancy();
 
-    // reset hash
     zobristKey = computeZobrist();
     repetitionHistory.clear();
     repetitionHistory.push_back(zobristKey);
-
 }
 
 void Board::setPieceAndBitboard(int square, int piece) {

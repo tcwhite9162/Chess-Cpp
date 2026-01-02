@@ -1,13 +1,12 @@
 #include <iostream>
 #include <string>
 
-#include "move.hpp"
-#include "moveGen.hpp"
 #include "board.hpp"
-#include "evaluate.hpp"
+#include "moveGen.hpp"
 #include "zobrist.hpp"
-#include "bitboard/bitboard.hpp"
+#include "evaluate.hpp"
 #include "../tests/tests.hpp"
+#include "bitboard/bitboard.hpp"
 
 int main(int argc, char* argv[]) {
     Zobrist::initZobrist();
@@ -18,30 +17,24 @@ int main(int argc, char* argv[]) {
 
     for (int i = 0; i < argc; i++) {
         std::string arg = argv[i];
+
+        // if (arg == "-t") {
+        // }
         
         if (arg == "-d") { 
             board.printBoard();
-
+            std::cout << "wk bk ep t: " << board.getWhiteKingPos() << "   " << board.getBlackKingPos() << "   " << board.getEnPassant() << "   " << board.getTurn() << "\n";
+            std::cout << "casltling: " << board.canCastleBlackKingside() << board.canCastleBlackQueenside() << board.canCastleWhiteKingside() << board.canCastleWhiteQueenside() << "\n";
+            std::cout << "flags: " << Move(60, 62, FLAG_CASTLE_WK).flags() << "\n";
+            
             MoveList ms;
             generateLegalMoves(board, ms);
-            
-            std::cout << "ep square: "<< board.getEnPassant() << "\n";
             std::cout << "move count: "<< ms.count << std::endl;
 
             for (int i = 0; i < ms.count; i++) {
                 Move m = ms.moves[i];
                 std::cout << m.to_string() << std::endl;
             }
-        }
-        if (arg == "-dd") {
-            int depth = std::stoi(argv[i+1]);
-            long long nodes = perft_debug(board, depth);
-            std::cout << "nodes: " << nodes << "\n";
-            int e1 = 4; // e1 square index
-            bool attacked = board.isSquareAttacked(e1, WHITE);
-            std::cout << "e1 attacked by black? " << attacked << "\n";
-
-            return 0;
         }
         if (arg == "-p") {
             int depth = std::stoi(argv[i+1]);
@@ -66,6 +59,10 @@ int main(int argc, char* argv[]) {
             std::cout << "eval: " << eval << std::endl;
             board.printBoard();
 
+        }
+        if (arg == "-f") {
+            int depth = std::stoi(argv[i+1]);
+            perftTestSuite(board, depth);
         }
     }
 

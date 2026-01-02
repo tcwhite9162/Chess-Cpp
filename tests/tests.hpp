@@ -11,4 +11,6 @@ inline std::string squareToString(int sq);
 std::string moveToString(const Move &m);
 long long perft_debug(Board &board, int depth);
 
+void perftTestSuite(Board& board, int depth);
+
 void debugGeneratePawnMoves(const Board &board, int color);

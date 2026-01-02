@@ -23,23 +23,6 @@ long long perft(Board &board, int depth) {
     return nodes;
 }
 
-// long long perft_path(Board& board, int depth, std::string path) {
-//     if (depth == 0) return 1;
-
-//     MoveList moves;
-//     generateLegalMoves(board, moves);
-
-//     long long nodes = 0;
-//     for (int i = 0; i < moves.count; i++) {
-//         Move m = moves.moves[i];
-//         board.makeMove(m);
-
-//         std::string newPath = path + " " + m.to_string();
-
-//     }
-// }
-
-
 void testPerft(Board &board, int depth) {
     for (int d = 1; d <= depth; d++) {
         long long n = perft(board, d);
@@ -130,4 +113,17 @@ void debugGeneratePawnMoves(const Board &board, int color) {
     }
 
     std::cout << "Total pawn moves: " << moves.count << "\n";
+}
+
+void perftTestSuite(Board& board, int depth) {
+    for (std::string fen : testFens) {
+        std::cout << "input FEN --- " << fen << "\n";
+        board.setupFromFen(fen);
+        std::cout << "--start position--\n";
+        board.printBoard();
+
+        std::cout << "--results--\n";
+        testPerft(board, depth);
+        std::cout << "\n\n\n\n";
+    }
 }

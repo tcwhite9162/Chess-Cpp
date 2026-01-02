@@ -4,9 +4,9 @@
 #include <vector>
 #include <array>
 
-#include "../data/constants.hpp"
 #include "move.hpp"
 #include "undoInfo.hpp"
+#include "../data/constants.hpp"
 
 class Board {
 private:
@@ -80,6 +80,7 @@ public:
     void flipTurn();
     void printBoard() const;
     void setupStartPosition();
+    void setupFromFen(const std::string& fen);
 
     void makeMove(Move move, bool updateHash=true);
     void unmakeMove(Move move, bool updateHash=true);

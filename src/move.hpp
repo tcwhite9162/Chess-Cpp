@@ -17,7 +17,7 @@ struct Move {
 
     int from_square() const {return data & 0x3f;}
     int to_square() const {return (data >> 6) & 0x3f;}
-    int flags() const {return (data >> 12) & 0x3f;}
+    int flags() const {return (data >> 12) & 0xfff;}
 
     std::string to_string() const {
         auto squareToString = [](int sq) {
