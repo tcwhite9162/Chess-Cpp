@@ -14,8 +14,8 @@ Board::Board() {
     en_passant = -1;
     halfmove = 0;
     fullmove = 1;
-    whiteKingPosition = WHITE_KING_START;
-    blackKingPosition = BLACK_KING_START;
+    whiteKingPosition = 0;
+    blackKingPosition = 0;
     lastIrreversiblePly = 0;
 
     whitePawns   = 0ULL;
@@ -59,13 +59,24 @@ void Board::flipTurn() {
 }
 
 void Board::printBoard() const {
+    std::cout << "  ┌───┬───┬───┬───┬───┬───┬───┬───┐\n";
+    
     for (int rank = 0; rank < 8; ++rank) {
+        std::cout << 8 - rank << " ";
+
         for (int file = 0; file < 8; ++file) {
             int square = rank * 8 + file;
-            std::cout << pieceToChar(squares[square]) << "  ";
+            std::cout << "| " << pieceToChar(squares[square]) << " ";
         }
-        std::cout << std::endl;
+        std::cout << "|\n";
+        
+        if (rank < 7) {
+            std::cout << "  ├───┼───┼───┼───┼───┼───┼───┼───┤\n";
+        } else {
+            std::cout << "  └───┴───┴───┴───┴───┴───┴───┴───┘\n";
+        }
     }
+    std::cout << "   a   b   c   d   e   f   g   h\n";
 }
 
 void Board::setupStartPosition() {
@@ -90,7 +101,7 @@ void Board::setupFromFen(const std::string& fen) {
     std::string boardPart, turnPart, castlingPart, epPart, halfmovePart, fullmovePart;
 
     ss >> boardPart >> turnPart >> castlingPart >> epPart >> halfmovePart >> fullmovePart;
-    
+
     int squareIndex = 0;
     for (char c : boardPart) {
         if (c == '/') {
@@ -118,7 +129,7 @@ void Board::setupFromFen(const std::string& fen) {
             squareIndex++;
         }
     }
-    
+
     turn = (turnPart == "w") ? WHITE : BLACK;
 
     castling = 0;
@@ -136,8 +147,8 @@ void Board::setupFromFen(const std::string& fen) {
         en_passant = rank * 8 + file;
     }
 
-    halfmove = std::stoi(halfmovePart);
-    fullmove = std::stoi(fullmovePart);
+    halfmove = (halfmovePart == "") ? 0 : std::stoi(halfmovePart);
+    fullmove = (fullmovePart == "") ? 1 : std::stoi(fullmovePart);
 
     updateOccupancy();
 
@@ -388,7 +399,7 @@ bool Board::isInsuffucientMaterial() {
                 if ((sq / 8 + sq % 8) % 2 == 0) whiteBishopLight = true;
                 else whiteBishopDark = true;
                 break;
-            
+
             case B_BISHOP:
                 blackBishops++;
                 if ((sq / 8 + sq % 8) % 2 == 0) blackBishopLight = true;

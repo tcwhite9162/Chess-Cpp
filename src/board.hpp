@@ -44,9 +44,11 @@ public:
     u64 blackPawns, blackKnights, blackBishops, blackRooks, blackQueens, blackKing;
     u64 occupancyWhite, occupancyBlack, occupancyAll;
     
-    int getTurn() const {return turn;}
-    int getCastlingRights() const {return castling;}
-    int getEnPassant() const {return en_passant;}
+    int getTurn()           const { return turn; }
+    int getCastlingRights() const { return castling; }
+    int getEnPassant()      const { return en_passant; }
+    int getFullmove()       const { return fullmove; }
+    int getHalfmove()       const { return halfmove; }
 
     bool canCastleWhiteKingside()  const { return castling & CASTLE_WK; }
     bool canCastleWhiteQueenside() const { return castling & CASTLE_WQ; }
@@ -56,9 +58,9 @@ public:
     int getWhiteKingPos() const { return whiteKingPosition; }
     int getBlackKingPos() const { return blackKingPosition; }
 
-    void setTurn(int t) {turn = t;}
-    void setCastlingRights(int c) {castling = c;}
-    void setEnPassant(int sq) {en_passant = sq;}
+    void setTurn(int t)           { turn = t; }
+    void setCastlingRights(int c) { castling = c; }
+    void setEnPassant(int sq)     { en_passant = sq; }
 
     bool isInCheck(int color) const;
     bool isSquareAttacked(int square, int attackingColor) const;

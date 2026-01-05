@@ -53,26 +53,27 @@ inline bool hasBits(u64 bitboard) { return bitboard != 0; }
 inline int bitCount(u64 bitboard) { return __builtin_popcountll(bitboard);}
 
 
-inline char pieceToChar(int piece) {
+inline std::string pieceToChar(int piece) {
     switch (piece) {
-        case W_PAWN:   return 'P';
-        case W_KNIGHT: return 'N';
-        case W_BISHOP: return 'B';
-        case W_ROOK:   return 'R';
-        case W_QUEEN:  return 'Q';
-        case W_KING:   return 'K';
+        case W_PAWN:   return u8"♟";
+        case W_KNIGHT: return u8"♞";
+        case W_BISHOP: return u8"♝";
+        case W_ROOK:   return u8"♜";
+        case W_QUEEN:  return u8"♛";
+        case W_KING:   return u8"♚";
 
-        case B_PAWN:   return 'p';
-        case B_KNIGHT: return 'n';
-        case B_BISHOP: return 'b';
-        case B_ROOK:   return 'r';
-        case B_QUEEN:  return 'q';
-        case B_KING:   return 'k';
+        case B_PAWN:   return u8"♙";
+        case B_KNIGHT: return u8"♘";
+        case B_BISHOP: return u8"♗";
+        case B_ROOK:   return u8"♖";
+        case B_QUEEN:  return u8"♕";
+        case B_KING:   return u8"♔";
 
-        case EMPTY:    return '.';
-        default:       return '?'; // unknown
+        case EMPTY:    return u8" ";
+        default:       return u8"?";
     }
 }
+
 
 inline void initMatch() {
     Zobrist::initZobrist();
