@@ -1,7 +1,8 @@
 #pragma once
 
+#include "board.hpp"
+
 #include <string>
-#include "../src/board.hpp"
 
 long long perft(Board &board, int depth);
 void testPerft(Board &board, int depth);

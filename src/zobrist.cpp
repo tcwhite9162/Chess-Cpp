@@ -1,5 +1,6 @@
 #include <random>
 #include <cstdint>
+
 #include "zobrist.hpp"
 
 namespace Zobrist {

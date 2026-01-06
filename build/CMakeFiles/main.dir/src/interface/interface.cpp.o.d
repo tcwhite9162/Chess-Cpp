@@ -119,7 +119,7 @@ CMakeFiles/main.dir/src/interface/interface.cpp.o: \
  /home/tcwhite/Projects/C-C++/Chess/src/interface/../undoInfo.hpp \
  /home/tcwhite/Projects/C-C++/Chess/src/interface/../../data/constants.hpp \
  /usr/include/c++/15.2.1/limits \
- /home/tcwhite/Projects/C-C++/Chess/src/interface/../../tests/tests.hpp \
+ /home/tcwhite/Projects/C-C++/Chess/tests/tests.hpp \
  /usr/include/c++/15.2.1/iostream /usr/include/c++/15.2.1/ostream \
  /usr/include/c++/15.2.1/bits/ostream.h /usr/include/c++/15.2.1/ios \
  /usr/include/c++/15.2.1/exception \

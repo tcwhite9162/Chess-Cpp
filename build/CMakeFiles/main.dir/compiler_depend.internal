@@ -731,11 +731,11 @@ CMakeFiles/main.dir/src/evaluate.cpp.o
 CMakeFiles/main.dir/src/interface/interface.cpp.o
  /home/tcwhite/Projects/C-C++/Chess/src/interface/interface.cpp
  /home/tcwhite/Projects/C-C++/Chess/data/constants.hpp
- /home/tcwhite/Projects/C-C++/Chess/tests/tests.hpp
  /home/tcwhite/Projects/C-C++/Chess/src/board.hpp
  /home/tcwhite/Projects/C-C++/Chess/src/move.hpp
  /home/tcwhite/Projects/C-C++/Chess/src/undoInfo.hpp
  /home/tcwhite/Projects/C-C++/Chess/src/interface/interface.hpp
+ /home/tcwhite/Projects/C-C++/Chess/tests/tests.hpp
  /usr/include/alloca.h
  /usr/include/asm-generic/bitsperlong.h
  /usr/include/asm-generic/errno-base.h

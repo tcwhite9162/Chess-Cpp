@@ -1,12 +1,10 @@
 #include <iostream>
-
-#include "../src/board.hpp"
-#include "../src/moveGen.hpp"
-#include "../src/utils.hpp"
-#include "../src/move.hpp"
-
-#include <iostream>
 #include <string>
+
+#include "move.hpp"
+#include "utils.hpp"
+#include "board.hpp"
+#include "moveGen.hpp"
 
 long long perft(Board &board, int depth) {
     if (depth == 0) return 1;

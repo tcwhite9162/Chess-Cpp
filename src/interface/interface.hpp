@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../board.hpp"
-#include "../move.hpp"
+#include "board.hpp"
+#include "move.hpp"
 
 namespace Interface {
   void inputLoop(Board& board);

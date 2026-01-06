@@ -1,0 +1,62 @@
+[
+{
+  "directory": "/home/tcwhite/Projects/C-C++/Chess/build",
+  "command": "/usr/bin/c++  -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/src/bitboard -I/home/tcwhite/Projects/C-C++/Chess/src/interface -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests -O3 -std=gnu++17 -o CMakeFiles/main.dir/src/bitboard/bitboard.cpp.o -c /home/tcwhite/Projects/C-C++/Chess/src/bitboard/bitboard.cpp",
+  "file": "/home/tcwhite/Projects/C-C++/Chess/src/bitboard/bitboard.cpp",
+  "output": "CMakeFiles/main.dir/src/bitboard/bitboard.cpp.o"
+},
+{
+  "directory": "/home/tcwhite/Projects/C-C++/Chess/build",
+  "command": "/usr/bin/c++  -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/src/bitboard -I/home/tcwhite/Projects/C-C++/Chess/src/interface -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests -O3 -std=gnu++17 -o CMakeFiles/main.dir/src/board.cpp.o -c /home/tcwhite/Projects/C-C++/Chess/src/board.cpp",
+  "file": "/home/tcwhite/Projects/C-C++/Chess/src/board.cpp",
+  "output": "CMakeFiles/main.dir/src/board.cpp.o"
+},
+{
+  "directory": "/home/tcwhite/Projects/C-C++/Chess/build",
+  "command": "/usr/bin/c++  -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/src/bitboard -I/home/tcwhite/Projects/C-C++/Chess/src/interface -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests -O3 -std=gnu++17 -o CMakeFiles/main.dir/src/eval-helpers.cpp.o -c /home/tcwhite/Projects/C-C++/Chess/src/eval-helpers.cpp",
+  "file": "/home/tcwhite/Projects/C-C++/Chess/src/eval-helpers.cpp",
+  "output": "CMakeFiles/main.dir/src/eval-helpers.cpp.o"
+},
+{
+  "directory": "/home/tcwhite/Projects/C-C++/Chess/build",
+  "command": "/usr/bin/c++  -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/src/bitboard -I/home/tcwhite/Projects/C-C++/Chess/src/interface -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests -O3 -std=gnu++17 -o CMakeFiles/main.dir/src/evaluate.cpp.o -c /home/tcwhite/Projects/C-C++/Chess/src/evaluate.cpp",
+  "file": "/home/tcwhite/Projects/C-C++/Chess/src/evaluate.cpp",
+  "output": "CMakeFiles/main.dir/src/evaluate.cpp.o"
+},
+{
+  "directory": "/home/tcwhite/Projects/C-C++/Chess/build",
+  "command": "/usr/bin/c++  -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/src/bitboard -I/home/tcwhite/Projects/C-C++/Chess/src/interface -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests -O3 -std=gnu++17 -o CMakeFiles/main.dir/src/interface/interface.cpp.o -c /home/tcwhite/Projects/C-C++/Chess/src/interface/interface.cpp",
+  "file": "/home/tcwhite/Projects/C-C++/Chess/src/interface/interface.cpp",
+  "output": "CMakeFiles/main.dir/src/interface/interface.cpp.o"
+},
+{
+  "directory": "/home/tcwhite/Projects/C-C++/Chess/build",
+  "command": "/usr/bin/c++  -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/src/bitboard -I/home/tcwhite/Projects/C-C++/Chess/src/interface -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests -O3 -std=gnu++17 -o CMakeFiles/main.dir/src/main.cpp.o -c /home/tcwhite/Projects/C-C++/Chess/src/main.cpp",
+  "file": "/home/tcwhite/Projects/C-C++/Chess/src/main.cpp",
+  "output": "CMakeFiles/main.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/tcwhite/Projects/C-C++/Chess/build",
+  "command": "/usr/bin/c++  -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/src/bitboard -I/home/tcwhite/Projects/C-C++/Chess/src/interface -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests -O3 -std=gnu++17 -o CMakeFiles/main.dir/src/moveGen.cpp.o -c /home/tcwhite/Projects/C-C++/Chess/src/moveGen.cpp",
+  "file": "/home/tcwhite/Projects/C-C++/Chess/src/moveGen.cpp",
+  "output": "CMakeFiles/main.dir/src/moveGen.cpp.o"
+},
+{
+  "directory": "/home/tcwhite/Projects/C-C++/Chess/build",
+  "command": "/usr/bin/c++  -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/src/bitboard -I/home/tcwhite/Projects/C-C++/Chess/src/interface -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests -O3 -std=gnu++17 -o CMakeFiles/main.dir/src/search.cpp.o -c /home/tcwhite/Projects/C-C++/Chess/src/search.cpp",
+  "file": "/home/tcwhite/Projects/C-C++/Chess/src/search.cpp",
+  "output": "CMakeFiles/main.dir/src/search.cpp.o"
+},
+{
+  "directory": "/home/tcwhite/Projects/C-C++/Chess/build",
+  "command": "/usr/bin/c++  -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/src/bitboard -I/home/tcwhite/Projects/C-C++/Chess/src/interface -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests -O3 -std=gnu++17 -o CMakeFiles/main.dir/src/zobrist.cpp.o -c /home/tcwhite/Projects/C-C++/Chess/src/zobrist.cpp",
+  "file": "/home/tcwhite/Projects/C-C++/Chess/src/zobrist.cpp",
+  "output": "CMakeFiles/main.dir/src/zobrist.cpp.o"
+},
+{
+  "directory": "/home/tcwhite/Projects/C-C++/Chess/build",
+  "command": "/usr/bin/c++  -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/src/bitboard -I/home/tcwhite/Projects/C-C++/Chess/src/interface -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests -O3 -std=gnu++17 -o CMakeFiles/main.dir/tests/tests.cpp.o -c /home/tcwhite/Projects/C-C++/Chess/tests/tests.cpp",
+  "file": "/home/tcwhite/Projects/C-C++/Chess/tests/tests.cpp",
+  "output": "CMakeFiles/main.dir/tests/tests.cpp.o"
+}
+]

@@ -1,6 +1,6 @@
 #include "interface.hpp"
-#include "../board.hpp"
-#include "../../tests/tests.hpp"
+#include "board.hpp"
+#include "tests.hpp"
 
 #include <iostream>
 #include <sstream>

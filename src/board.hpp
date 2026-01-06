@@ -6,7 +6,7 @@
 
 #include "move.hpp"
 #include "undoInfo.hpp"
-#include "../data/constants.hpp"
+#include "constants.hpp"
 
 class Board {
 private:

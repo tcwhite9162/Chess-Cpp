@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../data/constants.hpp"
-#include "bitboard/bitboard.hpp"
+#include "constants.hpp"
+#include "bitboard.hpp"
 #include "board.hpp"
 #include "zobrist.hpp"
 

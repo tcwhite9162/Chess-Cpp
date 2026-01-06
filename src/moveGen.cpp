@@ -1,6 +1,6 @@
 #include "utils.hpp"
 #include "moveGen.hpp"
-#include "../data/constants.hpp"
+#include "constants.hpp"
 
 void generatePawnMoves(const Board &board, int color, MoveList& moves) {
     u64 empty = ~board.occupancyAll;

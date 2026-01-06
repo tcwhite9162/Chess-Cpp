@@ -2,7 +2,7 @@
 
 #include "board.hpp"
 #include "eval-helpers.hpp"
-#include "../data/constants.hpp"
+#include "constants.hpp"
 #include "evaluate.hpp"
 
 auto mirrorSquare = [](int x) { return 63 -x; };
