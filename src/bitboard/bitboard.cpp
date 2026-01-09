@@ -1,5 +1,5 @@
 #include "bitboard.hpp"
-#include "utils.hpp"
+#include "core/utils.hpp"
 #include "magic.hpp"
 
 u64 knightAttacks[64];

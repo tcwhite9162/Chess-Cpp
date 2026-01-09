@@ -1,29 +1,103 @@
 #include "interface.hpp"
-#include "board.hpp"
+#include "core/utils.hpp"
+#include "core/board.hpp"
+#include "core/move.hpp"
 #include "tests.hpp"
 
 #include <iostream>
+#include <optional>
 #include <sstream>
 #include <string>
+#include <functional>
+#include <unordered_map>
+#include <cstdlib>
 
 namespace Interface {
-  inline void trim(std::string& s) {
-    while (!s.empty() && std::isspace(s[0])) {
-      s.erase(0, 1);
-    }
-  }
 
-  inline int strToSquare(const std::string& s) {
+  using CommandHandler = std::function<void(std::string&, Board&)>;
+
+  // command map to handler lambdas
+  static const std::unordered_map<std::string, CommandHandler> commandTable = {
+    { "position", [](std::string& line, Board& board) {
+      handlePosition(line, board);
+      }
+    },
+    { "move", [](std::string& line, Board& board) {
+        handleMove(line, board);
+      }
+    },
+    { "moves", [](std::string& line, Board& board) {
+        handleMoves(line, board);
+      }
+    },
+    { "perft", [](std::string& line, Board& board) {
+        handlePerft(line, board, PerftMode::Single);
+      }
+    },
+    { "perft-divide", [](std::string& line, Board& board) {
+        handlePerft(line, board, PerftMode::Divide);
+      }
+    },
+    { "perft-suite", [](std::string& line, Board& board) {
+        handlePerft(line, board, PerftMode::Suite);
+      }
+    },
+    { "perft-all", [](std::string& line, Board& board) {
+        handlePerft(line, board, PerftMode::All);
+      }
+    },
+    { "d", [](std::string& line, Board& board) {
+        showState(board);
+      }
+    },
+    { "h", [](std::string& line, Board& board) {
+        showCommands();
+      }
+    },
+    { "clear", [](std::string& line, Board& board) {
+        clearScreen();
+      }
+    },
+    { "c", [](std::string& line, Board& board) {
+        clearScreen();
+      }
+    }
+  };
+
+  inline std::optional<int> strToSquare(const std::string& s) {
+    if (s.size() != 2) {
+      std::cout << "error: invalid square: '" << s << "'\n";
+      return std::nullopt;
+    }
+
+    if (s[0] < 'a' || s[0] > 'h') {
+          std::cout << "error: invalid square: '" << s << "'\n";
+          return std::nullopt;
+    }
+
+    if (s[1] < '1' || s[1] > '8') {
+          std::cout << "error: invalid square: '" << s << "'\n";
+          return std::nullopt;
+    }
+
     int file = s[0] - 'a';
     int rank = s[1] - '1';
-    return rank * 8 + file;
+
+    return (7 - rank) * 8 + file;
   }
 
   inline void clearScreen() {
     std::cout << "\033[2J\033[1;1H" << std::flush;
   }
+
+  std::string getCommandWord(const std::string& line) {
+    std::istringstream iss(line);
+    std::string cmd;
+    iss >> cmd;
+    return cmd;
+  }
  
-  void inputLoop(Board& board) {
+  void userLoop(Board& board) {
     std::string line;
     std::cout << "👺> ";
     while (std::getline(std::cin, line)) {
@@ -38,58 +112,15 @@ namespace Interface {
 
   void handleCommand(std::string& line, Board& board) {
     trim(line);
-
-    if (line.rfind("position", 0) == 0) {
-      handlePosition(line, board);
+    if (line.empty()) {
       return;
     }
 
-    if (line.rfind("moves", 0) == 0) {
-      handleMoves(line, board);
-      return;
-    }
+    std::string cmd = getCommandWord(line);
 
-    if (line.rfind("move", 0) == 0) {
-      handleMove(line, board);
-      return;
-    }
-
-    if (line.rfind("perft-d", 0) == 0) {
-      handlePerft(line, board, true);
-      return;
-    }
-
-    if (line.rfind("perft-s", 0) == 0) {
-      handlePerft(line, board, false, true);
-      return;
-    }
-
-    if (line.rfind("perft-a", 0) == 0) {
-      handlePerft(line, board, false, false, true);
-      return;
-    }
-
-    if (line.rfind("perft", 0) == 0) {
-      handlePerft(line, board);
-      return;
-    }
-
-    if (line == "d") {
-      showState(board);
-      return;
-    }
-
-    if (line == "h") {
-      showCommands();
-      return;
-    }
-
-    if (line == "clear" || line == "c") {
-      clearScreen();
-      return;
-    }
-
-    if (line == "") {
+    auto command = commandTable.find(cmd);
+    if (command != commandTable.end()) {
+      command->second(line, board);
       return;
     }
 
@@ -101,21 +132,28 @@ namespace Interface {
     std::string token;
     ss >> token; // 'position'
 
-    ss >> token;
-    if (token == "startpos") {
+    std::string arg;
+    if (!(ss >> arg)) {
+      std::cout << "error: 'position' requires 'startpos' or 'fen'\n";
+      return;
+    }
+
+    if (arg == "startpos") {
       board.setupStartPosition();
 
-      ss >> token;
-      if (token == "moves") {
+      if (ss >> token && token == "moves") {
         std::string moveStr;
         while (ss >> moveStr) {
-          Move m = parseMoveStr(moveStr, board);
-          board.makeMove(m, true);
+          auto m = parseMoveStr(moveStr, board);
+          if (!m) {
+            return;
+          }
+          board.makeMove(*m, true);
         }
       }
     }
 
-    else if (token == "fen") {
+    else if (arg == "fen") {
       std::string fenStr;
       std::getline(ss, fenStr);
 
@@ -123,15 +161,27 @@ namespace Interface {
       
       board.setupFromFen(fenStr);
     }
+    else {
+      std::cout << "error: unknown position argument '" << arg << "'\nposition requires 'startpos' or 'fen'\n";
+    }
   }
 
   void handleMove(const std::string& line, Board& board) {
     std::stringstream ss(line);
     std::string cmd, moveStr;
-    ss >> cmd >> moveStr;
+    ss >> cmd;
 
-    Move m = parseMoveStr(moveStr, board);
-    board.makeMove(m, true);
+    if (!(ss >> moveStr)) {
+      std::cout << "error: 'move' requires valid move string, eg: 'a2a4' or 'c7c8q'\n";
+      return;
+    }
+
+    auto m = parseMoveStr(moveStr, board);
+    if (!m) {
+      return;
+    }
+
+    board.makeMove(*m, true);
   }
 
   void handleMoves(const std::string& line, Board& board) {
@@ -139,13 +189,25 @@ namespace Interface {
     std::string cmd, moveStr;
     ss >> cmd; // "moves"
 
+    bool hasMoves = false;
     while (ss >> moveStr) {
-      Move m = parseMoveStr(moveStr, board);
-      board.makeMove(m, true);
+      hasMoves = true;
+      auto move = parseMoveStr(moveStr, board);
+
+      if (!move) {
+        return;
+      }
+
+      board.makeMove(*move, true);
     }
+
+   if (!hasMoves) {
+    std::cout << "error: 'moves' requires at least one move\n";
+   }
+
   }
 
-  void handlePerft(const std::string& line, Board& board, bool divide, bool suite, bool all) {
+  void handlePerft(const std::string& line, Board& board, PerftMode mode) {
     std::stringstream ss(line);
     std::string cmd, d;
     ss >> cmd;
@@ -157,17 +219,25 @@ namespace Interface {
 
     int depth = std::stoi(d);
 
-    if (divide) {
-      perft_divide(board, depth);
-    }
-    else if (suite) {
-      perftTestSuite(board, depth);
-    }
-    else if (all) {
-      testPerft(board, depth);
-    }
-    else {
-      testSinglePerft(board, depth);
+    switch (mode) {
+
+      case PerftMode::Divide:
+        perft_divide(board, depth);
+        break;
+
+      case PerftMode::Suite:
+        perftTestSuite(board, depth);
+        break;
+
+      case PerftMode::All:
+        testPerft(board, depth);
+        break;
+
+      case PerftMode::Single:
+
+      default:
+        testSinglePerft(board, depth);
+        break;
     }
   }
 
@@ -199,9 +269,9 @@ namespace Interface {
     std::cout << "'move  <move>' - apply move to current position\n\n";
 
     std::cout << "'perft   <depth>' - perft test current position to <depth>\n";
-    std::cout << "'perft-d <depth>' - perft divide test current position to <depth>\n";
-    std::cout << "'perft-a <depth>' - perft test current position from depth = 1 to <depth>\n";
-    std::cout << "'perft-s <depth>' - run perft suite test to <depth>\n";
+    std::cout << "'perft-divide <depth>' - perft divide test current position to <depth>\n";
+    std::cout << "'perft-suite <depth>' - run perft suite test to <depth>\n";
+    std::cout << "'perft-all <depth>' - perft test current position from depth = 1 to <depth>\n";
     std::cout << "positions taken from: https://www.chessprogramming.org/Perft_Results\n\n";
 
     std::cout << "'clear' or 'c' - clear screen\n\n";
@@ -210,9 +280,20 @@ namespace Interface {
     std::cout << "'h' - list commands\n\n";
   }
 
-  Move parseMoveStr(const std::string& moveStr, Board& board) {
-    int from = strToSquare(moveStr.substr(0, 2));
-    int to = strToSquare(moveStr.substr(2, 2));
+  std::optional<Move> parseMoveStr(const std::string& moveStr, Board& board) {
+    if (moveStr.size() < 4 || moveStr.size() > 5) {
+      std::cout << "error: invalid move string: '" << moveStr << "'\n";
+      return std::nullopt;
+    }
+
+    auto fromOpt = strToSquare(moveStr.substr(0, 2));
+    auto toOpt = strToSquare(moveStr.substr(2, 2));
+    
+    if (!fromOpt) { return std::nullopt; }
+    if (!toOpt)   { return std::nullopt; }
+
+    int from  = *fromOpt;
+    int to    = *toOpt;
     int flags = FLAG_NONE;
 
     if (moveStr.length() == 5) {
@@ -222,6 +303,9 @@ namespace Interface {
         case 'r': flags |= (FLAG_PROMO_R | FLAG_PROMOTION); break;
         case 'b': flags |= (FLAG_PROMO_B | FLAG_PROMOTION); break;
         case 'n': flags |= (FLAG_PROMO_N | FLAG_PROMOTION); break;
+        default:
+          std::cout << "error: invalid promotion piece\n";
+          return std::nullopt;
       }
     }
 

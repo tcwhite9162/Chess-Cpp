@@ -115,7 +115,7 @@ CMakeFiles/main.dir/src/evaluate.cpp.o: \
  /usr/include/c++/15.2.1/bits/charconv.h \
  /usr/include/c++/15.2.1/bits/basic_string.tcc \
  /home/tcwhite/Projects/C-C++/Chess/src/undoInfo.hpp \
- /home/tcwhite/Projects/C-C++/Chess/src/../data/constants.hpp \
+ /home/tcwhite/Projects/C-C++/Chess/data/constants.hpp \
  /usr/include/c++/15.2.1/limits \
  /home/tcwhite/Projects/C-C++/Chess/src/eval-helpers.hpp \
  /home/tcwhite/Projects/C-C++/Chess/src/evaluate.hpp

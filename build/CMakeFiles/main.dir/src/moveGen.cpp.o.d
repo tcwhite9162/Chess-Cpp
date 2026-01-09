@@ -2,7 +2,7 @@ CMakeFiles/main.dir/src/moveGen.cpp.o: \
  /home/tcwhite/Projects/C-C++/Chess/src/moveGen.cpp \
  /usr/include/stdc-predef.h \
  /home/tcwhite/Projects/C-C++/Chess/src/utils.hpp \
- /home/tcwhite/Projects/C-C++/Chess/src/../data/constants.hpp \
+ /home/tcwhite/Projects/C-C++/Chess/data/constants.hpp \
  /usr/include/c++/15.2.1/cstdint \
  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \

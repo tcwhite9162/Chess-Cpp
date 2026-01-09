@@ -1,15 +1,27 @@
-#include "board.hpp"
-#include "zobrist.hpp"
-#include "interface.hpp"
-#include "bitboard.hpp"
+#include "core/board.hpp"
+#include "interface/interface.hpp"
+#include "interface/uci.hpp"
+#include "core/utils.hpp"
+
+#include <iostream>
+#include <string>
 
 int main(int argc, char* argv[]) {
-    Zobrist::initZobrist();
-    initAttackTables();
-
+    initMatch();
     Board board;
 
-    Interface::inputLoop(board);
+    std::string first;
+    if (!std::getline(std::cin, first)) {
+        return 0; // no input exit
+    }
+
+    trim(first);
+
+    if (first == "uci") {
+        UCI::uciLoop(board);
+    } else {
+        Interface::userLoop(board);
+    }
 
     return 0;
 }

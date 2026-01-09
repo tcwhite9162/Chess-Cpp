@@ -118,7 +118,7 @@ CMakeFiles/main.dir/src/search.cpp.o: \
  /usr/include/c++/15.2.1/bits/vector.tcc /usr/include/c++/15.2.1/array \
  /usr/include/c++/15.2.1/compare \
  /home/tcwhite/Projects/C-C++/Chess/src/undoInfo.hpp \
- /home/tcwhite/Projects/C-C++/Chess/src/../data/constants.hpp \
+ /home/tcwhite/Projects/C-C++/Chess/data/constants.hpp \
  /usr/include/c++/15.2.1/limits \
  /home/tcwhite/Projects/C-C++/Chess/src/moveGen.hpp /usr/include/assert.h \
  /home/tcwhite/Projects/C-C++/Chess/src/evaluate.hpp
