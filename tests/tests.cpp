@@ -1,3 +1,4 @@
+#include <chrono>
 #include <iostream>
 #include <string>
 
@@ -5,12 +6,15 @@
 #include "core/utils.hpp"
 #include "core/board.hpp"
 #include "movegen/moveGen.hpp"
+#include "search/search.hpp"
+
+namespace Tests {
 
 long long perft(Board &board, int depth) {
     if (depth == 0) return 1;
     long long nodes = 0;
     MoveList movesList;
-    generateLegalMoves(board, movesList);
+    MoveGen::generateLegalMoves(board, movesList);
     if (depth == 1) return movesList.count;
     for (int i = 0; i < movesList.count; i++) {
         Move move = movesList.moves[i];
@@ -21,7 +25,7 @@ long long perft(Board &board, int depth) {
     return nodes;
 }
 
-void testPerft(Board &board, int depth) {
+void testAllPerft(Board &board, int depth) {
     for (int d = 1; d <= depth; d++) {
         long long n = perft(board, d);
         std::cout << "perft(" << d << ") = " << n << std::endl;
@@ -33,9 +37,9 @@ void testSinglePerft(Board &board, int depth) {
     std::cout << "perft(" << depth << ") = " << n << std::endl;
 }
 
-long long perft_divide(Board &board, int depth) {
+long long perftDivide(Board &board, int depth) {
     MoveList movesList;
-    generateLegalMoves(board, movesList);
+    MoveGen::generateLegalMoves(board, movesList);
 
     long long total = 0;
     for (int i = 0; i < movesList.count; i++) {
@@ -64,7 +68,7 @@ long long perft_debug(Board &board, int depth) {
     if (depth == 0) return 1;
     long long nodes = 0;
     MoveList movesList;
-    generateLegalMoves(board, movesList);
+    MoveGen::generateLegalMoves(board, movesList);
 
     for (int i = 0; i < movesList.count; i++) {
         Move move = movesList.moves[i];
@@ -87,7 +91,7 @@ long long perft_debug(Board &board, int depth) {
 
 void debugGeneratePawnMoves(const Board &board, int color) {
     MoveList moves;
-    generatePawnMoves(board, color, moves);
+    MoveGen::generatePawnMoves(board, color, moves);
 
     std::cout << "count: " << moves.count << "\n";
 
@@ -121,7 +125,42 @@ void perftTestSuite(Board& board, int depth) {
         board.printBoard();
 
         std::cout << "--results--\n";
-        testPerft(board, depth);
+        testAllPerft(board, depth);
         std::cout << "\n\n\n\n";
     }
+}
+
+void timeSearch(Board& board, int depth) {
+    auto start = std::chrono::high_resolution_clock::now();
+
+    SearchResult search = Search::searchBestMove(board, depth);
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto ms  = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+    std::cout << "depth: " << depth << "\n";
+    std::cout << "best move: " << search.bestMove.to_string() << ", eval: " << search.score << "\n";
+    std::cout << "time : " << ms << " ms\n\n";
+
+}
+
+void timeSearchFen(const std::string& fen, int depth) {
+    Board board;
+    board.setupFromFen(fen);
+    
+    auto start = std::chrono::high_resolution_clock::now();
+
+    SearchResult search = Search::searchBestMove(board, depth);
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto ms  = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+    std::cout << "fen: " << fen << "\n";
+    std::cout << "depth: " << depth << "\n";
+    std::cout << "best move: " << search.bestMove.to_string() << "\n";
+    std::cout << "score: " << search.score << "\n";
+    std::cout << "time : " << ms << " ms\n";
+
+}
+
 }

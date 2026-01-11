@@ -65,8 +65,10 @@ public:
     bool isInCheck(int color) const;
     bool isSquareAttacked(int square, int attackingColor) const;
     bool enPassantAvailable() const;
+    int getEnPassantCaptureSquare() const; 
 
-    uint64_t computeZobrist() const;
+    u64 computeZobrist() const;
+    u64 getZobristKey() const { return zobristKey; }
 
     bool hasLegalMoves();
     bool isDraw();

@@ -15,12 +15,16 @@ struct MoveList {
     }
 };
 
-void generatePawnMoves(const Board& board, int color, MoveList& moves);
-void generateKnightMoves(const Board& board, int color, MoveList& moves);
-void generateSlidingMoves(const Board& board, int color, MoveList& moves);
-void generateKingMoves(const Board& board, int color, MoveList& moves);
+namespace MoveGen {
 
-void generatePseudoLegalMoves(const Board& board, MoveList& moves);
-void generateLegalMoves(Board& board, MoveList& moves);
+    void generatePawnMoves(const Board& board, int color, MoveList& moves);
+    void generateKnightMoves(const Board& board, int color, MoveList& moves);
+    void generateSlidingMoves(const Board& board, int color, MoveList& moves);
+    void generateKingMoves(const Board& board, int color, MoveList& moves);
 
-int countPseudoLegalMoves(Board& board, int turn);
+    void generatePseudoLegalMoves(const Board& board, MoveList& moves);
+    void generateLegalMoves(Board& board, MoveList& moves);
+
+    int countPseudoLegalMoves(Board& board, int turn);
+
+}

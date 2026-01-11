@@ -18,7 +18,7 @@
 #############################################
 # Minimal version of Ninja required by this file
 
-ninja_required_version = 1.5
+ninja_required_version = 1.8
 
 
 #############################################
@@ -121,6 +121,24 @@ build CMakeFiles/main.dir/src/movegen/moveGen.cpp.o: CXX_COMPILER__main_unscanne
   OBJECT_FILE_DIR = CMakeFiles/main.dir/src/movegen
   TARGET_SUPPORT_DIR = CMakeFiles/main.dir
 
+build CMakeFiles/main.dir/src/search/ordering.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/src/search/ordering.cpp || cmake_object_order_depends_target_main
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles/main.dir/src/search/ordering.cpp.o.d
+  FLAGS = -g -std=gnu++17
+  INCLUDES = -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests
+  OBJECT_DIR = CMakeFiles/main.dir
+  OBJECT_FILE_DIR = CMakeFiles/main.dir/src/search
+  TARGET_SUPPORT_DIR = CMakeFiles/main.dir
+
+build CMakeFiles/main.dir/src/search/quiescence.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/src/search/quiescence.cpp || cmake_object_order_depends_target_main
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles/main.dir/src/search/quiescence.cpp.o.d
+  FLAGS = -g -std=gnu++17
+  INCLUDES = -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests
+  OBJECT_DIR = CMakeFiles/main.dir
+  OBJECT_FILE_DIR = CMakeFiles/main.dir/src/search
+  TARGET_SUPPORT_DIR = CMakeFiles/main.dir
+
 build CMakeFiles/main.dir/src/search/search.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/src/search/search.cpp || cmake_object_order_depends_target_main
   CONFIG = Debug
   DEP_FILE = CMakeFiles/main.dir/src/search/search.cpp.o.d
@@ -156,7 +174,7 @@ build CMakeFiles/main.dir/tests/tests.cpp.o: CXX_COMPILER__main_unscanned_Debug 
 #############################################
 # Link the executable main
 
-build main: CXX_EXECUTABLE_LINKER__main_Debug CMakeFiles/main.dir/src/bitboard/bitboard.cpp.o CMakeFiles/main.dir/src/core/board.cpp.o CMakeFiles/main.dir/src/eval/eval-helpers.cpp.o CMakeFiles/main.dir/src/eval/evaluate.cpp.o CMakeFiles/main.dir/src/interface/interface.cpp.o CMakeFiles/main.dir/src/interface/uci.cpp.o CMakeFiles/main.dir/src/main.cpp.o CMakeFiles/main.dir/src/movegen/moveGen.cpp.o CMakeFiles/main.dir/src/search/search.cpp.o CMakeFiles/main.dir/src/search/zobrist.cpp.o CMakeFiles/main.dir/tests/tests.cpp.o
+build main: CXX_EXECUTABLE_LINKER__main_Debug CMakeFiles/main.dir/src/bitboard/bitboard.cpp.o CMakeFiles/main.dir/src/core/board.cpp.o CMakeFiles/main.dir/src/eval/eval-helpers.cpp.o CMakeFiles/main.dir/src/eval/evaluate.cpp.o CMakeFiles/main.dir/src/interface/interface.cpp.o CMakeFiles/main.dir/src/interface/uci.cpp.o CMakeFiles/main.dir/src/main.cpp.o CMakeFiles/main.dir/src/movegen/moveGen.cpp.o CMakeFiles/main.dir/src/search/ordering.cpp.o CMakeFiles/main.dir/src/search/quiescence.cpp.o CMakeFiles/main.dir/src/search/search.cpp.o CMakeFiles/main.dir/src/search/zobrist.cpp.o CMakeFiles/main.dir/tests/tests.cpp.o
   CONFIG = Debug
   DEP_FILE = CMakeFiles/main.dir/link.d
   FLAGS = -g
@@ -210,16 +228,30 @@ build all: phony main
 
 
 #############################################
+# Phony target to force glob verification run.
+
+build /home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/VerifyGlobs.cmake_force: phony
+
+
+#############################################
+# Re-run CMake to check if globbed directories changed.
+
+build /home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/cmake.verify_globs: VERIFY_GLOBS | /home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/VerifyGlobs.cmake_force
+  pool = console
+  restat = 1
+
+
+#############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja /home/tcwhite/Projects/C-C++/Chess/build/cmake_install.cmake: RERUN_CMAKE | /home/tcwhite/Projects/C-C++/Chess/CMakeLists.txt /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /usr/share/cmake/Modules/Linker/GNU-CXX.cmake /usr/share/cmake/Modules/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.0/CMakeCXXCompiler.cmake CMakeFiles/4.2.0/CMakeSystem.cmake
+build build.ninja /home/tcwhite/Projects/C-C++/Chess/build/cmake_install.cmake: RERUN_CMAKE /home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/cmake.verify_globs | /home/tcwhite/Projects/C-C++/Chess/CMakeLists.txt /home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/VerifyGlobs.cmake /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /usr/share/cmake/Modules/Linker/GNU-CXX.cmake /usr/share/cmake/Modules/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.0/CMakeCXXCompiler.cmake CMakeFiles/4.2.0/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build /home/tcwhite/Projects/C-C++/Chess/CMakeLists.txt /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /usr/share/cmake/Modules/Linker/GNU-CXX.cmake /usr/share/cmake/Modules/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.0/CMakeCXXCompiler.cmake CMakeFiles/4.2.0/CMakeSystem.cmake: phony
+build /home/tcwhite/Projects/C-C++/Chess/CMakeLists.txt /home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/VerifyGlobs.cmake /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /usr/share/cmake/Modules/Linker/GNU-CXX.cmake /usr/share/cmake/Modules/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.0/CMakeCXXCompiler.cmake CMakeFiles/4.2.0/CMakeSystem.cmake: phony
 
 
 #############################################

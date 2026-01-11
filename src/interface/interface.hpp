@@ -24,6 +24,7 @@ namespace Interface {
   void handleMove(const std::string& line, Board& board);
   void handleMoves(const std::string& line, Board& board);
   void handlePerft(const std::string& line, Board& board, PerftMode mode);
+  void handleSearch(const std::string& line, Board& board, bool range=false);
   void showState(Board& board);
   void showCommands();
   void clearScreen();

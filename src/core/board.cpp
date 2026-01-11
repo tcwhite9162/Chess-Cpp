@@ -335,9 +335,21 @@ bool Board::enPassantAvailable() const{
     return false;
 }
 
+int Board::getEnPassantCaptureSquare() const {
+    if (en_passant == -1)
+        return -1;
+
+    int capSq = (turn == WHITE) ? en_passant + DOWN : en_passant + UP;
+
+    if (capSq < 0 || capSq >= 64)
+        return -1;
+
+    return capSq;
+}
+
 bool Board::hasLegalMoves() {
     MoveList moves;
-    generateLegalMoves(*this, moves);
+    MoveGen::generateLegalMoves(*this, moves);
     return (moves.count > 0);
 }
 
@@ -596,7 +608,8 @@ void Board::makeMove(Move move, bool updateHash) {
         }
 
         // XOR in moved piece at toSquare (note promotions: squares[toSquare] already holds the new piece)
-        int newPiece = squares[toSquare];
+        // int newPiece = squares[toSquare];
+        int newPiece = isPromotion(flags) ? promotionPiece(flags, turn) : piece;
         zobristKey ^= Zobrist::piece[pieceToIndex(newPiece)][toSquare];
 
         // castling rights: XOR old and new

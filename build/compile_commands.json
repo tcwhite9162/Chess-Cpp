@@ -49,6 +49,18 @@
 },
 {
   "directory": "/home/tcwhite/Projects/C-C++/Chess/build",
+  "command": "/usr/bin/g++ -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests -g -std=gnu++17 -o CMakeFiles/main.dir/src/search/ordering.cpp.o -c /home/tcwhite/Projects/C-C++/Chess/src/search/ordering.cpp",
+  "file": "/home/tcwhite/Projects/C-C++/Chess/src/search/ordering.cpp",
+  "output": "/home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/main.dir/src/search/ordering.cpp.o"
+},
+{
+  "directory": "/home/tcwhite/Projects/C-C++/Chess/build",
+  "command": "/usr/bin/g++ -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests -g -std=gnu++17 -o CMakeFiles/main.dir/src/search/quiescence.cpp.o -c /home/tcwhite/Projects/C-C++/Chess/src/search/quiescence.cpp",
+  "file": "/home/tcwhite/Projects/C-C++/Chess/src/search/quiescence.cpp",
+  "output": "/home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/main.dir/src/search/quiescence.cpp.o"
+},
+{
+  "directory": "/home/tcwhite/Projects/C-C++/Chess/build",
   "command": "/usr/bin/g++ -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests -g -std=gnu++17 -o CMakeFiles/main.dir/src/search/search.cpp.o -c /home/tcwhite/Projects/C-C++/Chess/src/search/search.cpp",
   "file": "/home/tcwhite/Projects/C-C++/Chess/src/search/search.cpp",
   "output": "/home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/main.dir/src/search/search.cpp.o"

@@ -54,12 +54,24 @@ namespace Interface {
         showCommands();
       }
     },
+    { "help", [](std::string& line, Board& board) {
+        showCommands();
+      }
+    },
     { "clear", [](std::string& line, Board& board) {
         clearScreen();
       }
     },
     { "c", [](std::string& line, Board& board) {
         clearScreen();
+      }
+    },
+    { "search", [](std::string& line, Board& board) {
+      handleSearch(line, board);
+      }
+    },
+    { "search-range", [](std::string& line, Board& board) {
+      handleSearch(line, board, true);
       }
     }
   };
@@ -222,22 +234,43 @@ namespace Interface {
     switch (mode) {
 
       case PerftMode::Divide:
-        perft_divide(board, depth);
+        Tests::perftDivide(board, depth);
         break;
 
       case PerftMode::Suite:
-        perftTestSuite(board, depth);
+        Tests::perftTestSuite(board, depth);
         break;
 
       case PerftMode::All:
-        testPerft(board, depth);
+        Tests::testAllPerft(board, depth);
         break;
 
       case PerftMode::Single:
 
       default:
-        testSinglePerft(board, depth);
+        Tests::testSinglePerft(board, depth);
         break;
+    }
+  }
+
+  void handleSearch(const std::string& line, Board& board, bool range) {
+    std::stringstream ss(line);
+    std::string cmd, d;
+    ss >> cmd;
+
+    if (!(ss >> d)) {
+      std::cout << "error: search requires a depth\n";
+      return;
+    }
+
+    int depth = std::stoi(d);
+
+    if (range) {
+      for (int i = 1; i <= depth; i++) {
+        Tests::timeSearch(board, i);
+      }
+    } else {
+      Tests::timeSearch(board, depth);
     }
   }
 
@@ -263,21 +296,21 @@ namespace Interface {
     std::cout << "\n--Commands--\n\n";
     
     std::cout << "'position startpos'      - reset board to start position\n";
-    std::cout << "'position fen <fen-str>' - set position to <fen-str>\n\n";
+    std::cout << "'position fen <fen-string>' - set position to <fen-string>\n\n";
 
     std::cout << "'moves <move1, move2, ...>' - apply moves to current position\n";
     std::cout << "'move  <move>' - apply move to current position\n\n";
 
-    std::cout << "'perft   <depth>' - perft test current position to <depth>\n";
-    std::cout << "'perft-divide <depth>' - perft divide test current position to <depth>\n";
-    std::cout << "'perft-suite <depth>' - run perft suite test to <depth>\n";
+    std::cout << "'perft <depth>' - perft test current position to <depth>\n";
     std::cout << "'perft-all <depth>' - perft test current position from depth = 1 to <depth>\n";
+    std::cout << "'perft-suite <depth>' - run perft suite test to <depth>\n";
+    std::cout << "'perft-divide <depth>' - perft divide test current position to <depth>\n";
     std::cout << "positions taken from: https://www.chessprogramming.org/Perft_Results\n\n";
 
-    std::cout << "'clear' or 'c' - clear screen\n\n";
+    std::cout << "'c' or 'clear' - clear screen\n\n";
 
     std::cout << "'q' or 'quit' - quit program\n";
-    std::cout << "'h' - list commands\n\n";
+    std::cout << "'h' or 'help' - list commands\n\n";
   }
 
   std::optional<Move> parseMoveStr(const std::string& moveStr, Board& board) {

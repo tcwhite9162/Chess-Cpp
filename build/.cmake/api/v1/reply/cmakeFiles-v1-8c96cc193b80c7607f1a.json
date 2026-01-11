@@ -1,4 +1,34 @@
 {
+	"globsDependent" : 
+	[
+		{
+			"expression" : "/home/tcwhite/Projects/C-C++/Chess/src/*.cpp",
+			"paths" : 
+			[
+				"/home/tcwhite/Projects/C-C++/Chess/src/bitboard/bitboard.cpp",
+				"/home/tcwhite/Projects/C-C++/Chess/src/core/board.cpp",
+				"/home/tcwhite/Projects/C-C++/Chess/src/eval/eval-helpers.cpp",
+				"/home/tcwhite/Projects/C-C++/Chess/src/eval/evaluate.cpp",
+				"/home/tcwhite/Projects/C-C++/Chess/src/interface/interface.cpp",
+				"/home/tcwhite/Projects/C-C++/Chess/src/interface/uci.cpp",
+				"/home/tcwhite/Projects/C-C++/Chess/src/main.cpp",
+				"/home/tcwhite/Projects/C-C++/Chess/src/movegen/moveGen.cpp",
+				"/home/tcwhite/Projects/C-C++/Chess/src/search/ordering.cpp",
+				"/home/tcwhite/Projects/C-C++/Chess/src/search/quiescence.cpp",
+				"/home/tcwhite/Projects/C-C++/Chess/src/search/search.cpp",
+				"/home/tcwhite/Projects/C-C++/Chess/src/search/zobrist.cpp"
+			],
+			"recurse" : true
+		},
+		{
+			"expression" : "/home/tcwhite/Projects/C-C++/Chess/tests/*.cpp",
+			"paths" : 
+			[
+				"/home/tcwhite/Projects/C-C++/Chess/tests/tests.cpp"
+			],
+			"recurse" : true
+		}
+	],
 	"inputs" : 
 	[
 		{

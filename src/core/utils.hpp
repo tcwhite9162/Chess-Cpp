@@ -57,6 +57,19 @@ inline int pieceToIndex(int piece) {
     return -1; // should never happen
 }
 
+static int getPieceValue(int piece) {
+    piece = std::abs(piece);
+
+    switch (piece) {
+        case PAWN:   return PAWN_VAL;
+        case KNIGHT: return KNIGHT_VAL;
+        case BISHOP: return BISHOP_VAL;
+        case ROOK:   return ROOK_VAL;
+        case QUEEN:  return QUEEN_VAL;
+        default:     return 0;
+    }
+}
+
 inline int popLeastSigBit(u64 &bitboard) {
     int sq = __builtin_ctzll(bitboard); // gcc
     bitboard &= bitboard - 1;

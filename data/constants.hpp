@@ -120,6 +120,7 @@ constexpr int FLAG_CASTLE_WK   = 1 << 8;  // white king-side castle
 constexpr int FLAG_CASTLE_WQ   = 1 << 9;  // white queen-side castle
 constexpr int FLAG_CASTLE_BK   = 1 << 10; // black king-side castle
 constexpr int FLAG_CASTLE_BQ   = 1 << 11; // black queen-side castle
+constexpr int FLAG_CASTLE_ANY  = FLAG_CASTLE_WK | FLAG_CASTLE_WQ | FLAG_CASTLE_BK | FLAG_CASTLE_BQ;
 
 // piece values
 constexpr int PAWN_VAL   = 100;
@@ -194,6 +195,23 @@ constexpr int KING_PST[64] = {
 // evaluation factors
 constexpr int MOBILITY_FACTOR = 10;
 constexpr int PAWN_PENALTY    = 25;
+
+// MVA-LVA
+constexpr int MVV_VICTIM_MULT = 10;
+constexpr int MVV_ATTACKER_MULT = 1;
+
+// promotion bonuses
+constexpr int PROMO_QUEEN_BONUS = 9000;
+constexpr int PROMO_ROOK_BONUS = 5000;
+constexpr int PROMO_BISHOP_BONUS = 3250;
+constexpr int PROMO_KNIGHT_BONUS = 3000;
+
+// quiet move score
+constexpr int QUIET_BASE_SCORE = 0;
+
+constexpr int TT_SIZE_MB = 64;
+
+static constexpr int TT_MOVE_BONUS = 100000000; // 1e8
 
 static constexpr int INF = std::numeric_limits<int>::max(); // arbitrary large number for search
 

@@ -7,6 +7,8 @@
 
 auto mirrorSquare = [](int x) { return 63 -x; };
 
+namespace Eval {
+
 // main eval function
 int evaluate(Board& board) {
     int material = 0;
@@ -147,4 +149,4 @@ int kingSafety(const Board& board) {
     return score;
 }
 
-
+}

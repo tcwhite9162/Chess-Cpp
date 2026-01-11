@@ -2,6 +2,8 @@
 #include "moveGen.hpp"
 #include "constants.hpp"
 
+namespace MoveGen {
+
 void generatePawnMoves(const Board &board, int color, MoveList& moves) {
     u64 empty = ~board.occupancyAll;
 
@@ -409,4 +411,6 @@ void generateLegalMoves(Board &board, MoveList& legalMoves) {
         if (!board.isInCheck(side)) { legalMoves.add(m); }
         board.unmakeMove(m, false);
     }
+}
+
 }

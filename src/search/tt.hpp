@@ -1,0 +1,39 @@
+#pragma once
+
+#include "core/move.hpp"
+
+#include <cstdint>
+#include <vector>
+
+using u64 = uint64_t ;
+using u8 = uint8_t;
+
+enum TTFlag : u8 {
+    TT_EXACT = 0,
+    TT_LOWER = 1,
+    TT_UPPER = 2
+};
+
+struct TTEntry {
+    u64 key = 0;        // zobrist 
+    int depth = -1;      // search depth
+    int score = 0;      // evaluation
+    Move bestMove = Move();  // optional
+    u8 flag = TT_EXACT;        // exact / lowerbound / upperbound
+};
+
+struct TranspositionTable {
+    std::vector<TTEntry> table;
+
+    TranspositionTable(size_t sizeMB) {
+        size_t entries = (sizeMB * 1024 * 1024) / sizeof(TTEntry);
+
+        size_t pow2 = 1;
+        while (pow2 * 2 <= entries) 
+            pow2 *= 2;
+
+        table.resize(pow2);
+    }
+
+    TTEntry& operator[](u64 key) { return table[key & (table.size() - 1)]; }
+};
