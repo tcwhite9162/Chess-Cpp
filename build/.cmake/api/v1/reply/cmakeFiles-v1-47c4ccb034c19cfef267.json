@@ -2,6 +2,15 @@
 	"globsDependent" : 
 	[
 		{
+			"expression" : "/home/tcwhite/Projects/C-C++/Chess/data/*.hpp",
+			"paths" : 
+			[
+				"/home/tcwhite/Projects/C-C++/Chess/data/constants.hpp",
+				"/home/tcwhite/Projects/C-C++/Chess/data/pst.hpp"
+			],
+			"recurse" : true
+		},
+		{
 			"expression" : "/home/tcwhite/Projects/C-C++/Chess/src/*.cpp",
 			"paths" : 
 			[

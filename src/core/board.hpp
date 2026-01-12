@@ -4,9 +4,7 @@
 #include <vector>
 #include <array>
 
-#include "move.hpp"
-#include "undoInfo.hpp"
-#include "constants.hpp"
+#include "core/undoInfo.hpp"
 
 class Board {
 private:
@@ -77,6 +75,10 @@ public:
     bool isInsuffucientMaterial();
     bool isThreefoldRepetition();
     bool isTerminal();
+
+    // bitboard helpers
+    u64 getCheckers() const;
+    inline int getKingSquare(int side) const;
 
     Board();
     void setPiece(int square, int piece);

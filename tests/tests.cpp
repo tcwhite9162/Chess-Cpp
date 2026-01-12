@@ -1,12 +1,12 @@
 #include <chrono>
-#include <iostream>
 #include <string>
+#include <iostream>
 
 #include "core/move.hpp"
 #include "core/utils.hpp"
 #include "core/board.hpp"
-#include "movegen/moveGen.hpp"
 #include "search/search.hpp"
+#include "movegen/moveGen.hpp"
 
 namespace Tests {
 

@@ -1,5 +1,5 @@
-#include "eval-helpers.hpp"
 #include "core/utils.hpp"
+#include "eval/eval-helpers.hpp"
 
 int countMobility(const Board& board, int side) {
     int count = 0;

@@ -9,6 +9,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
     "src/*.cpp"
     "tests/*.cpp"
+    "data/*.hpp"
 )
 
 add_executable(main ${SRC_FILES})

@@ -1,8 +1,7 @@
 #pragma once
 
-#include "core/move.hpp"
-#include "core/board.hpp"
 #include "search/tt.hpp"
+#include "core/board.hpp"
 
 struct SearchResult {
     Move bestMove;

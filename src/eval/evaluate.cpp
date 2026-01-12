@@ -1,15 +1,10 @@
 #include <cstdlib>
 
-#include "core/board.hpp"
-#include "eval-helpers.hpp"
-#include "constants.hpp"
-#include "evaluate.hpp"
-
-auto mirrorSquare = [](int x) { return 63 -x; };
+#include "eval/evaluate.hpp"
+#include "eval/eval-helpers.hpp"
 
 namespace Eval {
 
-// main eval function
 int evaluate(Board& board) {
     int material = 0;
     int pstSum = 0;
@@ -67,28 +62,16 @@ int evaluate(Board& board) {
 
     int whiteScore = material + pstSum + mobilityScore + pawnScore + kingSafety(board);
 
-    return whiteScore * board.getTurn();
+    return whiteScore * board.getTurn(); // negative if blacks turn (-1)
 }
 
 int pstValue(int piece, int square) {
-    const int* table = nullptr;
+    const int* table = getPiecePstTable(piece);
 
-    switch(std::abs(piece)) {
-        case PAWN:   table = PAWN_PST; break;
-        case KNIGHT: table = KNIGHT_PST; break;
-        case BISHOP: table = BISHOP_PST; break;
-        case ROOK:   table = ROOK_PST; break;
-        case QUEEN:  table = QUEEN_PST; break;
-        case KING:   table = KING_PST; break;
-        default: return 0;
-    }
-
-    if (piece > 0) {
+    if (piece > 0)
         return table[square];
-    } 
-    else {
+    else
         return -table[mirrorSquare(square)];
-    }
 }
 
 int kingSafety(const Board& board) {

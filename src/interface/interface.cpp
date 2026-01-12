@@ -1,16 +1,17 @@
-#include "interface.hpp"
-#include "core/utils.hpp"
-#include "core/board.hpp"
-#include "core/move.hpp"
-#include "tests.hpp"
-
-#include <iostream>
-#include <optional>
-#include <sstream>
 #include <string>
+#include <cstdlib>
+#include <sstream>
+#include <optional>
+#include <iostream>
 #include <functional>
 #include <unordered_map>
-#include <cstdlib>
+
+#include "eval/evaluate.hpp"
+#include "tests.hpp"
+#include "core/move.hpp"
+#include "core/board.hpp"
+#include "core/utils.hpp"
+#include "interface/interface.hpp"
 
 namespace Interface {
 
@@ -47,7 +48,11 @@ namespace Interface {
       }
     },
     { "d", [](std::string& line, Board& board) {
-        showState(board);
+        showState(board, true);
+      }
+    },
+    { "p", [](std::string& line, Board& board) {
+        showState(board, false);
       }
     },
     { "h", [](std::string& line, Board& board) {
@@ -274,22 +279,29 @@ namespace Interface {
     }
   }
 
-  void showState(Board& board) {
+  void showState(Board& board, bool verbose) {
+    std::string toMove = (board.getTurn() == WHITE) ? "White to move\n" : "Black to move\n";
+
     std::cout << "\n--Current Position--\n";
+    std::cout << toMove << "\n";
+    std::cout << "Current eval -> " << Eval::evaluate(board )<< "\n";
     board.printBoard();
-    std::cout << "\n--Current Board State--\n";
 
-    std::cout << "White king pos -> " << board.getWhiteKingPos() << ", Black king pos -> " << board.getBlackKingPos() << "\n";
+    if (verbose) {
+      std::cout << "\n--Current Board State--\n";
 
-    std::cout << "White castling rights\n";
-    std::cout << "Kingside -> "  << board.canCastleWhiteKingside()  << ", Queenside -> " << board.canCastleWhiteQueenside() << "\n";
-    std::cout << "Black caslting rights\n";
-    std::cout << "Kingside -> "  << board.canCastleBlackKingside()  << ", Queenside -> " << board.canCastleBlackQueenside() << "\n\n";
+      std::cout << "White king pos -> " << board.getWhiteKingPos() << ", Black king pos -> " << board.getBlackKingPos() << "\n";
 
-    std::cout << "En passant square -> " << board.getEnPassant() << "\n";
+      std::cout << "White castling rights\n";
+      std::cout << "Kingside -> "  << board.canCastleWhiteKingside()  << ", Queenside -> " << board.canCastleWhiteQueenside() << "\n";
+      std::cout << "Black caslting rights\n";
+      std::cout << "Kingside -> "  << board.canCastleBlackKingside()  << ", Queenside -> " << board.canCastleBlackQueenside() << "\n\n";
 
-    std::cout << "Fullmove num -> " << board.getFullmove() << "\n";
-    std::cout << "Halfmove num -> " << board.getHalfmove() << "\n\n";
+      std::cout << "En passant square -> " << board.getEnPassant() << "\n";
+
+      std::cout << "Fullmove num -> " << board.getFullmove() << "\n";
+      std::cout << "Halfmove num -> " << board.getHalfmove() << "\n\n";
+    }
   }
 
   void showCommands() {

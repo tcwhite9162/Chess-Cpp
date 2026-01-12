@@ -1,7 +1,7 @@
 #include <random>
 #include <cstdint>
 
-#include "zobrist.hpp"
+#include "search/zobrist.hpp"
 
 namespace Zobrist {
     uint64_t piece[12][64];      // 6 white + 6 black pieces

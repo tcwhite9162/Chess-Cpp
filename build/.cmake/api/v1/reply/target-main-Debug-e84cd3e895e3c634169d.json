@@ -25,13 +25,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 14,
+				"line" : 15,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 16,
+				"line" : 17,
 				"parent" : 0
 			}
 		]
@@ -76,8 +76,6 @@
 			},
 			"sourceIndexes" : 
 			[
-				0,
-				1,
 				2,
 				3,
 				4,
@@ -88,7 +86,9 @@
 				9,
 				10,
 				11,
-				12
+				12,
+				13,
+				14
 			]
 		}
 	],
@@ -114,11 +114,17 @@
 	"sourceGroups" : 
 	[
 		{
-			"name" : "Source Files",
+			"name" : "Header Files",
 			"sourceIndexes" : 
 			[
 				0,
-				1,
+				1
+			]
+		},
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
 				2,
 				3,
 				4,
@@ -129,7 +135,9 @@
 				9,
 				10,
 				11,
-				12
+				12,
+				13,
+				14
 			]
 		}
 	],
@@ -137,81 +145,91 @@
 	[
 		{
 			"backtrace" : 1,
+			"path" : "data/constants.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "data/pst.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/bitboard/bitboard.cpp",
-			"sourceGroupIndex" : 0
+			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/core/board.cpp",
-			"sourceGroupIndex" : 0
+			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/eval/eval-helpers.cpp",
-			"sourceGroupIndex" : 0
+			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/eval/evaluate.cpp",
-			"sourceGroupIndex" : 0
+			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/interface/interface.cpp",
-			"sourceGroupIndex" : 0
+			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/interface/uci.cpp",
-			"sourceGroupIndex" : 0
+			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/main.cpp",
-			"sourceGroupIndex" : 0
+			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/movegen/moveGen.cpp",
-			"sourceGroupIndex" : 0
+			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/search/ordering.cpp",
-			"sourceGroupIndex" : 0
+			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/search/quiescence.cpp",
-			"sourceGroupIndex" : 0
+			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/search/search.cpp",
-			"sourceGroupIndex" : 0
+			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/search/zobrist.cpp",
-			"sourceGroupIndex" : 0
+			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "tests/tests.cpp",
-			"sourceGroupIndex" : 0
+			"sourceGroupIndex" : 1
 		}
 	],
 	"type" : "EXECUTABLE"

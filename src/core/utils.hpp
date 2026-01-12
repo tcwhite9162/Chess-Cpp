@@ -1,11 +1,11 @@
 #pragma once
 
-#include "constants.hpp"
-#include "bitboard/bitboard.hpp"
-#include "board.hpp"
-#include "search/zobrist.hpp"
-
 #include <cctype>
+
+#include "constants.hpp"
+#include "core/board.hpp"
+#include "search/zobrist.hpp"
+#include "bitboard/bitboard.hpp"
 
 inline int rank(int square) { return square / 8; }
 inline int file(int square) { return square % 8; }
@@ -119,3 +119,46 @@ inline u64 random64() {
 inline u64 randomMagic() { return random64() & random64() & random64(); }
 
 void setFromFen(Board& board);
+
+// bitboard helpers
+inline int file_of(int sq) { return sq & 7; }
+inline int rank_of(int sq) { return sq >> 3; }
+
+inline int popcount(u64 bb) {
+    return __builtin_popcountll(bb);
+}
+
+inline int lsb(u64 bb) {
+    return bb ? __builtin_ctzll(bb) : -1;
+}
+
+inline u64 between(int sq1, int sq2) {
+    u64 mask = 0ULL;
+
+    if (file_of(sq1) == file_of(sq2)) {
+        int step = (sq2 > sq1) ? 8 : -8;
+        for (int sq = sq1 + step; sq != sq2; sq += step) {
+            mask |= (1ULL << sq);
+        }
+    }
+
+    else if (rank_of(sq1) == rank_of(sq2)) {
+        int step = (sq2 > sq1) ? 1 : -1;
+        for (int sq = sq1 + step; sq != sq2; sq += step) {
+            mask |= (1ULL << sq);
+        }
+    }
+
+    else if (abs(file_of(sq1) - file_of(sq2)) == abs(rank_of(sq1) - rank_of(sq2))) {
+        int fileStep = (file_of(sq2) > file_of(sq1)) ? 1 : -1;
+        int rankStep = (rank_of(sq2) > rank_of(sq1)) ? 1 : -1;
+        int sq = sq1 + fileStep + 8 * rankStep;
+
+        while (sq != sq2) {
+            mask |= (1ULL << sq);
+            sq += (fileStep + 8 * rankStep);
+        }
+    }
+
+    return mask;
+}

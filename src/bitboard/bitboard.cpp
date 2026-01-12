@@ -1,6 +1,6 @@
-#include "bitboard.hpp"
 #include "core/utils.hpp"
-#include "magic.hpp"
+#include "bitboard/magic.hpp"
+#include "bitboard/bitboard.hpp"
 
 u64 knightAttacks[64];
 u64 kingAttacks[64];

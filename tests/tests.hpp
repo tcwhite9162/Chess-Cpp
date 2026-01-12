@@ -1,8 +1,8 @@
 #pragma once
 
-#include "core/board.hpp"
-
 #include <string>
+
+#include "core/board.hpp"
 
 namespace Tests{
 

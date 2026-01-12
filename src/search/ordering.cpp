@@ -1,10 +1,7 @@
-#include "search/ordering.hpp"
-#include "constants.hpp"
-#include "movegen/moveGen.hpp"
-#include "core/board.hpp"
-#include "core/utils.hpp"
-
 #include <algorithm>
+
+#include "core/utils.hpp"
+#include "movegen/moveGen.hpp"
 
 namespace Search::Ordering {
 

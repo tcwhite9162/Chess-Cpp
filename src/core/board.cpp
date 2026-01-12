@@ -2,20 +2,19 @@
 #include <iostream>
 #include <sstream>
 
-
-#include "board.hpp"
-#include "utils.hpp"
+#include "core/board.hpp"
+#include "core/utils.hpp"
 #include "movegen/moveGen.hpp"
 
 Board::Board() {
     squares.fill(EMPTY);
     turn = WHITE;
-    castling = 0;
+    castling   = 0;
     en_passant = -1;
-    halfmove = 0;
-    fullmove = 1;
-    whiteKingPosition = 0;
-    blackKingPosition = 0;
+    halfmove   = 0;
+    fullmove   = 1;
+    whiteKingPosition   = 0;
+    blackKingPosition   = 0;
     lastIrreversiblePly = 0;
 
     whitePawns   = 0ULL;
@@ -755,4 +754,41 @@ uint64_t Board::computeZobrist() const {
     }
 
     return key;
+}
+
+inline int Board::getKingSquare(int side) const {
+    u64 bb = (side == WHITE) ? whiteKing : blackKing;
+    return __builtin_ctzll(bb);
+}
+
+u64 Board::getCheckers() const {
+    int side = getTurn();
+    int enemy = side ^ 1;
+    int kingSq = getKingSquare(side);
+
+    u64 checkers = 0ULL;
+
+    // pawn checks
+    checkers |= pawnAttacks[enemy][kingSq] &
+                (enemy == WHITE ? whitePawns : blackPawns);
+
+    // knight checks
+    checkers |= knightAttacks[kingSq] &
+                (enemy == WHITE ? whiteKnights : blackKnights);
+
+    // bishop/queen diagonal checks
+    u64 bishopLike = bishopAttacksMagic(kingSq, occupancyAll) &
+                     (enemy == WHITE ? (whiteBishops | whiteQueens)
+                                     : (blackBishops | blackQueens));
+
+    checkers |= bishopLike;
+
+    // rook/queen orthogonal checks
+    u64 rookLike = rookAttacksMagic(kingSq, occupancyAll) &
+                   (enemy == WHITE ? (whiteRooks | whiteQueens)
+                                   : (blackRooks | blackQueens));
+
+    checkers |= rookLike;
+
+    return checkers;
 }

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "core/move.hpp"
-
 #include <cstdint>
 #include <vector>
 
-using u64 = uint64_t ;
+#include "core/move.hpp"
+
+using u64 = uint64_t;
 using u8 = uint8_t;
 
 enum TTFlag : u8 {
@@ -15,11 +15,11 @@ enum TTFlag : u8 {
 };
 
 struct TTEntry {
-    u64 key = 0;        // zobrist 
-    int depth = -1;      // search depth
-    int score = 0;      // evaluation
-    Move bestMove = Move();  // optional
-    u8 flag = TT_EXACT;        // exact / lowerbound / upperbound
+    u64 key = 0;                 // zobrist 
+    int depth = -1;              // search depth
+    int score = 0;               // evaluation
+    Move bestMove = Move();      // optional
+    u8 flag = TTFlag::TT_EXACT;  // exact / lowerbound / upperbound
 };
 
 struct TranspositionTable {
@@ -28,6 +28,7 @@ struct TranspositionTable {
     TranspositionTable(size_t sizeMB) {
         size_t entries = (sizeMB * 1024 * 1024) / sizeof(TTEntry);
 
+        // round down to nearest power of 2
         size_t pow2 = 1;
         while (pow2 * 2 <= entries) 
             pow2 *= 2;

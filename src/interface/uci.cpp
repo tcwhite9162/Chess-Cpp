@@ -1,11 +1,9 @@
-#include "uci.hpp"
-#include "interface.hpp"
-#include "core/utils.hpp"
-#include "core/move.hpp"
-#include "search/search.hpp"
-
-#include <iostream>
 #include <string>
+#include <iostream>
+
+#include "core/utils.hpp"
+#include "interface/uci.hpp"
+#include "interface/interface.hpp"
 
 namespace UCI {
 

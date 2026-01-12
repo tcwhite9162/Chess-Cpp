@@ -1,6 +1,6 @@
 #pragma once
 
-#include "move.hpp"
+#include "core/move.hpp"
 
 struct undoInfo {
     Move move;

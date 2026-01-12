@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cstdint>
-#include "magic.hpp"
+
+#include "bitboard/magic.hpp"
 
 using u64 = uint64_t;
 

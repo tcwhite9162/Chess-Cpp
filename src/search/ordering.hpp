@@ -1,7 +1,7 @@
 #pragma once
 
-#include "movegen/moveGen.hpp"
 #include "core/board.hpp"
+#include "movegen/moveGen.hpp"
 
 namespace Search::Ordering {
 

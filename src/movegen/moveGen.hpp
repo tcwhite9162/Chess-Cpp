@@ -2,8 +2,8 @@
 
 #include <assert.h>
 
-#include "core/board.hpp"
 #include "core/move.hpp"
+#include "core/board.hpp"
 
 struct MoveList {
     Move moves[256];
@@ -25,6 +25,11 @@ namespace MoveGen {
     void generatePseudoLegalMoves(const Board& board, MoveList& moves);
     void generateLegalMoves(Board& board, MoveList& moves);
 
-    int countPseudoLegalMoves(Board& board, int turn);
+    void generatePawnCaptures(const Board& board, int side, MoveList& captures);
+    void generateKnightCaptures(const Board& board, int side, MoveList& captures);
+    void generateSlidingCaptures(const Board& board, int side, MoveList& captures);
+    void generateKingCaptures(const Board& board, int side, MoveList& captures);
 
+    void generateCaptures(const Board& board, MoveList& captures);
+    void generateEvasions(Board& board, MoveList& evasions);
 }

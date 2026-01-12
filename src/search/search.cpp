@@ -1,9 +1,7 @@
-#include "search/search.hpp"
-#include "constants.hpp"
-#include "movegen/moveGen.hpp"
 #include "eval/evaluate.hpp"
+#include "search/search.hpp"
 #include "search/ordering.hpp"
-#include "search/tt.hpp"
+#include "search/quiescence.hpp"
 
 namespace Search {
 
@@ -12,30 +10,33 @@ TranspositionTable TT(TT_SIZE_MB);
 int negamax(Board& board, int depth, int alpha, int beta) {
     int alphaOrig = alpha;
 
+    if (depth == 0) {
+        int score = QSearch::qSearch(board, alpha, beta);
+        // int score = Eval::evaluate(board);
+        return score;
+    }
+
+    if (board.isDraw())
+        return 0;
+
     u64 key = board.getZobristKey();
     TTEntry& entry = TT[key];
 
     if (board.isTerminal()) {
         int score = Eval::evaluate(board);
-        updateEntry(entry, key, depth, score, Move::nullMove(), TT_EXACT);
+        updateEntry(entry, key, depth, score, Move::nullMove(), TTFlag::TT_EXACT);
 
-        return score;
-    }
-
-    if (depth == 0) {
-        int score = Eval::evaluate(board);
-        // TODO: qsearch here
         return score;
     }
 
     if (entry.key == key && entry.depth >= depth) {
-        if (entry.flag == TT_EXACT) 
+        if (entry.flag == TTFlag::TT_EXACT) 
             return entry.score;
 
-        if (entry.flag == TT_LOWER && entry.score > alpha)
+        if (entry.flag == TTFlag::TT_LOWER && entry.score > alpha)
             alpha = entry.score;
 
-        if (entry.flag == TT_UPPER && entry.score < beta)
+        if (entry.flag == TTFlag::TT_UPPER && entry.score < beta)
             beta = entry.score;
 
         if (alpha >= beta)
@@ -54,7 +55,7 @@ int negamax(Board& board, int depth, int alpha, int beta) {
 
     if (legalMoves.count == 0) {
         int score = Eval::evaluate(board);
-        updateEntry(entry, key, depth, score, Move::nullMove(), TT_EXACT);
+        updateEntry(entry, key, depth, score, Move::nullMove(), TTFlag::TT_EXACT);
 
         return score;
     }
@@ -78,14 +79,14 @@ int negamax(Board& board, int depth, int alpha, int beta) {
 
         alpha = std::max(alpha, value);
         if (alpha >= beta) {
-            updateEntry(entry, key, depth, value, m, TT_LOWER);
+            updateEntry(entry, key, depth, value, m, TTFlag::TT_LOWER);
 
             return alpha;
         }
     }
 
     // store in TT
-    u8 flag = (maxVal <= alphaOrig) ? TT_UPPER : (maxVal >= beta) ? TT_LOWER : TT_EXACT;
+    u8 flag = (maxVal <= alphaOrig) ? TTFlag::TT_UPPER : (maxVal >= beta) ? TTFlag::TT_LOWER : TTFlag::TT_EXACT;
     updateEntry(entry, key, depth, maxVal, bestMove, flag);
 
     return maxVal;

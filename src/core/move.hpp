@@ -1,7 +1,8 @@
 #pragma once
 
-#include "constants.hpp"
 #include <string>
+
+#include "constants.hpp"
 
 struct Move {
     
