@@ -76,7 +76,7 @@ long long perft_debug(Board &board, int depth) {
 
         // check legality after the move
         if (board.isInCheck(board.getTurn())) {
-            std::cout << "Illegal move (king in check): " << move.to_string() 
+            std::cout << "Illegal move (king in check): " << move.to_string()
                       << " at depth " << depth << "\n";
             board.unmakeMove(move, false);
             continue;
@@ -95,7 +95,7 @@ void debugGeneratePawnMoves(const Board &board, int color) {
 
     std::cout << "count: " << moves.count << "\n";
 
-    std::cout << (color == WHITE ? "White pawn moves:\n" : "Black pawn moves:\n");
+    std::cout << (color == Data::Piece::WHITE ? "White pawn moves:\n" : "Black pawn moves:\n");
 
     for (int i = 0; i < moves.count; i++) {
         Move m = moves.moves[i];
@@ -109,7 +109,7 @@ void debugGeneratePawnMoves(const Board &board, int color) {
             flags += "=";
             flags += pieceToChar(promo);
         }
-        if (m.flags() & FLAG_EN_PASSANT) flags += " e.p.";
+        if (m.flags() & Flags::FLAG_EN_PASSANT) flags += " e.p.";
 
         std::cout << from << to << flags << "\n";
     }
@@ -118,7 +118,7 @@ void debugGeneratePawnMoves(const Board &board, int color) {
 }
 
 void perftTestSuite(Board& board, int depth) {
-    for (std::string fen : testFens) {
+    for (std::string fen : Data::FEN::testFens) {
         std::cout << "input FEN --- " << fen << "\n";
         board.setupFromFen(fen);
         std::cout << "--start position--\n";
@@ -147,7 +147,7 @@ void timeSearch(Board& board, int depth) {
 void timeSearchFen(const std::string& fen, int depth) {
     Board board;
     board.setupFromFen(fen);
-    
+
     auto start = std::chrono::high_resolution_clock::now();
 
     SearchResult search = Search::searchBestMove(board, depth);

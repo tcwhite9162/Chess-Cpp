@@ -15,7 +15,7 @@ enum TTFlag : u8 {
 };
 
 struct TTEntry {
-    u64 key = 0;                 // zobrist 
+    u64 key = 0;                 // zobrist
     int depth = -1;              // search depth
     int score = 0;               // evaluation
     Move bestMove = Move();      // optional
@@ -25,16 +25,16 @@ struct TTEntry {
 struct TranspositionTable {
     std::vector<TTEntry> table;
 
-    TranspositionTable(size_t sizeMB) {
-        size_t entries = (sizeMB * 1024 * 1024) / sizeof(TTEntry);
+    explicit TranspositionTable(const size_t sizeMB) {
+        const size_t entries = (sizeMB * 1024 * 1024) / sizeof(TTEntry);
 
         // round down to nearest power of 2
         size_t pow2 = 1;
-        while (pow2 * 2 <= entries) 
+        while (pow2 * 2 <= entries)
             pow2 *= 2;
 
         table.resize(pow2);
     }
 
-    TTEntry& operator[](u64 key) { return table[key & (table.size() - 1)]; }
+    TTEntry& operator[](const u64 key) { return table[key & (table.size() - 1)]; }
 };

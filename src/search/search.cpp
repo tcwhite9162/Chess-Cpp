@@ -5,13 +5,13 @@
 
 namespace Search {
 
-TranspositionTable TT(TT_SIZE_MB);
+TranspositionTable TT(Data::Search::TT_SIZE_MB);
 
 int negamax(Board& board, int depth, int alpha, int beta) {
-    int alphaOrig = alpha;
+    const int alphaOrig = alpha;
 
     if (depth == 0) {
-        int score = QSearch::qSearch(board, alpha, beta);
+        const int score = QSearch::qSearch(board, alpha, beta);
         // int score = Eval::evaluate(board);
         return score;
     }
@@ -19,18 +19,18 @@ int negamax(Board& board, int depth, int alpha, int beta) {
     if (board.isDraw())
         return 0;
 
-    u64 key = board.getZobristKey();
+    const u64 key = board.getZobristKey();
     TTEntry& entry = TT[key];
 
     if (board.isTerminal()) {
-        int score = Eval::evaluate(board);
+        const int score = Eval::evaluate(board);
         updateEntry(entry, key, depth, score, Move::nullMove(), TTFlag::TT_EXACT);
 
         return score;
     }
 
     if (entry.key == key && entry.depth >= depth) {
-        if (entry.flag == TTFlag::TT_EXACT) 
+        if (entry.flag == TTFlag::TT_EXACT)
             return entry.score;
 
         if (entry.flag == TTFlag::TT_LOWER && entry.score > alpha)
@@ -49,12 +49,12 @@ int negamax(Board& board, int depth, int alpha, int beta) {
     if (entry.key == key && entry.bestMove.isValid()) {
         for (int i = 0; i < legalMoves.count; i++) {
             if (legalMoves.moves[i] == entry.bestMove)
-                legalMoves.moves[i].score = TT_MOVE_BONUS;
+                legalMoves.moves[i].score = Data::Search::TT_MOVE_BONUS;
         }
     }
 
     if (legalMoves.count == 0) {
-        int score = Eval::evaluate(board);
+        const int score = Eval::evaluate(board);
         updateEntry(entry, key, depth, score, Move::nullMove(), TTFlag::TT_EXACT);
 
         return score;
@@ -63,10 +63,10 @@ int negamax(Board& board, int depth, int alpha, int beta) {
     Ordering::scoreMoves(legalMoves, board);
 
     Move bestMove;
-    int maxVal = -INF;
+    int maxVal = -Data::Search::INF;
 
     for (int i = 0; i < legalMoves.count; i++) {
-        Move m = legalMoves.moves[i];
+        const Move m = legalMoves.moves[i];
 
         board.makeMove(m, true);
         int value = -negamax(board, depth - 1, -beta, -alpha);
@@ -86,25 +86,25 @@ int negamax(Board& board, int depth, int alpha, int beta) {
     }
 
     // store in TT
-    u8 flag = (maxVal <= alphaOrig) ? TTFlag::TT_UPPER : (maxVal >= beta) ? TTFlag::TT_LOWER : TTFlag::TT_EXACT;
+    const u8 flag = (maxVal <= alphaOrig) ? TTFlag::TT_UPPER : (maxVal >= beta) ? TTFlag::TT_LOWER : TTFlag::TT_EXACT;
     updateEntry(entry, key, depth, maxVal, bestMove, flag);
 
     return maxVal;
 }
 
 SearchResult searchBestMove(Board& board, int depth) {
-    int bestScore = -INF;
+    int bestScore = -Data::Search::INF;
     Move bestMove;
 
     MoveList legalMoves;
     MoveGen::generateLegalMoves(board, legalMoves);
     Search::Ordering::scoreMoves(legalMoves, board);
-    
+
 
     for (int i = 0; i < legalMoves.count; i++) {
-        Move m = legalMoves.moves[i];
+        const Move m = legalMoves.moves[i];
         board.makeMove(m, true);
-        int score = -negamax(board, depth - 1, -INF, INF);
+        const int score = -negamax(board, depth - 1, -Data::Search::INF, Data::Search::INF);
         board.unmakeMove(m, true);
 
         if (score > bestScore) {

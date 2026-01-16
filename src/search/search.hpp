@@ -5,7 +5,7 @@
 
 struct SearchResult {
     Move bestMove;
-    int score;
+    int score{};
 };
 
 namespace Search {

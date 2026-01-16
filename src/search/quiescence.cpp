@@ -11,13 +11,13 @@ namespace Search::QSearch {
             MoveList evasions;
             MoveGen::generateEvasions(board, evasions);
 
-            int best = -INF;
+            int best = -Data::Search::INF;
 
             for (int i = 0; i < evasions.count; i++) {
-                Move m = evasions.moves[i];
+                const Move m = evasions.moves[i];
 
                 board.makeMove(m, true);
-                int score = -qSearch(board, -beta, -alpha);
+                const int score = -qSearch(board, -beta, -alpha);
                 board.unmakeMove(m, true);
 
                 if (score >= beta)
@@ -33,7 +33,7 @@ namespace Search::QSearch {
             return alpha;
         }
 
-        int standPat = Eval::evaluate(board);
+        const int standPat = Eval::evaluate(board);
 
         if (standPat  >= beta)
             return beta;
@@ -47,10 +47,10 @@ namespace Search::QSearch {
         Ordering::scoreMoves(moves, board);
 
         for (int i = 0; i < moves.count; i++) {
-            Move m = moves.moves[i];
+            const Move m = moves.moves[i];
 
             board.makeMove(m, true);
-            int score = -qSearch(board, -beta, -alpha);
+            const int score = -qSearch(board, -beta, -alpha);
             board.unmakeMove(m, true);
 
             if (score >= beta)

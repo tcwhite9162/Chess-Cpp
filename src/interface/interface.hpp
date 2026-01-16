@@ -29,5 +29,5 @@ namespace Interface {
   void showCommands();
   void clearScreen();
 
-  std::optional<Move> parseMoveStr(const std::string& moveStr, Board& board);
+  std::optional<Move> parseMoveStr(const std::string& moveStr, const Board& board);
 }

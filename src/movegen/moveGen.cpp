@@ -6,88 +6,87 @@
 namespace MoveGen {
 
 void generatePawnMoves(const Board &board, int color, MoveList& moves) {
-    u64 empty = ~board.occupancyAll;
+    const u64 empty = ~board.getOccupancyAll();
 
     // white pawns
-    if (color == WHITE){
-        u64 pawns = board.whitePawns;
-        
-        // single pushes
-        u64 singlePush = (pawns >> 8) & empty;
+    if (color == Data::Piece::WHITE){
+        const u64 pawns = board.getBitboard(PieceType::WP);
 
-        u64 promoSingle = singlePush & RANK_8;
-        u64 quietSingle = singlePush & ~RANK_8;
+        // single pushes
+        const u64 singlePush = (pawns >> 8) & empty;
+
+        const u64 promoSingle = singlePush & Data::Board::RANK_8;
+        const u64 quietSingle = singlePush & ~Data::Board::RANK_8;
 
         u64 bb = quietSingle;
         while (bb) {
-            int to = popLeastSigBit(bb);
-            int from = to + 8;
-            moves.add(Move(from, to, FLAG_NONE));
+            const int to = popLeastSigBit(bb);
+            const int from = to + 8;
+            moves.add(Move(from, to, Flags::FLAG_NONE));
         }
 
         bb = promoSingle;
         while (bb) {
-            int to = popLeastSigBit(bb);
-            int from = to + 8;
-            moves.add(Move(from, to, FLAG_PROMO_N | FLAG_PROMOTION));
-            moves.add(Move(from, to, FLAG_PROMO_B | FLAG_PROMOTION));
-            moves.add(Move(from, to, FLAG_PROMO_R | FLAG_PROMOTION));
-            moves.add(Move(from, to, FLAG_PROMO_Q | FLAG_PROMOTION));
+            const int to = popLeastSigBit(bb);
+            const int from = to + 8;
+            moves.add(Move(from, to, Flags::FLAG_PROMO_N | Flags::FLAG_PROMOTION));
+            moves.add(Move(from, to, Flags::FLAG_PROMO_B | Flags::FLAG_PROMOTION));
+            moves.add(Move(from, to, Flags::FLAG_PROMO_R | Flags::FLAG_PROMOTION));
+            moves.add(Move(from, to, Flags::FLAG_PROMO_Q | Flags::FLAG_PROMOTION));
         }
 
         // double pushes
-        u64 doublePush = ((quietSingle >> 8) & empty) & RANK_4;
+        const u64 doublePush = ((quietSingle >> 8) & empty) & Data::Board::RANK_4;
 
         bb = doublePush;
         while (bb) {
-            int to = popLeastSigBit(bb);
-            int from = to + 16;
-            moves.add(Move(from, to, FLAG_DOUBLE_PUSH));
+            const int to = popLeastSigBit(bb);
+            const int from = to + 16;
+            moves.add(Move(from, to, Flags::FLAG_DOUBLE_PUSH));
         }
 
         // // captures
         generatePawnCaptures(board, color, moves);
     }
 
-    
     // black pawns
     else{
-        u64 pawns = board.blackPawns;
+        const u64 pawns = board.getBitboard(PieceType::BP);
 
         // single pushes
-        u64 singlePush = (pawns << 8) & empty;
+        const u64 singlePush = (pawns << 8) & empty;
 
         // promotions
-        u64 promoSingle = singlePush & RANK_1;
-        u64 quietSingle = singlePush & ~RANK_1;
+        const u64 promoSingle = singlePush & Data::Board::RANK_1;
+        const u64 quietSingle = singlePush & ~Data::Board::RANK_1;
 
         // quiet single pushes
         u64 bb = quietSingle;
         while (bb) {
-            int to = popLeastSigBit(bb);
-            int from = to - 8;
-            moves.add(Move(from, to, FLAG_NONE));
+            const int to = popLeastSigBit(bb);
+            const int from = to - 8;
+            moves.add(Move(from, to, Flags::FLAG_NONE));
         }
 
         // promotion single pushes
         bb = promoSingle;
         while(bb) {
-            int to = popLeastSigBit(bb);
-            int from = to - 8;
-            moves.add(Move(from, to, FLAG_PROMO_N | FLAG_PROMOTION));
-            moves.add(Move(from, to, FLAG_PROMO_B | FLAG_PROMOTION));
-            moves.add(Move(from, to, FLAG_PROMO_R | FLAG_PROMOTION));
-            moves.add(Move(from, to, FLAG_PROMO_Q | FLAG_PROMOTION));
+            const int to = popLeastSigBit(bb);
+            const int from = to - 8;
+            moves.add(Move(from, to, Flags::FLAG_PROMO_N | Flags::FLAG_PROMOTION));
+            moves.add(Move(from, to, Flags::FLAG_PROMO_B | Flags::FLAG_PROMOTION));
+            moves.add(Move(from, to, Flags::FLAG_PROMO_R | Flags::FLAG_PROMOTION));
+            moves.add(Move(from, to, Flags::FLAG_PROMO_Q | Flags::FLAG_PROMOTION));
         }
 
         // double pushes
-        u64  doublePush = ((quietSingle << 8) & empty) & RANK_5;
+        const u64  doublePush = ((quietSingle << 8) & empty) & Data::Board::RANK_5;
 
         bb = doublePush;
         while (bb) {
-            int to = popLeastSigBit(bb);
-            int from = to - 16;
-            moves.add(Move(from, to, FLAG_DOUBLE_PUSH));
+            const int to = popLeastSigBit(bb);
+            const int from = to - 16;
+            moves.add(Move(from, to, Flags::FLAG_DOUBLE_PUSH));
         }
 
         // captures
@@ -96,23 +95,23 @@ void generatePawnMoves(const Board &board, int color, MoveList& moves) {
 }
 
 void generateKnightMoves(const Board &board, int color, MoveList& moves) {
-    u64 knights = (color == WHITE) ? board.whiteKnights : board.blackKnights;
-    u64 ownPieces = (color == WHITE) ? board.occupancyWhite : board.occupancyBlack;
+    const u64 knights = (color == Data::Piece::WHITE) ? board.getBitboard(PieceType::WN) : board.getBitboard(PieceType::BN);
+    const u64 ownPieces = (color == Data::Piece::WHITE) ? board.getOccupancyWhite() : board.getOccupancyBlack();
 
     u64 bb = knights;
     while (bb) {
-        int from = popLeastSigBit(bb);
+        const int from = popLeastSigBit(bb);
 
-        u64 attacks = knightAttacks[from] & ~ownPieces;
+        const u64 attacks = knightAttacks[from] & ~ownPieces;
 
         u64 atk = attacks;
         while (atk) {
-            int to = popLeastSigBit(atk);
-            
-            if (board.getPiece(to) == EMPTY) {
-                moves.add(Move(from, to, FLAG_NONE));
+            const int to = popLeastSigBit(atk);
+
+            if (board.getPiece(to) == Data::Piece::EMPTY) {
+                moves.add(Move(from, to, Flags::FLAG_NONE));
             }else {
-                moves.add(Move(from, to, FLAG_CAPTURE));
+                moves.add(Move(from, to, Flags::FLAG_CAPTURE));
             }
         }
     }
@@ -120,79 +119,79 @@ void generateKnightMoves(const Board &board, int color, MoveList& moves) {
 }
 
 void generateKingMoves(const Board &board, int color, MoveList& moves) {
-    u64 king = (color == WHITE) ? board.whiteKing : board.blackKing;
-    u64 ownPieces = (color == WHITE) ? board.occupancyWhite : board.occupancyBlack;
+    const u64 king = (color == Data::Piece::WHITE) ? board.getBitboard(PieceType::WK) : board.getBitboard(PieceType::BK);
+    const u64 ownPieces = (color == Data::Piece::WHITE) ? board.getOccupancyWhite() : board.getOccupancyBlack();
 
     // finds the king
-    int from = __builtin_ctzll(king);
+    const int from = __builtin_ctzll(king);
 
-    u64 attacks = kingAttacks[from] & ~ownPieces;
+    const u64 attacks = kingAttacks[from] & ~ownPieces;
 
     u64 bb = attacks;
     while (bb) {
         int to = popLeastSigBit(bb);
 
-        if (board.getPiece(to) == EMPTY) {
-            moves.add(Move(from, to, FLAG_NONE));
+        if (board.getPiece(to) == Data::Piece::EMPTY) {
+            moves.add(Move(from, to, Flags::FLAG_NONE));
         } else {
-            moves.add(Move(from, to, FLAG_CAPTURE));
+            moves.add(Move(from, to, Flags::FLAG_CAPTURE));
         }
     }
 
     // castling
-    if (color == WHITE) {
+    if (color == Data::Piece::WHITE) {
         // white kingside
         if (board.canCastleWhiteKingside()) {
-            bool empty = (board.getPiece(61) == EMPTY &&
-                          board.getPiece(62) == EMPTY);
+            const bool empty = (board.getPiece(61) == Data::Piece::EMPTY &&
+                          board.getPiece(62) == Data::Piece::EMPTY);
 
-            bool safe = (!board.isSquareAttacked(60, BLACK) &&
-                         !board.isSquareAttacked(61, BLACK) &&
-                         !board.isSquareAttacked(62, BLACK));
+            const bool safe = (!board.isSquareAttacked(60, Data::Piece::BLACK) &&
+                         !board.isSquareAttacked(61, Data::Piece::BLACK) &&
+                         !board.isSquareAttacked(62, Data::Piece::BLACK));
 
             if (empty && safe)
-                moves.add(Move(from, 62, FLAG_CASTLE_WK));
+                moves.add(Move(from, 62, Flags::FLAG_CASTLE_WK));
         }
 
         // white queenside
         if (board.canCastleWhiteQueenside()) {
-            bool empty = (board.getPiece(59) == EMPTY &&
-                          board.getPiece(58) == EMPTY &&
-                          board.getPiece(57) == EMPTY);
+            const bool empty = (board.getPiece(59) == Data::Piece::EMPTY &&
+                          board.getPiece(58) == Data::Piece::EMPTY &&
+                          board.getPiece(57) == Data::Piece::EMPTY);
 
-            bool safe = (!board.isSquareAttacked(60, BLACK) &&
-                         !board.isSquareAttacked(59, BLACK) &&
-                         !board.isSquareAttacked(58, BLACK));
+            const bool safe = (!board.isSquareAttacked(60, Data::Piece::BLACK) &&
+                         !board.isSquareAttacked(59, Data::Piece::BLACK) &&
+                         !board.isSquareAttacked(58, Data::Piece::BLACK));
 
             if (empty && safe)
-                moves.add(Move(from, 58, FLAG_CASTLE_WQ));
+                moves.add(Move(from, 58, Flags::FLAG_CASTLE_WQ));
         }
     } else {
         // black kingside
         if (board.canCastleBlackKingside()) {
-            bool empty = (board.getPiece(5) == EMPTY &&
-                          board.getPiece(6) == EMPTY);
+            const bool empty = (board.getPiece(5) == Data::Piece::EMPTY &&
+                          board.getPiece(6) == Data::Piece::EMPTY);
 
-            bool safe = (!board.isSquareAttacked(4, WHITE) &&
-                         !board.isSquareAttacked(5, WHITE) &&
-                         !board.isSquareAttacked(6, WHITE));
+            const bool safe = (!board.isSquareAttacked(4, Data::Piece::WHITE) &&
+                         !board.isSquareAttacked(5, Data::Piece::WHITE) &&
+                         !board.isSquareAttacked(6, Data::Piece::WHITE));
 
             if (empty && safe)
-                moves.add(Move(from, 6, FLAG_CASTLE_BK));
+                moves.add(Move(from, 6, Flags::FLAG_CASTLE_BK));
         }
 
         // black queenside
         if (board.canCastleBlackQueenside()) {
-            bool empty = (board.getPiece(3) == EMPTY &&
-                          board.getPiece(2) == EMPTY &&
-                          board.getPiece(1) == EMPTY);
+            const bool empty = (board.getPiece(3) == Data::Piece::EMPTY &&
+                          board.getPiece(2) == Data::Piece::EMPTY &&
+                          board.getPiece(1) == Data::Piece::EMPTY);
 
-            bool safe = (!board.isSquareAttacked(4, WHITE) &&
-                         !board.isSquareAttacked(3, WHITE) &&
-                         !board.isSquareAttacked(2, WHITE));
+            const bool safe = (!board.isSquareAttacked(4, Data::Piece::WHITE) &&
+                         !board.isSquareAttacked(3, Data::Piece::WHITE) &&
+                         !board.isSquareAttacked(2, Data::Piece::WHITE));
 
             if (empty && safe)
-                moves.add(Move(from, 2, FLAG_CASTLE_BQ));
+                moves.add(Move(from, 2, Flags::FLAG_CASTLE_BQ));
         }
     }
 
@@ -200,27 +199,27 @@ void generateKingMoves(const Board &board, int color, MoveList& moves) {
 }
 
 void generateSlidingMoves(const Board &board, int color, MoveList& moves) {
-    u64 own   = (color == WHITE) ? board.occupancyWhite : board.occupancyBlack;
-    u64 enemy = (color == WHITE) ? board.occupancyBlack : board.occupancyWhite;
-    
+    const u64 own   = (color == Data::Piece::WHITE) ? board.getOccupancyWhite() : board.getOccupancyBlack();
+    const u64 enemy = (color == Data::Piece::WHITE) ? board.getOccupancyBlack() : board.getOccupancyWhite();
+
     // rooks
     {
-        u64 rooks = (color == WHITE) ? board.whiteRooks : board.blackRooks;
+        const u64 rooks = (color == Data::Piece::WHITE) ? board.getBitboard(PieceType::WR) : board.getBitboard(PieceType::BR);
 
         u64 bb = rooks;
         while (bb) {
-            int from = popLeastSigBit(bb);
+            const int from = popLeastSigBit(bb);
 
-            // u64 attacks = rookAttacksMagic(from, board.occupancyAll) & ~own;
-            u64 attacks = rookAttacksMagic(from, board.occupancyAll) & ~own;
+            // u64 attacks = rookAttacksMagic(from, board.getOccupancyAll()) & ~own;
+            const u64 attacks = rookAttacksMagic(from, board.getOccupancyAll()) & ~own;
 
             u64 atk = attacks;
             while (atk) {
-                int to = popLeastSigBit(atk);
+                const int to = popLeastSigBit(atk);
                 if (enemy & (1ULL << to)) {
-                    moves.add(Move(from, to, FLAG_CAPTURE));
+                    moves.add(Move(from, to, Flags::FLAG_CAPTURE));
                 } else {
-                    moves.add(Move(from, to, FLAG_NONE));
+                    moves.add(Move(from, to, Flags::FLAG_NONE));
                 }
             }
         }
@@ -228,22 +227,22 @@ void generateSlidingMoves(const Board &board, int color, MoveList& moves) {
 
     // bishops
     {
-        u64 bishops = (color == WHITE) ? board.whiteBishops : board.blackBishops;
+        const u64 bishops = (color == Data::Piece::WHITE) ? board.getBitboard(PieceType::WB) : board.getBitboard(PieceType::BB);
 
         u64 bb = bishops;
         while (bb) {
-            int from = popLeastSigBit(bb);
+            const int from = popLeastSigBit(bb);
 
-            // u64 attacks = bishopAttacksMagic(from, board.occupancyAll) & ~own;
-            u64 attacks = bishopAttacksMagic(from, board.occupancyAll) & ~own;
+            // u64 attacks = bishopAttacksMagic(from, board.getOccupancyAll()) & ~own;
+            u64 attacks = bishopAttacksMagic(from, board.getOccupancyAll()) & ~own;
 
             u64 atk = attacks;
             while (atk) {
-                int to = popLeastSigBit(atk);
+                const int to = popLeastSigBit(atk);
                 if (enemy & (1ULL << to)) {
-                    moves.add(Move(from, to, FLAG_CAPTURE));
+                    moves.add(Move(from, to, Flags::FLAG_CAPTURE));
                 } else {
-                    moves.add(Move(from, to, FLAG_NONE));
+                    moves.add(Move(from, to, Flags::FLAG_NONE));
                 }
             }
         }
@@ -251,22 +250,22 @@ void generateSlidingMoves(const Board &board, int color, MoveList& moves) {
 
     // queens
     {
-        u64 queens = (color == WHITE) ? board.whiteQueens : board.blackQueens;
+        const u64 queens = (color == Data::Piece::WHITE) ? board.getBitboard(PieceType::WQ) : board.getBitboard(PieceType::BQ);
 
         u64 bb = queens;
         while (bb) {
-            int from = popLeastSigBit(bb);
+            const int from = popLeastSigBit(bb);
 
-            u64 attacks = (rookAttacksMagic(from, board.occupancyAll) | 
-                           bishopAttacksMagic(from, board.occupancyAll)) & ~own;
+            const u64 attacks = (rookAttacksMagic(from, board.getOccupancyAll()) |
+                           bishopAttacksMagic(from, board.getOccupancyAll())) & ~own;
 
             u64 atk = attacks;
             while (atk) {
-                int to = popLeastSigBit(atk);
+                const int to = popLeastSigBit(atk);
                 if (enemy & (1ULL << to)) {
-                    moves.add(Move(from, to, FLAG_CAPTURE));
+                    moves.add(Move(from, to, Flags::FLAG_CAPTURE));
                 } else {
-                    moves.add(Move(from, to, FLAG_NONE));
+                    moves.add(Move(from, to, Flags::FLAG_NONE));
                 }
             }
         }
@@ -274,7 +273,7 @@ void generateSlidingMoves(const Board &board, int color, MoveList& moves) {
 }
 
 void generatePseudoLegalMoves(const Board &board, MoveList& moves) {
-    int side = board.getTurn();
+    const int side = board.getTurn();
 
     generatePawnMoves(board, side, moves);
     generateKnightMoves(board, side, moves);
@@ -289,7 +288,7 @@ void generateLegalMoves(Board &board, MoveList& legalMoves) {
 
     for (int i = 0; i < pseudoLegal.count; i++) {
         Move m = pseudoLegal.moves[i];
-        int side = board.getTurn();
+        const int side = board.getTurn();
 
         board.makeMove(m, false);
         if (!board.isInCheck(side)) { legalMoves.add(m); }
@@ -298,58 +297,58 @@ void generateLegalMoves(Board &board, MoveList& legalMoves) {
 }
 
 void generatePawnCaptures(const Board& board, int side, MoveList& captures) {
-    u64 pawns = (side == WHITE) ? board.whitePawns : board.blackPawns;
-    u64 enemy = (side == WHITE) ? board.occupancyBlack : board.occupancyWhite;
+    const u64 pawns = (side == Data::Piece::WHITE) ? board.getBitboard(PieceType::WP) : board.getBitboard(PieceType::BP);
+    const u64 enemy = (side == Data::Piece::WHITE) ? board.getOccupancyBlack() : board.getOccupancyWhite();
 
-    if (side == WHITE) {
+    if (side == Data::Piece::WHITE) {
 
-        u64 left  = ((pawns & NOT_FILE_A) >> 9) & enemy;
-        u64 right = ((pawns & NOT_FILE_H) >> 7) & enemy;
+        const u64 left  = ((pawns & Data::Board::NOT_FILE_A) >> 9) & enemy;
+        const u64 right = ((pawns & Data::Board::NOT_FILE_H) >> 7) & enemy;
 
         // promotion captures
-        u64 promoLeft  = left  & RANK_8;
-        u64 promoRight = right & RANK_8;
+        const u64 promoLeft  = left  & Data::Board::RANK_8;
+        const u64 promoRight = right & Data::Board::RANK_8;
 
         // normal captures
-        u64 quietLeft  = left  & ~RANK_8;
-        u64 quietRight = right & ~RANK_8;
+        const u64 quietLeft  = left  & ~Data::Board::RANK_8;
+        const u64 quietRight = right & ~Data::Board::RANK_8;
 
         // normal left captures
         u64 bb = quietLeft;
         while (bb) {
-            int to = popLeastSigBit(bb);
-            int from = to + 9;
-            captures.add(Move(from, to, FLAG_CAPTURE));
+            const int to = popLeastSigBit(bb);
+            const int from = to + 9;
+            captures.add(Move(from, to, Flags::FLAG_CAPTURE));
         }
 
         // normal right captures
         bb = quietRight;
         while (bb) {
-            int to = popLeastSigBit(bb);
-            int from = to + 7;
-            captures.add(Move(from, to, FLAG_CAPTURE));
+            const int to = popLeastSigBit(bb);
+            const int from = to + 7;
+            captures.add(Move(from, to, Flags::FLAG_CAPTURE));
         }
 
         // left promotion captures
         bb = promoLeft;
         while (bb) {
-            int to = popLeastSigBit(bb);
-            int from = to + 9;
-            captures.add(Move(from, to, FLAG_PROMO_N | FLAG_PROMOTION | FLAG_CAPTURE));
-            captures.add(Move(from, to, FLAG_PROMO_B | FLAG_PROMOTION | FLAG_CAPTURE));
-            captures.add(Move(from, to, FLAG_PROMO_R | FLAG_PROMOTION | FLAG_CAPTURE));
-            captures.add(Move(from, to, FLAG_PROMO_Q | FLAG_PROMOTION | FLAG_CAPTURE));
+            const int to = popLeastSigBit(bb);
+            const int from = to + 9;
+            captures.add(Move(from, to, Flags::FLAG_PROMO_N | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
+            captures.add(Move(from, to, Flags::FLAG_PROMO_B | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
+            captures.add(Move(from, to, Flags::FLAG_PROMO_R | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
+            captures.add(Move(from, to, Flags::FLAG_PROMO_Q | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
         }
 
         // right promotion captures
         bb = promoRight;
         while (bb) {
-            int to = popLeastSigBit(bb);
-            int from = to + 7;
-            captures.add(Move(from, to, FLAG_PROMO_N | FLAG_PROMOTION | FLAG_CAPTURE));
-            captures.add(Move(from, to, FLAG_PROMO_B | FLAG_PROMOTION | FLAG_CAPTURE));
-            captures.add(Move(from, to, FLAG_PROMO_R | FLAG_PROMOTION | FLAG_CAPTURE));
-            captures.add(Move(from, to, FLAG_PROMO_Q | FLAG_PROMOTION | FLAG_CAPTURE));
+            const int to = popLeastSigBit(bb);
+            const int from = to + 7;
+            captures.add(Move(from, to, Flags::FLAG_PROMO_N | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
+            captures.add(Move(from, to, Flags::FLAG_PROMO_B | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
+            captures.add(Move(from, to, Flags::FLAG_PROMO_R | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
+            captures.add(Move(from, to, Flags::FLAG_PROMO_Q | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
         }
 
         // en passant
@@ -357,8 +356,8 @@ void generatePawnCaptures(const Board& board, int side, MoveList& captures) {
         if (ep != -1) {
             u64 attackers = pawnAttacks[0][ep] & pawns; // white pawns attacking ep
             while (attackers) {
-                int from = popLeastSigBit(attackers);
-                captures.add(Move(from, ep, FLAG_CAPTURE | FLAG_EN_PASSANT));
+                const int from = popLeastSigBit(attackers);
+                captures.add(Move(from, ep, Flags::FLAG_CAPTURE | Flags::FLAG_EN_PASSANT));
             }
         }
     }
@@ -366,157 +365,157 @@ void generatePawnCaptures(const Board& board, int side, MoveList& captures) {
     // black
     else {
 
-        u64 left  = ((pawns & NOT_FILE_A) << 7) & enemy;
-        u64 right = ((pawns & NOT_FILE_H) << 9) & enemy;
+        const u64 left  = ((pawns & Data::Board::NOT_FILE_A) << 7) & enemy;
+        const u64 right = ((pawns & Data::Board::NOT_FILE_H) << 9) & enemy;
 
         // promotion captures
-        u64 promoLeft  = left  & RANK_1;
-        u64 promoRight = right & RANK_1;
+        const u64 promoLeft  = left  & Data::Board::RANK_1;
+        const u64 promoRight = right & Data::Board::RANK_1;
 
         // normal captures
-        u64 quietLeft  = left  & ~RANK_1;
-        u64 quietRight = right & ~RANK_1;
+        const u64 quietLeft  = left  & ~Data::Board::RANK_1;
+        const u64 quietRight = right & ~Data::Board::RANK_1;
 
         // normal left captures
         u64 bb = quietLeft;
         while (bb) {
-            int to = popLeastSigBit(bb);
-            int from = to - 7;
-            captures.add(Move(from, to, FLAG_CAPTURE));
+            const int to = popLeastSigBit(bb);
+            const int from = to - 7;
+            captures.add(Move(from, to, Flags::FLAG_CAPTURE));
         }
 
         // normal right captures
         bb = quietRight;
         while (bb) {
-            int to = popLeastSigBit(bb);
-            int from = to - 9;
-            captures.add(Move(from, to, FLAG_CAPTURE));
+            const int to = popLeastSigBit(bb);
+            const int from = to - 9;
+            captures.add(Move(from, to, Flags::FLAG_CAPTURE));
         }
 
         // promotions captures left
         bb = promoLeft;
         while (bb) {
-            int to = popLeastSigBit(bb);
-            int from = to - 7;
-            captures.add(Move(from, to, FLAG_PROMO_N | FLAG_PROMOTION | FLAG_CAPTURE));
-            captures.add(Move(from, to, FLAG_PROMO_B | FLAG_PROMOTION | FLAG_CAPTURE));
-            captures.add(Move(from, to, FLAG_PROMO_R | FLAG_PROMOTION | FLAG_CAPTURE));
-            captures.add(Move(from, to, FLAG_PROMO_Q | FLAG_PROMOTION | FLAG_CAPTURE));
+            const int to = popLeastSigBit(bb);
+            const int from = to - 7;
+            captures.add(Move(from, to, Flags::FLAG_PROMO_N | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
+            captures.add(Move(from, to, Flags::FLAG_PROMO_B | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
+            captures.add(Move(from, to, Flags::FLAG_PROMO_R | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
+            captures.add(Move(from, to, Flags::FLAG_PROMO_Q | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
         }
 
         // promotion captures right
         bb = promoRight;
         while (bb) {
-            int to = popLeastSigBit(bb);
-            int from = to - 9;
-            captures.add(Move(from, to, FLAG_PROMO_N | FLAG_PROMOTION | FLAG_CAPTURE));
-            captures.add(Move(from, to, FLAG_PROMO_B | FLAG_PROMOTION | FLAG_CAPTURE));
-            captures.add(Move(from, to, FLAG_PROMO_R | FLAG_PROMOTION | FLAG_CAPTURE));
-            captures.add(Move(from, to, FLAG_PROMO_Q | FLAG_PROMOTION | FLAG_CAPTURE));
+            const int to = popLeastSigBit(bb);
+            const int from = to - 9;
+            captures.add(Move(from, to, Flags::FLAG_PROMO_N | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
+            captures.add(Move(from, to, Flags::FLAG_PROMO_B | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
+            captures.add(Move(from, to, Flags::FLAG_PROMO_R | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
+            captures.add(Move(from, to, Flags::FLAG_PROMO_Q | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
 
         }
 
         // en passant
-        int ep = board.getEnPassant();
+        const int ep = board.getEnPassant();
         if (ep != -1) {
             u64 attackers = pawnAttacks[1][ep] & pawns; // black pawns attacking ep
             while (attackers) {
-                int from = popLeastSigBit(attackers);
-                captures.add(Move(from, ep, FLAG_CAPTURE | FLAG_EN_PASSANT));
+                const int from = popLeastSigBit(attackers);
+                captures.add(Move(from, ep, Flags::FLAG_CAPTURE | Flags::FLAG_EN_PASSANT));
             }
         }
     }
 }
 
 void generateKnightCaptures(const Board& board, int side, MoveList& captures) {
-    u64 knights = (side == WHITE) ? board.whiteKnights : board.blackKnights;
-    u64 enemy   = (side == WHITE) ? board.occupancyBlack : board.occupancyWhite;
-    
+    const u64 knights = (side == Data::Piece::WHITE) ? board.getBitboard(PieceType::WN) : board.getBitboard(PieceType::BN);
+    const u64 enemy   = (side == Data::Piece::WHITE) ? board.getOccupancyBlack() : board.getOccupancyWhite();
+
     u64 bb = knights;
     while (bb) {
-        int from = popLeastSigBit(bb);
-        u64 attacks = knightAttacks[from] & enemy;
+        const int from = popLeastSigBit(bb);
+        const u64 attacks = knightAttacks[from] & enemy;
 
         u64 atk = attacks;
         while (atk) {
-            int to = popLeastSigBit(atk);
-            captures.add(Move(from, to, FLAG_CAPTURE));
+            const int to = popLeastSigBit(atk);
+            captures.add(Move(from, to, Flags::FLAG_CAPTURE));
         }
     }
 }
 
 void generateSlidingCaptures(const Board& board, int side, MoveList& captures) {
-    u64 enemy = (side == WHITE) ? board.occupancyBlack : board.occupancyWhite;
-    
+    const u64 enemy = (side == Data::Piece::WHITE) ? board.getOccupancyBlack() : board.getOccupancyWhite();
+
     // rooks
     {
-        u64 rooks = (side == WHITE) ? board.whiteRooks : board.blackRooks;
+        const u64 rooks = (side == Data::Piece::WHITE) ? board.getBitboard(PieceType::WR) : board.getBitboard(PieceType::BR);
 
         u64 bb = rooks;
         while (bb) {
-            int from = popLeastSigBit(bb);
-            u64 attacks = rookAttacksMagic(from, board.occupancyAll) & enemy;
+            const int from = popLeastSigBit(bb);
+            const u64 attacks = rookAttacksMagic(from, board.getOccupancyAll()) & enemy;
 
             u64 atk = attacks;
             while (atk) {
-                int to = popLeastSigBit(atk);
-                captures.add(Move(from, to, FLAG_CAPTURE));
+                const int to = popLeastSigBit(atk);
+                captures.add(Move(from, to, Flags::FLAG_CAPTURE));
             }
         }
     }
 
     // bishops
     {
-        u64 bishops = (side == WHITE) ? board.whiteBishops : board.blackBishops;
+        const u64 bishops = (side == Data::Piece::WHITE) ? board.getBitboard(PieceType::WB) : board.getBitboard(PieceType::BB);
 
         u64 bb = bishops;
         while (bb) {
-            int from = popLeastSigBit(bb);
-            u64 attacks = bishopAttacksMagic(from, board.occupancyAll) & enemy;
+            const int from = popLeastSigBit(bb);
+            const u64 attacks = bishopAttacksMagic(from, board.getOccupancyAll()) & enemy;
 
             u64 atk = attacks;
             while (atk) {
-                int to = popLeastSigBit(atk);
-                captures.add(Move(from, to, FLAG_CAPTURE));
+                const int to = popLeastSigBit(atk);
+                captures.add(Move(from, to, Flags::FLAG_CAPTURE));
             }
         }
     }
 
     // queens
     {
-        u64 queens = (side == WHITE) ? board.whiteQueens : board.blackQueens;
+        const u64 queens = (side == Data::Piece::WHITE) ? board.getBitboard(PieceType::WQ) : board.getBitboard(PieceType::BQ);
 
         u64 bb = queens;
         while (bb) {
-            int from = popLeastSigBit(bb);
-            u64 attacks = (rookAttacksMagic(from, board.occupancyAll) | 
-                           bishopAttacksMagic(from, board.occupancyAll)) & enemy;
+            const int from = popLeastSigBit(bb);
+            const u64 attacks = (rookAttacksMagic(from, board.getOccupancyAll()) |
+                           bishopAttacksMagic(from, board.getOccupancyAll())) & enemy;
 
             u64 atk = attacks;
             while (atk) {
-                int to = popLeastSigBit(atk);
-                captures.add(Move(from, to, FLAG_CAPTURE));
+                const int to = popLeastSigBit(atk);
+                captures.add(Move(from, to, Flags::FLAG_CAPTURE));
             }
         }
     }
 }
 
 void generateKingCaptures(const Board& board, int side, MoveList& captures) {
-    u64 king = (side == WHITE) ? board.whiteKing : board.blackKing;
-    u64 enemy = (side == WHITE) ? board.occupancyBlack : board.occupancyWhite;
+    const u64 king = (side == Data::Piece::WHITE) ? board.getBitboard(PieceType::WK) : board.getBitboard(PieceType::BK);
+    const u64 enemy = (side == Data::Piece::WHITE) ? board.getOccupancyBlack() : board.getOccupancyWhite();
 
-    int from = __builtin_ctzll(king);
-    u64 attacks = kingAttacks[from] & enemy;
+    const int from = __builtin_ctzll(king);
+    const u64 attacks = kingAttacks[from] & enemy;
 
     u64 bb = attacks;
     while (bb) {
-        int to = popLeastSigBit(bb);
-        captures.add(Move(from, to, FLAG_CAPTURE));
+        const int to = popLeastSigBit(bb);
+        captures.add(Move(from, to, Flags::FLAG_CAPTURE));
     }
 }
 
 void generateCaptures(const Board& board, MoveList& captures) {
-    int side = board.getTurn();
+    const int side = board.getTurn();
 
     generatePawnCaptures(board, side, captures);
     generateKnightCaptures(board, side, captures);

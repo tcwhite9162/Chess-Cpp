@@ -9,14 +9,14 @@ u64 pawnAttacks[2][64];
 void initKnightAttacks() {
     for (int sq = 0; sq < 64; sq++) {
         u64 bb = 0ULL;
-        int r = sq / 8;
-        int f = sq % 8;
-        const int dr[8] = { -2, -2, -1, -1, 1, 1, 2, 2 };
-        const int df[8] = { -1, 1, -2, 2, -2, 2, -1, 1 };
+        const int r = sq / 8;
+        const int f = sq % 8;
 
         for (int i = 0; i < 8; i++) {
-            int rr = r + dr[i];
-            int ff = f + df[i];
+            constexpr int df[8] = { -1, 1, -2, 2, -2, 2, -1, 1 };
+            constexpr int dr[8] = { -2, -2, -1, -1, 1, 1, 2, 2 };
+            const int rr = r + dr[i];
+            const int ff = f + df[i];
             if (rr >= 0 && rr < 8 && ff >= 0 && ff < 8) {
                 bb |= 1ULL << (rr * 8 + ff);
             }
@@ -28,14 +28,14 @@ void initKnightAttacks() {
 void initKingAttacks() {
     for (int sq = 0; sq < 64; sq++) {
         u64 bb = 0ULL;
-        int r = sq / 8;
-        int f = sq % 8;
+        const int r = sq / 8;
+        const int f = sq % 8;
         for (int dr = -1; dr <= 1; dr++) {
             for (int df = -1; df <= 1; df++) {
                 if (dr == 0 && df == 0) continue;
 
-                int rr = r + dr;
-                int ff = f + df;
+                const int rr = r + dr;
+                const int ff = f + df;
                 if (rr >= 0 && rr < 8 && ff >= 0 && ff < 8) {
                     bb |= 1ULL << (rr * 8 + ff);
                 }
@@ -105,33 +105,33 @@ u64 rookAttacks(int square, u64 occupancy) {
     for (int rr = r-1; rr >= 0; --rr) {
         int sq = rr*8 + f;
         attacks |= (1ULL << sq);
-        if (occupancy & (1ULL << sq)) break; 
+        if (occupancy & (1ULL << sq)) break;
     }
     // down
     for (int rr = r+1; rr < 8; ++rr) {
         int sq = rr*8 + f;
         attacks |= (1ULL << sq);
-        if (occupancy & (1ULL << sq)) break; 
+        if (occupancy & (1ULL << sq)) break;
     }
     // left
     for (int ff = f-1; ff >= 0; --ff) {
         int sq = r*8 + ff;
         attacks |= (1ULL << sq);
-        if (occupancy & (1ULL << sq)) break; 
+        if (occupancy & (1ULL << sq)) break;
     }
     // right
     for (int ff = f+1; ff < 8; ++ff) {
         int sq = r*8 + ff;
         attacks |= (1ULL << sq);
-        if (occupancy & (1ULL << sq)) break; 
+        if (occupancy & (1ULL << sq)) break;
     }
 
     return attacks;
-}  
+}
 
 u64 queenAttacks(int square, u64 occupancy) {
     return bishopAttacks(square, occupancy) | rookAttacks(square, occupancy);
-} 
+}
 
 u64 rookMasks[64];
 u64 bishopMasks[64];
@@ -215,7 +215,7 @@ void initRelevantBits() {
             rookMaskSquares[sq][count++] = bit;
         }
         rookRelevantBits[sq] = count;
-        
+
         // bishops
         mask = bishopMasks[sq];
         count = 0;
@@ -247,7 +247,7 @@ u64 bishopAttackTable[64][1024];
 
 void initSlidingAttackTables() {
     for (int sq = 0; sq < 64; sq++) {
-        
+
         // rooks
         int rookBits = rookRelevantBits[sq];
         int rookSubsets = 1 << rookBits;
@@ -258,7 +258,7 @@ void initSlidingAttackTables() {
             u64 index = (occ * rookMagic[sq]) >> (64 - rookBits);
             rookAttackTable[sq][index] = rookAttacks(sq, occ);
         }
-        
+
         int bishopBits = bishopRelevantBits[sq];
         int bishopSubsets = 1 << bishopBits;
 
@@ -276,7 +276,7 @@ void initAttackTables() {
     initKnightAttacks();
     initKingAttacks();
     initPawnAttacks();
-    
+
     initMasks();
     initRelevantBits();
     initSlidingAttackTables();

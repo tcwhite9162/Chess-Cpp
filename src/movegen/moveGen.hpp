@@ -1,6 +1,6 @@
 #pragma once
 
-#include <assert.h>
+#include <cassert>
 
 #include "core/move.hpp"
 #include "core/board.hpp"

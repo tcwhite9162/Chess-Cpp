@@ -2,6 +2,9 @@
 
 // PST values (look up table for preferable squares for differnt pieces)
 // TODO: make different tables for different stages of game (opening vs endgame etc)
+
+namespace Data::PST {
+
 constexpr int PAWN_PST[64] = {
    0,   0,   0,   0,   0,   0,   0,   0,
   50,  50,  50,  50,  50,  50,  50,  50,
@@ -67,3 +70,5 @@ constexpr int KING_PST[64] = {
   20,  20,   0,   0,   0,   0,  20,  20,
   20,  30,  10,   0,   0,  10,  30,  20
 };
+
+}

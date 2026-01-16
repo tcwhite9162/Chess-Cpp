@@ -11,15 +11,15 @@ inline int rank(int square) { return square / 8; }
 inline int file(int square) { return square % 8; }
 inline bool isValidSquare(int square) {return square >= 0 && square < 64;}
 
-inline bool isCapture(int flags)     { return flags & FLAG_CAPTURE; }
-inline bool isPromotion(int flags)   { return flags & FLAG_PROMOTION; }
+inline bool isCapture(int flags)     { return flags & Flags::FLAG_CAPTURE; }
+inline bool isPromotion(int flags)   { return flags & Flags::FLAG_PROMOTION; }
 
 inline int promotionPiece(int flags, int turn) {
-    if (flags & FLAG_PROMO_N) { return (turn == WHITE) ? W_KNIGHT : B_KNIGHT; }
-    if (flags & FLAG_PROMO_B) { return (turn == WHITE) ? W_BISHOP : B_BISHOP; }
-    if (flags & FLAG_PROMO_R) { return (turn == WHITE) ? W_ROOK : B_ROOK; }
-    if (flags & FLAG_PROMO_Q) { return (turn == WHITE) ? W_QUEEN : B_QUEEN; }
-    return EMPTY;
+    if (flags & Flags::FLAG_PROMO_N) { return (turn == Data::Piece::WHITE) ? Data::Piece::W_KNIGHT : Data::Piece::B_KNIGHT; }
+    if (flags & Flags::FLAG_PROMO_B) { return (turn == Data::Piece::WHITE) ? Data::Piece::W_BISHOP : Data::Piece::B_BISHOP; }
+    if (flags & Flags::FLAG_PROMO_R) { return (turn == Data::Piece::WHITE) ? Data::Piece::W_ROOK   : Data::Piece::B_ROOK; }
+    if (flags & Flags::FLAG_PROMO_Q) { return (turn == Data::Piece::WHITE) ? Data::Piece::W_QUEEN  : Data::Piece::B_QUEEN; }
+    return Data::Piece::EMPTY;
 }
 
 inline bool isOpponent(int piece, int targetPiece) {
@@ -40,32 +40,33 @@ inline void trim(std::string& s) {
 
 inline int pieceToIndex(int piece) {
     switch (piece) {
-        case W_PAWN:   return 0;
-        case W_KNIGHT: return 1;
-        case W_BISHOP: return 2;
-        case W_ROOK:   return 3;
-        case W_QUEEN:  return 4;
-        case W_KING:   return 5;
+        case Data::Piece::W_PAWN:   return 0;
+        case Data::Piece::W_KNIGHT: return 1;
+        case Data::Piece::W_BISHOP: return 2;
+        case Data::Piece::W_ROOK:   return 3;
+        case Data::Piece::W_QUEEN:  return 4;
+        case Data::Piece::W_KING:   return 5;
 
-        case B_PAWN:   return 6;
-        case B_KNIGHT: return 7;
-        case B_BISHOP: return 8;
-        case B_ROOK:   return 9;
-        case B_QUEEN:  return 10;
-        case B_KING:   return 11;
+        case Data::Piece::B_PAWN:   return 6;
+        case Data::Piece::B_KNIGHT: return 7;
+        case Data::Piece::B_BISHOP: return 8;
+        case Data::Piece::B_ROOK:   return 9;
+        case Data::Piece::B_QUEEN:  return 10;
+        case Data::Piece::B_KING:   return 11;
+
+        default: return 0;
     }
-    return -1; // should never happen
 }
 
 static int getPieceValue(int piece) {
     piece = std::abs(piece);
 
     switch (piece) {
-        case PAWN:   return PAWN_VAL;
-        case KNIGHT: return KNIGHT_VAL;
-        case BISHOP: return BISHOP_VAL;
-        case ROOK:   return ROOK_VAL;
-        case QUEEN:  return QUEEN_VAL;
+        case Data::Piece::PAWN:   return Data::Eval::PAWN_VAL;
+        case Data::Piece::KNIGHT: return Data::Eval::KNIGHT_VAL;
+        case Data::Piece::BISHOP: return Data::Eval::BISHOP_VAL;
+        case Data::Piece::ROOK:   return Data::Eval::ROOK_VAL;
+        case Data::Piece::QUEEN:  return Data::Eval::QUEEN_VAL;
         default:     return 0;
     }
 }
@@ -82,21 +83,21 @@ inline int bitCount(u64 bitboard) { return __builtin_popcountll(bitboard);}
 
 inline std::string pieceToChar(int piece) {
     switch (piece) {
-        case W_PAWN:   return u8"♟";
-        case W_KNIGHT: return u8"♞";
-        case W_BISHOP: return u8"♝";
-        case W_ROOK:   return u8"♜";
-        case W_QUEEN:  return u8"♛";
-        case W_KING:   return u8"♚";
+        case Data::Piece::W_PAWN:   return u8"♟";
+        case Data::Piece::W_KNIGHT: return u8"♞";
+        case Data::Piece::W_BISHOP: return u8"♝";
+        case Data::Piece::W_ROOK:   return u8"♜";
+        case Data::Piece::W_QUEEN:  return u8"♛";
+        case Data::Piece::W_KING:   return u8"♚";
 
-        case B_PAWN:   return u8"♙";
-        case B_KNIGHT: return u8"♘";
-        case B_BISHOP: return u8"♗";
-        case B_ROOK:   return u8"♖";
-        case B_QUEEN:  return u8"♕";
-        case B_KING:   return u8"♔";
+        case Data::Piece::B_PAWN:   return u8"♙";
+        case Data::Piece::B_KNIGHT: return u8"♘";
+        case Data::Piece::B_BISHOP: return u8"♗";
+        case Data::Piece::B_ROOK:   return u8"♖";
+        case Data::Piece::B_QUEEN:  return u8"♕";
+        case Data::Piece::B_KING:   return u8"♔";
 
-        case EMPTY:    return u8" ";
+        case Data::Piece::EMPTY:    return u8" ";
         default:       return u8"?";
     }
 }
@@ -136,22 +137,22 @@ inline u64 between(int sq1, int sq2) {
     u64 mask = 0ULL;
 
     if (file_of(sq1) == file_of(sq2)) {
-        int step = (sq2 > sq1) ? 8 : -8;
+        const int step = (sq2 > sq1) ? 8 : -8;
         for (int sq = sq1 + step; sq != sq2; sq += step) {
             mask |= (1ULL << sq);
         }
     }
 
     else if (rank_of(sq1) == rank_of(sq2)) {
-        int step = (sq2 > sq1) ? 1 : -1;
+        const int step = (sq2 > sq1) ? 1 : -1;
         for (int sq = sq1 + step; sq != sq2; sq += step) {
             mask |= (1ULL << sq);
         }
     }
 
     else if (abs(file_of(sq1) - file_of(sq2)) == abs(rank_of(sq1) - rank_of(sq2))) {
-        int fileStep = (file_of(sq2) > file_of(sq1)) ? 1 : -1;
-        int rankStep = (rank_of(sq2) > rank_of(sq1)) ? 1 : -1;
+        const int fileStep = (file_of(sq2) > file_of(sq1)) ? 1 : -1;
+        const int rankStep = (rank_of(sq2) > rank_of(sq1)) ? 1 : -1;
         int sq = sq1 + fileStep + 8 * rankStep;
 
         while (sq != sq2) {

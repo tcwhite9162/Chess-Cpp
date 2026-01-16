@@ -13,17 +13,17 @@ void uciLoop(Board& board) {
     while (std::getline(std::cin, line)) {
         trim(line);
         std::string cmd = Interface::getCommandWord(line);
-        
+
         if (cmd == "uci") {
             std::cout << "id name MyEngine\n";
             std::cout << "id author Thomas\n";
             std::cout << "uciok\n";
         }
-        
+
         else if (cmd == "isready") {
             std::cout << "readyok\n";
         }
-        
+
         else if (cmd == "position") {
             Interface::handlePosition(line, board);
         }

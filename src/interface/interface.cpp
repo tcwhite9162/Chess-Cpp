@@ -19,31 +19,31 @@ namespace Interface {
 
   // command map to handler lambdas
   static const std::unordered_map<std::string, CommandHandler> commandTable = {
-    { "position", [](std::string& line, Board& board) {
+    { "position", [](const std::string& line, Board& board) {
       handlePosition(line, board);
       }
     },
-    { "move", [](std::string& line, Board& board) {
+    { "move", [](const std::string& line, Board& board) {
         handleMove(line, board);
       }
     },
-    { "moves", [](std::string& line, Board& board) {
+    { "moves", [](const std::string& line, Board& board) {
         handleMoves(line, board);
       }
     },
-    { "perft", [](std::string& line, Board& board) {
+    { "perft", [](const std::string& line, Board& board) {
         handlePerft(line, board, PerftMode::Single);
       }
     },
-    { "perft-divide", [](std::string& line, Board& board) {
+    { "perft-divide", [](const std::string& line, Board& board) {
         handlePerft(line, board, PerftMode::Divide);
       }
     },
-    { "perft-suite", [](std::string& line, Board& board) {
+    { "perft-suite", [](const std::string& line, Board& board) {
         handlePerft(line, board, PerftMode::Suite);
       }
     },
-    { "perft-all", [](std::string& line, Board& board) {
+    { "perft-all", [](const std::string& line, Board& board) {
         handlePerft(line, board, PerftMode::All);
       }
     },
@@ -71,11 +71,11 @@ namespace Interface {
         clearScreen();
       }
     },
-    { "search", [](std::string& line, Board& board) {
+    { "search", [](const std::string& line, Board& board) {
       handleSearch(line, board);
       }
     },
-    { "search-range", [](std::string& line, Board& board) {
+    { "search-range", [](const std::string& line, Board& board) {
       handleSearch(line, board, true);
       }
     }
@@ -113,7 +113,7 @@ namespace Interface {
     iss >> cmd;
     return cmd;
   }
- 
+
   void userLoop(Board& board) {
     std::string line;
     std::cout << "👺> ";
@@ -175,7 +175,7 @@ namespace Interface {
       std::getline(ss, fenStr);
 
       trim(fenStr);
-      
+
       board.setupFromFen(fenStr);
     }
     else {
@@ -280,11 +280,11 @@ namespace Interface {
   }
 
   void showState(Board& board, bool verbose) {
-    std::string toMove = (board.getTurn() == WHITE) ? "White to move\n" : "Black to move\n";
+    std::string toMove = (board.getTurn() == Data::Piece::WHITE) ? "White to move\n" : "Black to move\n";
 
     std::cout << "\n--Current Position--\n";
     std::cout << toMove << "\n";
-    std::cout << "Current eval -> " << Eval::evaluate(board )<< "\n";
+    std::cout << "Current eval -> " << Eval::evaluate(board)<< "\n";
     board.printBoard();
 
     if (verbose) {
@@ -306,7 +306,7 @@ namespace Interface {
 
   void showCommands() {
     std::cout << "\n--Commands--\n\n";
-    
+
     std::cout << "'position startpos'      - reset board to start position\n";
     std::cout << "'position fen <fen-string>' - set position to <fen-string>\n\n";
 
@@ -325,56 +325,55 @@ namespace Interface {
     std::cout << "'h' or 'help' - list commands\n\n";
   }
 
-  std::optional<Move> parseMoveStr(const std::string& moveStr, Board& board) {
+  std::optional<Move> parseMoveStr(const std::string& moveStr, const Board& board) {
     if (moveStr.size() < 4 || moveStr.size() > 5) {
       std::cout << "error: invalid move string: '" << moveStr << "'\n";
       return std::nullopt;
     }
 
-    auto fromOpt = strToSquare(moveStr.substr(0, 2));
-    auto toOpt = strToSquare(moveStr.substr(2, 2));
-    
+    const auto fromOpt = strToSquare(moveStr.substr(0, 2));
+    const auto toOpt = strToSquare(moveStr.substr(2, 2));
+
     if (!fromOpt) { return std::nullopt; }
     if (!toOpt)   { return std::nullopt; }
 
     int from  = *fromOpt;
     int to    = *toOpt;
-    int flags = FLAG_NONE;
+    int flags = Flags::FLAG_NONE;
 
     if (moveStr.length() == 5) {
-      char promoPiece = moveStr[4];
-      switch (promoPiece) {
-        case 'q': flags |= (FLAG_PROMO_Q | FLAG_PROMOTION); break;
-        case 'r': flags |= (FLAG_PROMO_R | FLAG_PROMOTION); break;
-        case 'b': flags |= (FLAG_PROMO_B | FLAG_PROMOTION); break;
-        case 'n': flags |= (FLAG_PROMO_N | FLAG_PROMOTION); break;
+      switch (moveStr[4]) {
+        case 'q': flags |= (Flags::FLAG_PROMO_Q | Flags::FLAG_PROMOTION); break;
+        case 'r': flags |= (Flags::FLAG_PROMO_R | Flags::FLAG_PROMOTION); break;
+        case 'b': flags |= (Flags::FLAG_PROMO_B | Flags::FLAG_PROMOTION); break;
+        case 'n': flags |= (Flags::FLAG_PROMO_N | Flags::FLAG_PROMOTION); break;
         default:
           std::cout << "error: invalid promotion piece\n";
           return std::nullopt;
       }
     }
 
-    int currKing = (board.getTurn() == WHITE) ? W_KING : B_KING;
+    int currKing = (board.getTurn() == Data::Piece::WHITE) ? Data::Piece::W_KING : Data::Piece::B_KING;
     if (board.getPiece(from) == currKing) {
-      if (from == WHITE_KING_START && to == WHITE_KINGSIDE_END ) flags |= FLAG_CASTLE_WK;
-      if (from == WHITE_KING_START && to == WHITE_QUEENSIDE_END) flags |= FLAG_CASTLE_WQ;
-      if (from == BLACK_KING_START && to == BLACK_KINGSIDE_END ) flags |= FLAG_CASTLE_BK;
-      if (from == BLACK_KING_START && to == BLACK_QUEENSIDE_END) flags |= FLAG_CASTLE_BQ;
+      if (from == Data::Castling::WHITE_KING_START && to == Data::Castling::WHITE_KINGSIDE_END ) flags |= Flags::FLAG_CASTLE_WK;
+      if (from == Data::Castling::WHITE_KING_START && to == Data::Castling::WHITE_QUEENSIDE_END) flags |= Flags::FLAG_CASTLE_WQ;
+      if (from == Data::Castling::BLACK_KING_START && to == Data::Castling::BLACK_KINGSIDE_END ) flags |= Flags::FLAG_CASTLE_BK;
+      if (from == Data::Castling::BLACK_KING_START && to == Data::Castling::BLACK_QUEENSIDE_END) flags |= Flags::FLAG_CASTLE_BQ;
     }
 
-    int currPawn = (board.getTurn() == WHITE) ? W_PAWN : B_PAWN;
+    int currPawn = (board.getTurn() == Data::Piece::WHITE) ? Data::Piece::W_PAWN : Data::Piece::B_PAWN;
     if (board.getPiece(from) == currPawn) {
       if (std::abs(from - to) == 16) {
-        flags |= FLAG_DOUBLE_PUSH;
+        flags |= Flags::FLAG_DOUBLE_PUSH;
       }
     }
 
     if (to == board.getEnPassant() && board.getPiece(from) == currPawn) {
-      flags |= (FLAG_EN_PASSANT | FLAG_CAPTURE);
-    } 
+      flags |= (Flags::FLAG_EN_PASSANT | Flags::FLAG_CAPTURE);
+    }
 
-    if (board.getPiece(to) != EMPTY) {
-      flags |= FLAG_CAPTURE;
+    if (board.getPiece(to) != Data::Piece::EMPTY) {
+      flags |= Flags::FLAG_CAPTURE;
     }
 
     return Move(from, to, flags);

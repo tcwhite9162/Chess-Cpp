@@ -4,7 +4,7 @@
 
 using u64 = uint64_t;
 
-const u64 rookMagic[64] = {
+constexpr u64 rookMagic[64] = {
     0x3080004004603088ULL,
     0x1cc00040a00a1000ULL,
     0x280200008100080ULL,
@@ -71,7 +71,7 @@ const u64 rookMagic[64] = {
     0x801002043040082ULL,
 };
 
-const u64 bishopMagic[64] = {
+constexpr u64 bishopMagic[64] = {
     0x8004111208010302ULL,
     0x418414408c010000ULL,
     0x4144086204400400ULL,

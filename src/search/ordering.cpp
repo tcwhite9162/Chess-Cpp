@@ -16,25 +16,25 @@ static int scoreCapture(const Move& m, const Board& board) {
 
     int attacker = getPieceValue(board.getPiece(m.from_square()));
 
-    return victim * MVV_VICTIM_MULT - attacker * MVV_ATTACKER_MULT;
+    return victim * Data::Eval::MVV_VICTIM_MULT - attacker * Data::Eval::MVV_ATTACKER_MULT;
 }
 
 static int scorePromotion(const Move& m) {
     if (!m.isPromotion()) { return 0; }
 
     switch (m.promotionPiece()) {
-        case QUEEN:  return PROMO_QUEEN_BONUS;
-        case ROOK:   return PROMO_ROOK_BONUS;
-        case BISHOP: return PROMO_BISHOP_BONUS;
-        case KNIGHT: return PROMO_KNIGHT_BONUS;
+        case Data::Piece::QUEEN:  return Data::Eval::PROMO_QUEEN_BONUS;
+        case Data::Piece::ROOK:   return Data::Eval::PROMO_ROOK_BONUS;
+        case Data::Piece::BISHOP: return Data::Eval::PROMO_BISHOP_BONUS;
+        case Data::Piece::KNIGHT: return Data::Eval::PROMO_KNIGHT_BONUS;
         default:     return 0;
     }
 }
 
-inline static int scoreQuiet(const Move& m) { return QUIET_BASE_SCORE; }
+inline static int scoreQuiet(const Move& m) { return Data::Eval::QUIET_BASE_SCORE; }
 
 void scoreMoves(MoveList& moves, const Board& board){
-    
+
     for (int i = 0; i < moves.count; i++) {
         Move& m = moves.moves[i];
 
