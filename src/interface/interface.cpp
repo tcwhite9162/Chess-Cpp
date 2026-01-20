@@ -47,11 +47,11 @@ namespace Interface {
         handlePerft(line, board, PerftMode::All);
       }
     },
-    { "d", [](std::string& line, Board& board) {
+    { "d", [](std::string& line, const Board& board) {
         showState(board, true);
       }
     },
-    { "p", [](std::string& line, Board& board) {
+    { "p", [](std::string& line, const Board& board) {
         showState(board, false);
       }
     },
@@ -97,8 +97,8 @@ namespace Interface {
           return std::nullopt;
     }
 
-    int file = s[0] - 'a';
-    int rank = s[1] - '1';
+    const int file = s[0] - 'a';
+    const int rank = s[1] - '1';
 
     return (7 - rank) * 8 + file;
   }
@@ -116,14 +116,14 @@ namespace Interface {
 
   void userLoop(Board& board) {
     std::string line;
-    std::cout << "👺> ";
+    std::cout << "> ";
     while (std::getline(std::cin, line)) {
       trim(line);
       if (line == "q" || line == "quit") {
         break;
       }
       handleCommand(line, board);
-      std::cout << "👺> ";
+      std::cout << "> ";
     }
   }
 
@@ -133,9 +133,9 @@ namespace Interface {
       return;
     }
 
-    std::string cmd = getCommandWord(line);
+    const std::string cmd = getCommandWord(line);
 
-    auto command = commandTable.find(cmd);
+    const auto command = commandTable.find(cmd);
     if (command != commandTable.end()) {
       command->second(line, board);
       return;
@@ -193,7 +193,7 @@ namespace Interface {
       return;
     }
 
-    auto m = parseMoveStr(moveStr, board);
+    const auto m = parseMoveStr(moveStr, board);
     if (!m) {
       return;
     }
@@ -234,7 +234,7 @@ namespace Interface {
       return;
     }
 
-    int depth = std::stoi(d);
+    const int depth = std::stoi(d);
 
     switch (mode) {
 
@@ -268,7 +268,7 @@ namespace Interface {
       return;
     }
 
-    int depth = std::stoi(d);
+    const int depth = std::stoi(d);
 
     if (range) {
       for (int i = 1; i <= depth; i++) {
@@ -279,12 +279,12 @@ namespace Interface {
     }
   }
 
-  void showState(Board& board, bool verbose) {
-    std::string toMove = (board.getTurn() == Data::Piece::WHITE) ? "White to move\n" : "Black to move\n";
+  void showState(const Board& board, bool verbose) {
+    const std::string toMove = (board.getTurn() == Constants::Piece::WHITE) ? "White to move\n" : "Black to move\n";
 
     std::cout << "\n--Current Position--\n";
     std::cout << toMove << "\n";
-    std::cout << "Current eval -> " << Eval::evaluate(board)<< "\n";
+    std::cout << "Current eval -> " << Evaluate::evaluate(board)<< "\n";
     board.printBoard();
 
     if (verbose) {
@@ -337,8 +337,8 @@ namespace Interface {
     if (!fromOpt) { return std::nullopt; }
     if (!toOpt)   { return std::nullopt; }
 
-    int from  = *fromOpt;
-    int to    = *toOpt;
+    const int from  = *fromOpt;
+    const int to    = *toOpt;
     int flags = Flags::FLAG_NONE;
 
     if (moveStr.length() == 5) {
@@ -353,15 +353,15 @@ namespace Interface {
       }
     }
 
-    int currKing = (board.getTurn() == Data::Piece::WHITE) ? Data::Piece::W_KING : Data::Piece::B_KING;
+    const int currKing = (board.getTurn() == Constants::Piece::WHITE) ? Constants::Piece::W_KING : Constants::Piece::B_KING;
     if (board.getPiece(from) == currKing) {
-      if (from == Data::Castling::WHITE_KING_START && to == Data::Castling::WHITE_KINGSIDE_END ) flags |= Flags::FLAG_CASTLE_WK;
-      if (from == Data::Castling::WHITE_KING_START && to == Data::Castling::WHITE_QUEENSIDE_END) flags |= Flags::FLAG_CASTLE_WQ;
-      if (from == Data::Castling::BLACK_KING_START && to == Data::Castling::BLACK_KINGSIDE_END ) flags |= Flags::FLAG_CASTLE_BK;
-      if (from == Data::Castling::BLACK_KING_START && to == Data::Castling::BLACK_QUEENSIDE_END) flags |= Flags::FLAG_CASTLE_BQ;
+      if (from == Constants::Castling::WHITE_KING_START && to == Constants::Castling::WHITE_KINGSIDE_END ) flags |= Flags::FLAG_CASTLE_WK;
+      if (from == Constants::Castling::WHITE_KING_START && to == Constants::Castling::WHITE_QUEENSIDE_END) flags |= Flags::FLAG_CASTLE_WQ;
+      if (from == Constants::Castling::BLACK_KING_START && to == Constants::Castling::BLACK_KINGSIDE_END ) flags |= Flags::FLAG_CASTLE_BK;
+      if (from == Constants::Castling::BLACK_KING_START && to == Constants::Castling::BLACK_QUEENSIDE_END) flags |= Flags::FLAG_CASTLE_BQ;
     }
 
-    int currPawn = (board.getTurn() == Data::Piece::WHITE) ? Data::Piece::W_PAWN : Data::Piece::B_PAWN;
+    const int currPawn = (board.getTurn() == Constants::Piece::WHITE) ? Constants::Piece::W_PAWN : Constants::Piece::B_PAWN;
     if (board.getPiece(from) == currPawn) {
       if (std::abs(from - to) == 16) {
         flags |= Flags::FLAG_DOUBLE_PUSH;
@@ -372,7 +372,7 @@ namespace Interface {
       flags |= (Flags::FLAG_EN_PASSANT | Flags::FLAG_CAPTURE);
     }
 
-    if (board.getPiece(to) != Data::Piece::EMPTY) {
+    if (board.getPiece(to) != Constants::Piece::EMPTY) {
       flags |= Flags::FLAG_CAPTURE;
     }
 

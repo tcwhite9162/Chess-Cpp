@@ -1,33 +1,33 @@
+#include "movegen/moveGen.hpp"
 #include "bitboard/bitboard.hpp"
 #include "constants.hpp"
 #include "core/utils.hpp"
-#include "movegen/moveGen.hpp"
 
 namespace MoveGen {
 
-void generatePawnMoves(const Board &board, int color, MoveList& moves) {
+void generatePawnMoves(const Board& board, int color, MoveList& moves) {
     const u64 empty = ~board.getOccupancyAll();
 
     // white pawns
-    if (color == Data::Piece::WHITE){
+    if (color == Constants::Piece::WHITE) {
         const u64 pawns = board.getBitboard(PieceType::WP);
 
         // single pushes
         const u64 singlePush = (pawns >> 8) & empty;
 
-        const u64 promoSingle = singlePush & Data::Board::RANK_8;
-        const u64 quietSingle = singlePush & ~Data::Board::RANK_8;
+        const u64 promoSingle = singlePush & Constants::Squares::RANK_8;
+        const u64 quietSingle = singlePush & ~Constants::Squares::RANK_8;
 
         u64 bb = quietSingle;
         while (bb) {
-            const int to = popLeastSigBit(bb);
+            const int to   = popLeastSigBit(bb);
             const int from = to + 8;
             moves.add(Move(from, to, Flags::FLAG_NONE));
         }
 
         bb = promoSingle;
         while (bb) {
-            const int to = popLeastSigBit(bb);
+            const int to   = popLeastSigBit(bb);
             const int from = to + 8;
             moves.add(Move(from, to, Flags::FLAG_PROMO_N | Flags::FLAG_PROMOTION));
             moves.add(Move(from, to, Flags::FLAG_PROMO_B | Flags::FLAG_PROMOTION));
@@ -36,11 +36,11 @@ void generatePawnMoves(const Board &board, int color, MoveList& moves) {
         }
 
         // double pushes
-        const u64 doublePush = ((quietSingle >> 8) & empty) & Data::Board::RANK_4;
+        const u64 doublePush = ((quietSingle >> 8) & empty) & Constants::Squares::RANK_4;
 
         bb = doublePush;
         while (bb) {
-            const int to = popLeastSigBit(bb);
+            const int to   = popLeastSigBit(bb);
             const int from = to + 16;
             moves.add(Move(from, to, Flags::FLAG_DOUBLE_PUSH));
         }
@@ -50,28 +50,28 @@ void generatePawnMoves(const Board &board, int color, MoveList& moves) {
     }
 
     // black pawns
-    else{
+    else {
         const u64 pawns = board.getBitboard(PieceType::BP);
 
         // single pushes
         const u64 singlePush = (pawns << 8) & empty;
 
         // promotions
-        const u64 promoSingle = singlePush & Data::Board::RANK_1;
-        const u64 quietSingle = singlePush & ~Data::Board::RANK_1;
+        const u64 promoSingle = singlePush & Constants::Squares::RANK_1;
+        const u64 quietSingle = singlePush & ~Constants::Squares::RANK_1;
 
         // quiet single pushes
         u64 bb = quietSingle;
         while (bb) {
-            const int to = popLeastSigBit(bb);
+            const int to   = popLeastSigBit(bb);
             const int from = to - 8;
             moves.add(Move(from, to, Flags::FLAG_NONE));
         }
 
         // promotion single pushes
         bb = promoSingle;
-        while(bb) {
-            const int to = popLeastSigBit(bb);
+        while (bb) {
+            const int to   = popLeastSigBit(bb);
             const int from = to - 8;
             moves.add(Move(from, to, Flags::FLAG_PROMO_N | Flags::FLAG_PROMOTION));
             moves.add(Move(from, to, Flags::FLAG_PROMO_B | Flags::FLAG_PROMOTION));
@@ -80,11 +80,11 @@ void generatePawnMoves(const Board &board, int color, MoveList& moves) {
         }
 
         // double pushes
-        const u64  doublePush = ((quietSingle << 8) & empty) & Data::Board::RANK_5;
+        const u64 doublePush = ((quietSingle << 8) & empty) & Constants::Squares::RANK_5;
 
         bb = doublePush;
         while (bb) {
-            const int to = popLeastSigBit(bb);
+            const int to   = popLeastSigBit(bb);
             const int from = to - 16;
             moves.add(Move(from, to, Flags::FLAG_DOUBLE_PUSH));
         }
@@ -94,9 +94,10 @@ void generatePawnMoves(const Board &board, int color, MoveList& moves) {
     }
 }
 
-void generateKnightMoves(const Board &board, int color, MoveList& moves) {
-    const u64 knights = (color == Data::Piece::WHITE) ? board.getBitboard(PieceType::WN) : board.getBitboard(PieceType::BN);
-    const u64 ownPieces = (color == Data::Piece::WHITE) ? board.getOccupancyWhite() : board.getOccupancyBlack();
+void generateKnightMoves(const Board& board, int color, MoveList& moves) {
+    const u64 knights =
+        (color == Constants::Piece::WHITE) ? board.getBitboard(PieceType::WN) : board.getBitboard(PieceType::BN);
+    const u64 ownPieces = (color == Constants::Piece::WHITE) ? board.getOccupancyWhite() : board.getOccupancyBlack();
 
     u64 bb = knights;
     while (bb) {
@@ -108,19 +109,20 @@ void generateKnightMoves(const Board &board, int color, MoveList& moves) {
         while (atk) {
             const int to = popLeastSigBit(atk);
 
-            if (board.getPiece(to) == Data::Piece::EMPTY) {
+            if (board.getPiece(to) == Constants::Piece::EMPTY) {
                 moves.add(Move(from, to, Flags::FLAG_NONE));
-            }else {
+            }
+            else {
                 moves.add(Move(from, to, Flags::FLAG_CAPTURE));
             }
         }
     }
-
 }
 
-void generateKingMoves(const Board &board, int color, MoveList& moves) {
-    const u64 king = (color == Data::Piece::WHITE) ? board.getBitboard(PieceType::WK) : board.getBitboard(PieceType::BK);
-    const u64 ownPieces = (color == Data::Piece::WHITE) ? board.getOccupancyWhite() : board.getOccupancyBlack();
+void generateKingMoves(const Board& board, int color, MoveList& moves) {
+    const u64 king =
+        (color == Constants::Piece::WHITE) ? board.getBitboard(PieceType::WK) : board.getBitboard(PieceType::BK);
+    const u64 ownPieces = (color == Constants::Piece::WHITE) ? board.getOccupancyWhite() : board.getOccupancyBlack();
 
     // finds the king
     const int from = __builtin_ctzll(king);
@@ -131,23 +133,24 @@ void generateKingMoves(const Board &board, int color, MoveList& moves) {
     while (bb) {
         int to = popLeastSigBit(bb);
 
-        if (board.getPiece(to) == Data::Piece::EMPTY) {
+        if (board.getPiece(to) == Constants::Piece::EMPTY) {
             moves.add(Move(from, to, Flags::FLAG_NONE));
-        } else {
+        }
+        else {
             moves.add(Move(from, to, Flags::FLAG_CAPTURE));
         }
     }
 
     // castling
-    if (color == Data::Piece::WHITE) {
+    if (color == Constants::Piece::WHITE) {
         // white kingside
         if (board.canCastleWhiteKingside()) {
-            const bool empty = (board.getPiece(61) == Data::Piece::EMPTY &&
-                          board.getPiece(62) == Data::Piece::EMPTY);
+            const bool empty =
+                (board.getPiece(61) == Constants::Piece::EMPTY && board.getPiece(62) == Constants::Piece::EMPTY);
 
-            const bool safe = (!board.isSquareAttacked(60, Data::Piece::BLACK) &&
-                         !board.isSquareAttacked(61, Data::Piece::BLACK) &&
-                         !board.isSquareAttacked(62, Data::Piece::BLACK));
+            const bool safe = (!board.isSquareAttacked(60, Constants::Piece::BLACK) &&
+                               !board.isSquareAttacked(61, Constants::Piece::BLACK) &&
+                               !board.isSquareAttacked(62, Constants::Piece::BLACK));
 
             if (empty && safe)
                 moves.add(Move(from, 62, Flags::FLAG_CASTLE_WK));
@@ -155,26 +158,27 @@ void generateKingMoves(const Board &board, int color, MoveList& moves) {
 
         // white queenside
         if (board.canCastleWhiteQueenside()) {
-            const bool empty = (board.getPiece(59) == Data::Piece::EMPTY &&
-                          board.getPiece(58) == Data::Piece::EMPTY &&
-                          board.getPiece(57) == Data::Piece::EMPTY);
+            const bool empty =
+                (board.getPiece(59) == Constants::Piece::EMPTY && board.getPiece(58) == Constants::Piece::EMPTY &&
+                 board.getPiece(57) == Constants::Piece::EMPTY);
 
-            const bool safe = (!board.isSquareAttacked(60, Data::Piece::BLACK) &&
-                         !board.isSquareAttacked(59, Data::Piece::BLACK) &&
-                         !board.isSquareAttacked(58, Data::Piece::BLACK));
+            const bool safe = (!board.isSquareAttacked(60, Constants::Piece::BLACK) &&
+                               !board.isSquareAttacked(59, Constants::Piece::BLACK) &&
+                               !board.isSquareAttacked(58, Constants::Piece::BLACK));
 
             if (empty && safe)
                 moves.add(Move(from, 58, Flags::FLAG_CASTLE_WQ));
         }
-    } else {
+    }
+    else {
         // black kingside
         if (board.canCastleBlackKingside()) {
-            const bool empty = (board.getPiece(5) == Data::Piece::EMPTY &&
-                          board.getPiece(6) == Data::Piece::EMPTY);
+            const bool empty =
+                (board.getPiece(5) == Constants::Piece::EMPTY && board.getPiece(6) == Constants::Piece::EMPTY);
 
-            const bool safe = (!board.isSquareAttacked(4, Data::Piece::WHITE) &&
-                         !board.isSquareAttacked(5, Data::Piece::WHITE) &&
-                         !board.isSquareAttacked(6, Data::Piece::WHITE));
+            const bool safe = (!board.isSquareAttacked(4, Constants::Piece::WHITE) &&
+                               !board.isSquareAttacked(5, Constants::Piece::WHITE) &&
+                               !board.isSquareAttacked(6, Constants::Piece::WHITE));
 
             if (empty && safe)
                 moves.add(Move(from, 6, Flags::FLAG_CASTLE_BK));
@@ -182,29 +186,28 @@ void generateKingMoves(const Board &board, int color, MoveList& moves) {
 
         // black queenside
         if (board.canCastleBlackQueenside()) {
-            const bool empty = (board.getPiece(3) == Data::Piece::EMPTY &&
-                          board.getPiece(2) == Data::Piece::EMPTY &&
-                          board.getPiece(1) == Data::Piece::EMPTY);
+            const bool empty =
+                (board.getPiece(3) == Constants::Piece::EMPTY && board.getPiece(2) == Constants::Piece::EMPTY &&
+                 board.getPiece(1) == Constants::Piece::EMPTY);
 
-            const bool safe = (!board.isSquareAttacked(4, Data::Piece::WHITE) &&
-                         !board.isSquareAttacked(3, Data::Piece::WHITE) &&
-                         !board.isSquareAttacked(2, Data::Piece::WHITE));
+            const bool safe = (!board.isSquareAttacked(4, Constants::Piece::WHITE) &&
+                               !board.isSquareAttacked(3, Constants::Piece::WHITE) &&
+                               !board.isSquareAttacked(2, Constants::Piece::WHITE));
 
             if (empty && safe)
                 moves.add(Move(from, 2, Flags::FLAG_CASTLE_BQ));
         }
     }
-
-
 }
 
-void generateSlidingMoves(const Board &board, int color, MoveList& moves) {
-    const u64 own   = (color == Data::Piece::WHITE) ? board.getOccupancyWhite() : board.getOccupancyBlack();
-    const u64 enemy = (color == Data::Piece::WHITE) ? board.getOccupancyBlack() : board.getOccupancyWhite();
+void generateSlidingMoves(const Board& board, int color, MoveList& moves) {
+    const u64 own   = (color == Constants::Piece::WHITE) ? board.getOccupancyWhite() : board.getOccupancyBlack();
+    const u64 enemy = (color == Constants::Piece::WHITE) ? board.getOccupancyBlack() : board.getOccupancyWhite();
 
     // rooks
     {
-        const u64 rooks = (color == Data::Piece::WHITE) ? board.getBitboard(PieceType::WR) : board.getBitboard(PieceType::BR);
+        const u64 rooks =
+            (color == Constants::Piece::WHITE) ? board.getBitboard(PieceType::WR) : board.getBitboard(PieceType::BR);
 
         u64 bb = rooks;
         while (bb) {
@@ -218,7 +221,8 @@ void generateSlidingMoves(const Board &board, int color, MoveList& moves) {
                 const int to = popLeastSigBit(atk);
                 if (enemy & (1ULL << to)) {
                     moves.add(Move(from, to, Flags::FLAG_CAPTURE));
-                } else {
+                }
+                else {
                     moves.add(Move(from, to, Flags::FLAG_NONE));
                 }
             }
@@ -227,7 +231,8 @@ void generateSlidingMoves(const Board &board, int color, MoveList& moves) {
 
     // bishops
     {
-        const u64 bishops = (color == Data::Piece::WHITE) ? board.getBitboard(PieceType::WB) : board.getBitboard(PieceType::BB);
+        const u64 bishops =
+            (color == Constants::Piece::WHITE) ? board.getBitboard(PieceType::WB) : board.getBitboard(PieceType::BB);
 
         u64 bb = bishops;
         while (bb) {
@@ -241,7 +246,8 @@ void generateSlidingMoves(const Board &board, int color, MoveList& moves) {
                 const int to = popLeastSigBit(atk);
                 if (enemy & (1ULL << to)) {
                     moves.add(Move(from, to, Flags::FLAG_CAPTURE));
-                } else {
+                }
+                else {
                     moves.add(Move(from, to, Flags::FLAG_NONE));
                 }
             }
@@ -250,21 +256,24 @@ void generateSlidingMoves(const Board &board, int color, MoveList& moves) {
 
     // queens
     {
-        const u64 queens = (color == Data::Piece::WHITE) ? board.getBitboard(PieceType::WQ) : board.getBitboard(PieceType::BQ);
+        const u64 queens =
+            (color == Constants::Piece::WHITE) ? board.getBitboard(PieceType::WQ) : board.getBitboard(PieceType::BQ);
 
         u64 bb = queens;
         while (bb) {
             const int from = popLeastSigBit(bb);
 
-            const u64 attacks = (rookAttacksMagic(from, board.getOccupancyAll()) |
-                           bishopAttacksMagic(from, board.getOccupancyAll())) & ~own;
+            const u64 attacks =
+                (rookAttacksMagic(from, board.getOccupancyAll()) | bishopAttacksMagic(from, board.getOccupancyAll())) &
+                ~own;
 
             u64 atk = attacks;
             while (atk) {
                 const int to = popLeastSigBit(atk);
                 if (enemy & (1ULL << to)) {
                     moves.add(Move(from, to, Flags::FLAG_CAPTURE));
-                } else {
+                }
+                else {
                     moves.add(Move(from, to, Flags::FLAG_NONE));
                 }
             }
@@ -272,7 +281,7 @@ void generateSlidingMoves(const Board &board, int color, MoveList& moves) {
     }
 }
 
-void generatePseudoLegalMoves(const Board &board, MoveList& moves) {
+void generatePseudoLegalMoves(const Board& board, MoveList& moves) {
     const int side = board.getTurn();
 
     generatePawnMoves(board, side, moves);
@@ -281,42 +290,44 @@ void generatePseudoLegalMoves(const Board &board, MoveList& moves) {
     generateSlidingMoves(board, side, moves);
 }
 
-
-void generateLegalMoves(Board &board, MoveList& legalMoves) {
+void generateLegalMoves(Board& board, MoveList& legalMoves) {
     MoveList pseudoLegal;
     generatePseudoLegalMoves(board, pseudoLegal);
 
     for (int i = 0; i < pseudoLegal.count; i++) {
-        Move m = pseudoLegal.moves[i];
+        Move m         = pseudoLegal.moves[i];
         const int side = board.getTurn();
 
         board.makeMove(m, false);
-        if (!board.isInCheck(side)) { legalMoves.add(m); }
-        board.unmakeMove(m, false);
+        if (!board.isInCheck(side)) {
+            legalMoves.add(m);
+        }
+        board.unmakeMove(false);
     }
 }
 
 void generatePawnCaptures(const Board& board, int side, MoveList& captures) {
-    const u64 pawns = (side == Data::Piece::WHITE) ? board.getBitboard(PieceType::WP) : board.getBitboard(PieceType::BP);
-    const u64 enemy = (side == Data::Piece::WHITE) ? board.getOccupancyBlack() : board.getOccupancyWhite();
+    const u64 pawns =
+        (side == Constants::Piece::WHITE) ? board.getBitboard(PieceType::WP) : board.getBitboard(PieceType::BP);
+    const u64 enemy = (side == Constants::Piece::WHITE) ? board.getOccupancyBlack() : board.getOccupancyWhite();
 
-    if (side == Data::Piece::WHITE) {
+    if (side == Constants::Piece::WHITE) {
 
-        const u64 left  = ((pawns & Data::Board::NOT_FILE_A) >> 9) & enemy;
-        const u64 right = ((pawns & Data::Board::NOT_FILE_H) >> 7) & enemy;
+        const u64 left  = ((pawns & Constants::Squares::NOT_FILE_A) >> 9) & enemy;
+        const u64 right = ((pawns & Constants::Squares::NOT_FILE_H) >> 7) & enemy;
 
         // promotion captures
-        const u64 promoLeft  = left  & Data::Board::RANK_8;
-        const u64 promoRight = right & Data::Board::RANK_8;
+        const u64 promoLeft  = left & Constants::Squares::RANK_8;
+        const u64 promoRight = right & Constants::Squares::RANK_8;
 
         // normal captures
-        const u64 quietLeft  = left  & ~Data::Board::RANK_8;
-        const u64 quietRight = right & ~Data::Board::RANK_8;
+        const u64 quietLeft  = left & ~Constants::Squares::RANK_8;
+        const u64 quietRight = right & ~Constants::Squares::RANK_8;
 
         // normal left captures
         u64 bb = quietLeft;
         while (bb) {
-            const int to = popLeastSigBit(bb);
+            const int to   = popLeastSigBit(bb);
             const int from = to + 9;
             captures.add(Move(from, to, Flags::FLAG_CAPTURE));
         }
@@ -324,7 +335,7 @@ void generatePawnCaptures(const Board& board, int side, MoveList& captures) {
         // normal right captures
         bb = quietRight;
         while (bb) {
-            const int to = popLeastSigBit(bb);
+            const int to   = popLeastSigBit(bb);
             const int from = to + 7;
             captures.add(Move(from, to, Flags::FLAG_CAPTURE));
         }
@@ -332,7 +343,7 @@ void generatePawnCaptures(const Board& board, int side, MoveList& captures) {
         // left promotion captures
         bb = promoLeft;
         while (bb) {
-            const int to = popLeastSigBit(bb);
+            const int to   = popLeastSigBit(bb);
             const int from = to + 9;
             captures.add(Move(from, to, Flags::FLAG_PROMO_N | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
             captures.add(Move(from, to, Flags::FLAG_PROMO_B | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
@@ -343,7 +354,7 @@ void generatePawnCaptures(const Board& board, int side, MoveList& captures) {
         // right promotion captures
         bb = promoRight;
         while (bb) {
-            const int to = popLeastSigBit(bb);
+            const int to   = popLeastSigBit(bb);
             const int from = to + 7;
             captures.add(Move(from, to, Flags::FLAG_PROMO_N | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
             captures.add(Move(from, to, Flags::FLAG_PROMO_B | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
@@ -354,7 +365,7 @@ void generatePawnCaptures(const Board& board, int side, MoveList& captures) {
         // en passant
         int ep = board.getEnPassant();
         if (ep != -1) {
-            u64 attackers = pawnAttacks[0][ep] & pawns; // white pawns attacking ep
+            u64 attackers = pawnAttacksWhite[ep] & pawns; // white pawns attacking ep
             while (attackers) {
                 const int from = popLeastSigBit(attackers);
                 captures.add(Move(from, ep, Flags::FLAG_CAPTURE | Flags::FLAG_EN_PASSANT));
@@ -365,21 +376,21 @@ void generatePawnCaptures(const Board& board, int side, MoveList& captures) {
     // black
     else {
 
-        const u64 left  = ((pawns & Data::Board::NOT_FILE_A) << 7) & enemy;
-        const u64 right = ((pawns & Data::Board::NOT_FILE_H) << 9) & enemy;
+        const u64 left  = ((pawns & Constants::Squares::NOT_FILE_A) << 7) & enemy;
+        const u64 right = ((pawns & Constants::Squares::NOT_FILE_H) << 9) & enemy;
 
         // promotion captures
-        const u64 promoLeft  = left  & Data::Board::RANK_1;
-        const u64 promoRight = right & Data::Board::RANK_1;
+        const u64 promoLeft  = left & Constants::Squares::RANK_1;
+        const u64 promoRight = right & Constants::Squares::RANK_1;
 
         // normal captures
-        const u64 quietLeft  = left  & ~Data::Board::RANK_1;
-        const u64 quietRight = right & ~Data::Board::RANK_1;
+        const u64 quietLeft  = left & ~Constants::Squares::RANK_1;
+        const u64 quietRight = right & ~Constants::Squares::RANK_1;
 
         // normal left captures
         u64 bb = quietLeft;
         while (bb) {
-            const int to = popLeastSigBit(bb);
+            const int to   = popLeastSigBit(bb);
             const int from = to - 7;
             captures.add(Move(from, to, Flags::FLAG_CAPTURE));
         }
@@ -387,7 +398,7 @@ void generatePawnCaptures(const Board& board, int side, MoveList& captures) {
         // normal right captures
         bb = quietRight;
         while (bb) {
-            const int to = popLeastSigBit(bb);
+            const int to   = popLeastSigBit(bb);
             const int from = to - 9;
             captures.add(Move(from, to, Flags::FLAG_CAPTURE));
         }
@@ -395,7 +406,7 @@ void generatePawnCaptures(const Board& board, int side, MoveList& captures) {
         // promotions captures left
         bb = promoLeft;
         while (bb) {
-            const int to = popLeastSigBit(bb);
+            const int to   = popLeastSigBit(bb);
             const int from = to - 7;
             captures.add(Move(from, to, Flags::FLAG_PROMO_N | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
             captures.add(Move(from, to, Flags::FLAG_PROMO_B | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
@@ -406,19 +417,18 @@ void generatePawnCaptures(const Board& board, int side, MoveList& captures) {
         // promotion captures right
         bb = promoRight;
         while (bb) {
-            const int to = popLeastSigBit(bb);
+            const int to   = popLeastSigBit(bb);
             const int from = to - 9;
             captures.add(Move(from, to, Flags::FLAG_PROMO_N | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
             captures.add(Move(from, to, Flags::FLAG_PROMO_B | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
             captures.add(Move(from, to, Flags::FLAG_PROMO_R | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
             captures.add(Move(from, to, Flags::FLAG_PROMO_Q | Flags::FLAG_PROMOTION | Flags::FLAG_CAPTURE));
-
         }
 
         // en passant
         const int ep = board.getEnPassant();
         if (ep != -1) {
-            u64 attackers = pawnAttacks[1][ep] & pawns; // black pawns attacking ep
+            u64 attackers = pawnAttacksBlack[ep] & pawns; // black pawns attacking ep
             while (attackers) {
                 const int from = popLeastSigBit(attackers);
                 captures.add(Move(from, ep, Flags::FLAG_CAPTURE | Flags::FLAG_EN_PASSANT));
@@ -428,12 +438,13 @@ void generatePawnCaptures(const Board& board, int side, MoveList& captures) {
 }
 
 void generateKnightCaptures(const Board& board, int side, MoveList& captures) {
-    const u64 knights = (side == Data::Piece::WHITE) ? board.getBitboard(PieceType::WN) : board.getBitboard(PieceType::BN);
-    const u64 enemy   = (side == Data::Piece::WHITE) ? board.getOccupancyBlack() : board.getOccupancyWhite();
+    const u64 knights =
+        (side == Constants::Piece::WHITE) ? board.getBitboard(PieceType::WN) : board.getBitboard(PieceType::BN);
+    const u64 enemy = (side == Constants::Piece::WHITE) ? board.getOccupancyBlack() : board.getOccupancyWhite();
 
     u64 bb = knights;
     while (bb) {
-        const int from = popLeastSigBit(bb);
+        const int from    = popLeastSigBit(bb);
         const u64 attacks = knightAttacks[from] & enemy;
 
         u64 atk = attacks;
@@ -445,15 +456,16 @@ void generateKnightCaptures(const Board& board, int side, MoveList& captures) {
 }
 
 void generateSlidingCaptures(const Board& board, int side, MoveList& captures) {
-    const u64 enemy = (side == Data::Piece::WHITE) ? board.getOccupancyBlack() : board.getOccupancyWhite();
+    const u64 enemy = (side == Constants::Piece::WHITE) ? board.getOccupancyBlack() : board.getOccupancyWhite();
 
     // rooks
     {
-        const u64 rooks = (side == Data::Piece::WHITE) ? board.getBitboard(PieceType::WR) : board.getBitboard(PieceType::BR);
+        const u64 rooks =
+            (side == Constants::Piece::WHITE) ? board.getBitboard(PieceType::WR) : board.getBitboard(PieceType::BR);
 
         u64 bb = rooks;
         while (bb) {
-            const int from = popLeastSigBit(bb);
+            const int from    = popLeastSigBit(bb);
             const u64 attacks = rookAttacksMagic(from, board.getOccupancyAll()) & enemy;
 
             u64 atk = attacks;
@@ -466,11 +478,12 @@ void generateSlidingCaptures(const Board& board, int side, MoveList& captures) {
 
     // bishops
     {
-        const u64 bishops = (side == Data::Piece::WHITE) ? board.getBitboard(PieceType::WB) : board.getBitboard(PieceType::BB);
+        const u64 bishops =
+            (side == Constants::Piece::WHITE) ? board.getBitboard(PieceType::WB) : board.getBitboard(PieceType::BB);
 
         u64 bb = bishops;
         while (bb) {
-            const int from = popLeastSigBit(bb);
+            const int from    = popLeastSigBit(bb);
             const u64 attacks = bishopAttacksMagic(from, board.getOccupancyAll()) & enemy;
 
             u64 atk = attacks;
@@ -483,13 +496,15 @@ void generateSlidingCaptures(const Board& board, int side, MoveList& captures) {
 
     // queens
     {
-        const u64 queens = (side == Data::Piece::WHITE) ? board.getBitboard(PieceType::WQ) : board.getBitboard(PieceType::BQ);
+        const u64 queens =
+            (side == Constants::Piece::WHITE) ? board.getBitboard(PieceType::WQ) : board.getBitboard(PieceType::BQ);
 
         u64 bb = queens;
         while (bb) {
             const int from = popLeastSigBit(bb);
-            const u64 attacks = (rookAttacksMagic(from, board.getOccupancyAll()) |
-                           bishopAttacksMagic(from, board.getOccupancyAll())) & enemy;
+            const u64 attacks =
+                (rookAttacksMagic(from, board.getOccupancyAll()) | bishopAttacksMagic(from, board.getOccupancyAll())) &
+                enemy;
 
             u64 atk = attacks;
             while (atk) {
@@ -501,10 +516,11 @@ void generateSlidingCaptures(const Board& board, int side, MoveList& captures) {
 }
 
 void generateKingCaptures(const Board& board, int side, MoveList& captures) {
-    const u64 king = (side == Data::Piece::WHITE) ? board.getBitboard(PieceType::WK) : board.getBitboard(PieceType::BK);
-    const u64 enemy = (side == Data::Piece::WHITE) ? board.getOccupancyBlack() : board.getOccupancyWhite();
+    const u64 king =
+        (side == Constants::Piece::WHITE) ? board.getBitboard(PieceType::WK) : board.getBitboard(PieceType::BK);
+    const u64 enemy = (side == Constants::Piece::WHITE) ? board.getOccupancyBlack() : board.getOccupancyWhite();
 
-    const int from = __builtin_ctzll(king);
+    const int from    = __builtin_ctzll(king);
     const u64 attacks = kingAttacks[from] & enemy;
 
     u64 bb = attacks;
@@ -527,4 +543,4 @@ void generateEvasions(Board& board, MoveList& evasions) {
     generateLegalMoves(board, evasions);
 }
 
-}
+} // namespace MoveGen

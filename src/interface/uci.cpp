@@ -12,8 +12,8 @@ void uciLoop(Board& board) {
 
     while (std::getline(std::cin, line)) {
         trim(line);
-        std::string cmd = Interface::getCommandWord(line);
 
+        std::string cmd = Interface::getCommandWord(line);
         if (cmd == "uci") {
             std::cout << "id name MyEngine\n";
             std::cout << "id author Thomas\n";

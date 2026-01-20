@@ -9,6 +9,7 @@
 int main() {
     initMatch();
     Board board;
+    board.setupStartPosition();
 
     std::string first;
     if (!std::getline(std::cin, first))

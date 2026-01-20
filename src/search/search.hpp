@@ -14,7 +14,7 @@ namespace Search {
     SearchResult searchBestMove(Board& board, int depth);
 
 
-    inline void updateEntry(TTEntry& entry, u64 key, int depth, int score, const Move& bestMove, u8 flag) {
+    inline void updateEntry(TTEntry& entry, const u64 key, const int depth, const int score, const Move& bestMove, const u8 flag) {
         entry.key = key;
         entry.depth = depth;
         entry.score = score;

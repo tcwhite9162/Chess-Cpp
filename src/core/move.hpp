@@ -37,11 +37,11 @@ struct Move {
         return data != 0;
     }
 
-    NO_DISCARD bool isCapture() const { return flags() & (Flags::FLAG_CAPTURE | Flags::FLAG_EN_PASSANT); }
-    NO_DISCARD bool isPromotion() const { return flags() & Flags::FLAG_PROMOTION; }
-    NO_DISCARD bool isEnPassant() const { return flags() & Flags::FLAG_EN_PASSANT; }
-    NO_DISCARD bool isDoublePush() const { return flags() & Flags::FLAG_DOUBLE_PUSH; }
-    NO_DISCARD bool isCastle() const { return flags() & Flags::FLAG_CASTLE_ANY; }
+    NO_DISCARD bool isCapture()    const { return flags() & (Flags::FLAG_CAPTURE | Flags::FLAG_EN_PASSANT); }
+    NO_DISCARD bool isPromotion()  const { return flags() &  Flags::FLAG_PROMOTION; }
+    NO_DISCARD bool isEnPassant()  const { return flags() &  Flags::FLAG_EN_PASSANT; }
+    NO_DISCARD bool isDoublePush() const { return flags() &  Flags::FLAG_DOUBLE_PUSH; }
+    NO_DISCARD bool isCastle()     const { return flags() &  Flags::FLAG_CASTLE_ANY; }
 
     NO_DISCARD bool isQuiet() const {
         return !(flags() & (Flags::FLAG_EN_PASSANT| Flags::FLAG_CAPTURE | Flags::FLAG_PROMOTION | Flags::FLAG_CASTLE_ANY));
@@ -50,10 +50,10 @@ struct Move {
     NO_DISCARD int promotionPiece() const {
         if (!(flags() & Flags::FLAG_PROMOTION)) return 0;
 
-        if (flags() & Flags::FLAG_PROMO_Q) return Data::Piece::QUEEN;
-        if (flags() & Flags::FLAG_PROMO_R) return Data::Piece::ROOK;
-        if (flags() & Flags::FLAG_PROMO_B) return Data::Piece::BISHOP;
-        if (flags() & Flags::FLAG_PROMO_N) return Data::Piece::KNIGHT;
+        if (flags() & Flags::FLAG_PROMO_Q) return Constants::Piece::QUEEN;
+        if (flags() & Flags::FLAG_PROMO_R) return Constants::Piece::ROOK;
+        if (flags() & Flags::FLAG_PROMO_B) return Constants::Piece::BISHOP;
+        if (flags() & Flags::FLAG_PROMO_N) return Constants::Piece::KNIGHT;
 
         return 0;
     }

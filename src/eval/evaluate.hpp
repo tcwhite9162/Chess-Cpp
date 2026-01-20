@@ -2,7 +2,7 @@
 
 #include "core/board.hpp"
 
-namespace Eval {
+namespace Evaluate {
 
     int pstValue(int piece, int square);
     int kingSafety(const Board& board);

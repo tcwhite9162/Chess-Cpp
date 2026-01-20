@@ -6,16 +6,16 @@ int countMobility(const Board& board, int side) {
 
     for (int square = 0; square < 64; square++) {
         int piece = board.getPiece(square);
-        if (piece == Data::Piece::EMPTY) continue;
-        if ((side == Data::Piece::WHITE && piece < 0) || (side == Data::Piece::BLACK && piece > 0)) continue;
+        if (piece == Constants::Piece::EMPTY) continue;
+        if ((side == Constants::Piece::WHITE && piece < 0) || (side == Constants::Piece::BLACK && piece > 0)) continue;
 
         switch (std::abs(piece)) {
-            case Data::Piece::PAWN:   count += countPawnMobility(board,   square, piece); break;
-            case Data::Piece::KNIGHT: count += countKnightMobility(board, square, piece); break;
-            case Data::Piece::BISHOP: count += countBishopMobility(board, square, piece); break;
-            case Data::Piece::ROOK:   count += countRookMobility(board,   square, piece); break;
-            case Data::Piece::QUEEN:  count += countQueenMobility(board,  square, piece); break;
-            case Data::Piece::KING:   count += countKingMobility(board,   square, piece); break;
+            case Constants::Piece::PAWN:   count += countPawnMobility(board,   square, piece); break;
+            case Constants::Piece::KNIGHT: count += countKnightMobility(board, square, piece); break;
+            case Constants::Piece::BISHOP: count += countBishopMobility(board, square, piece); break;
+            case Constants::Piece::ROOK:   count += countRookMobility(board,   square, piece); break;
+            case Constants::Piece::QUEEN:  count += countQueenMobility(board,  square, piece); break;
+            case Constants::Piece::KING:   count += countKingMobility(board,   square, piece); break;
 
             default: break;
         }
@@ -26,33 +26,33 @@ int countMobility(const Board& board, int side) {
 
 int countPawnMobility(const Board& board, int square, int piece) {
     int count = 0;
-    int direction = (piece == Data::Piece::W_PAWN ? Data::Board::UP : Data::Board::DOWN);
+    const int direction = (piece == Constants::Piece::W_PAWN ? Constants::Squares::UP : Constants::Squares::DOWN);
 
-    int forwardOne = square + direction;
-    if (forwardOne >= 0 && forwardOne < 64 && board.getPiece(forwardOne) == Data::Piece::EMPTY) {
+    const int forwardOne = square + direction;
+    if (forwardOne >= 0 && forwardOne < 64 && board.getPiece(forwardOne) == Constants::Piece::EMPTY) {
         count++;
 
-        int rank = square / 8;
-        int startRank = (piece == Data::Piece::W_PAWN ? Data::Move::WHITE_PAWN_START : Data::Move::BLACK_PAWN_START);
+        const int rank = square / 8;
+        const int startRank = (piece == Constants::Piece::W_PAWN ? Constants::Moves::WHITE_PAWN_START : Constants::Moves::BLACK_PAWN_START);
         if (rank == startRank) {
-            int forwardTwo = forwardOne + direction;
-            if (forwardTwo >= 0 && forwardTwo < 64 && board.getPiece(forwardTwo) == Data::Piece::EMPTY) {
+            const int forwardTwo = forwardOne + direction;
+            if (forwardTwo >= 0 && forwardTwo < 64 && board.getPiece(forwardTwo) == Constants::Piece::EMPTY) {
                 count++;
             }
         }
     }
 
     const int captureOffsets[2] = {direction - 1, direction + 1};
-    for (int offset : captureOffsets) {
-        int captureSquare = square + offset;
+    for (const int offset : captureOffsets) {
+        const int captureSquare = square + offset;
         if (captureSquare < 0 || captureSquare >= 64) continue;
 
-        int file = square % 8;
-        int captureFile = captureSquare % 8;
+        const int file = square % 8;
+        const int captureFile = captureSquare % 8;
         if (captureFile != file + 1 && captureFile != captureFile - 1) continue;
 
-        int target = board.getPiece(captureSquare);
-        if ((target != Data::Piece::EMPTY && isOpponent(piece, target)) ||
+        const int target = board.getPiece(captureSquare);
+        if ((target != Constants::Piece::EMPTY && isOpponent(piece, target)) ||
             (captureSquare == board.getEnPassant() && board.enPassantAvailable())) {
             count++;
         }
@@ -64,16 +64,16 @@ int countPawnMobility(const Board& board, int square, int piece) {
 int countKnightMobility(const Board& board, int square, int piece) {
     int count = 0;
 
-    for (int off : Data::Move::KNIGHT_DIRS) {
-        int target = square + off;
+    for (const int off : Constants::Moves::KNIGHT_DIRS) {
+        const int target = square + off;
 
-        int fromFile = square % 8;
-        int toFile = target % 8;
+        const int fromFile = square % 8;
+        const int toFile = target % 8;
         if (std::abs(fromFile - toFile) > 2) continue;
 
         if (target >= 0 && target < 64) {
-            int targetPiece = board.getPiece(target);
-            if (targetPiece == Data::Piece::EMPTY || isOpponent(piece, targetPiece)) {
+            const int targetPiece = board.getPiece(target);
+            if (targetPiece == Constants::Piece::EMPTY || isOpponent(piece, targetPiece)) {
                 count++;
             }
         }
@@ -85,20 +85,20 @@ int countKnightMobility(const Board& board, int square, int piece) {
 int countBishopMobility(const Board& board, int square, int piece) {
     int count = 0;
 
-    for (int dir : Data::Move::BISHOP_DIRS) {
+    for (const int dir : Constants::Moves::BISHOP_DIRS) {
         int target = square;
         while (true) {
-            int prev = target;
+            const int prev = target;
             target += dir;
             if (target < 0 || target >= 64) break;
 
             // Diagonal wrap guard
-            int prevFile = prev % 8;
-            int toFile = target % 8;
+            const int prevFile = prev % 8;
+            const int toFile = target % 8;
             if (std::abs(toFile - prevFile) != 1) break;
 
-            int targetPiece = board.getPiece(target);
-            if (targetPiece == Data::Piece::EMPTY) {
+            const int targetPiece = board.getPiece(target);
+            if (targetPiece == Constants::Piece::EMPTY) {
                 count++;
             } else {
                 if (isOpponent(piece, targetPiece)) {
@@ -115,22 +115,22 @@ int countBishopMobility(const Board& board, int square, int piece) {
 int countRookMobility(const Board& board, int square, int piece) {
     int count = 0;
 
-    for (int dir : Data::Move::ROOK_DIRS) {
+    for (const int dir : Constants::Moves::ROOK_DIRS) {
         int target = square;
         while (true) {
-            int prev = target;
+            const int prev = target;
             target += dir;
             if (target < 0 || target >= 64) break;
 
             // Horizontal wrap guard
             if (dir == -1 || dir == 1) {
-                int prevFile = prev % 8;
-                int toFile = target % 8;
+                const int prevFile = prev % 8;
+                const int toFile = target % 8;
                 if (std::abs(toFile - prevFile) != 1) break;
             }
 
-            int targetPiece = board.getPiece(target);
-            if (targetPiece == Data::Piece::EMPTY) {
+            const int targetPiece = board.getPiece(target);
+            if (targetPiece == Constants::Piece::EMPTY) {
                 count++;
             } else {
                 if (isOpponent(piece, targetPiece)) {
@@ -153,16 +153,16 @@ int countQueenMobility(const Board& board, int square, int piece) {
 int countKingMobility(const Board& board, int square, int piece) {
     int count = 0;
 
-    for (int off : Data::Move::KING_DIRS) {
-        int target = square + off;
+    for (const int off : Constants::Moves::KING_DIRS) {
+        const int target = square + off;
 
-        int fromFile = square % 8;
-        int toFile = target % 8;
+        const int fromFile = square % 8;
+        const int toFile = target % 8;
         if (std::abs(fromFile - toFile) > 1) continue;
 
         if (target >= 0 && target < 64) {
-            int targetPiece = board.getPiece(target);
-            if (targetPiece == Data::Piece::EMPTY || isOpponent(piece, targetPiece)) {
+            const int targetPiece = board.getPiece(target);
+            if (targetPiece == Constants::Piece::EMPTY || isOpponent(piece, targetPiece)) {
                 count++;
             }
         }

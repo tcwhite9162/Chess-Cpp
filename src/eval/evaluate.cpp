@@ -3,7 +3,7 @@
 #include "eval/evaluate.hpp"
 #include "eval/eval-helpers.hpp"
 
-namespace Eval {
+namespace Evaluate {
 
 int evaluate(const Board& board) {
     int material = 0;
@@ -12,16 +12,16 @@ int evaluate(const Board& board) {
     // material / pst
     for (int square = 0; square < 64; square++) {
         const int piece = board.getPiece(square);
-        if (piece == Data::Piece::EMPTY) continue;
+        if (piece == Constants::Piece::EMPTY) continue;
 
         int val = 0;
         switch (std::abs(piece)) {
-            case Data::Piece::PAWN:   val = Data::Eval::PAWN_VAL; break;
-            case Data::Piece::KNIGHT: val = Data::Eval::KNIGHT_VAL; break;
-            case Data::Piece::BISHOP: val = Data::Eval::BISHOP_VAL; break;
-            case Data::Piece::ROOK:   val = Data::Eval::ROOK_VAL; break;
-            case Data::Piece::QUEEN:  val = Data::Eval::QUEEN_VAL; break;
-            case Data::Piece::KING:   val = Data::Eval::KING_VAL; break;
+            case Constants::Piece::PAWN:   val = Constants::Eval::PAWN_VAL; break;
+            case Constants::Piece::KNIGHT: val = Constants::Eval::KNIGHT_VAL; break;
+            case Constants::Piece::BISHOP: val = Constants::Eval::BISHOP_VAL; break;
+            case Constants::Piece::ROOK:   val = Constants::Eval::ROOK_VAL; break;
+            case Constants::Piece::QUEEN:  val = Constants::Eval::QUEEN_VAL; break;
+            case Constants::Piece::KING:   val = Constants::Eval::KING_VAL; break;
             default: ;
         }
 
@@ -32,7 +32,7 @@ int evaluate(const Board& board) {
     // mobility
     const int myMoves  = countMobility(board, board.getTurn());
     const int oppMoves = countMobility(board, -board.getTurn());
-    const int mobilityScore = Data::Eval::MOBILITY_FACTOR * (myMoves - oppMoves);
+    const int mobilityScore = Constants::Eval::MOBILITY_FACTOR * (myMoves - oppMoves);
 
     // pawn structure
     int pawnScore = 0;
@@ -40,28 +40,28 @@ int evaluate(const Board& board) {
     int filesOpp[8] = {0};
 
     for (int square = 0; square < 64; square++) {
-        int piece = board.getPiece(square);
+        const int piece = board.getPiece(square);
 
-        if (piece == Data::Piece::W_PAWN) {
-            int file = square % 8;
+        if (piece == Constants::Piece::W_PAWN) {
+            const int file = square % 8;
             files[file]++;
         }
-        else if (piece == Data::Piece::B_PAWN) {
-            int file = square % 8;
+        else if (piece == Constants::Piece::B_PAWN) {
+            const int file = square % 8;
             filesOpp[file]++;
         }
     }
 
     for (int f = 0; f < 8; f++) {
         if (files[f] > 1) {
-            pawnScore -= Data::Eval::PAWN_PENALTY * (files[f] - 1);
+            pawnScore -= Constants::Eval::PAWN_PENALTY * (files[f] - 1);
         }
         if (filesOpp[f] > 1) {
-            pawnScore += Data::Eval::PAWN_PENALTY * (filesOpp[f] - 1);
+            pawnScore += Constants::Eval::PAWN_PENALTY * (filesOpp[f] - 1);
         }
     }
 
-    int whiteScore = material + pstSum + mobilityScore + pawnScore + kingSafety(board);
+    const int whiteScore = material + pstSum + mobilityScore + pawnScore + kingSafety(board);
 
     return whiteScore * board.getTurn(); // negative if blacks turn (-1)
 }
@@ -84,17 +84,17 @@ int kingSafety(const Board& board) {
     const int wkFile = wkPos % 8;
     const int wkRank = wkPos / 8;
 
-    if (wkPos == Data::Castling::WHITE_KINGSIDE_END || wkPos == Data::Castling::WHITE_QUEENSIDE_END) {
+    if (wkPos == Constants::Castling::WHITE_KINGSIDE_END || wkPos == Constants::Castling::WHITE_QUEENSIDE_END) {
         score += 40;
     }
-    else if (wkPos == Data::Castling::WHITE_KING_START) {
+    else if (wkPos == Constants::Castling::WHITE_KING_START) {
         score -= 20;
     }
 
     if (wkRank == 7) {
         for (int dFile = -1; dFile <= 1; dFile++) {
             if (const int file = wkFile + dFile; 0 <= file && file < 8) {
-                if (int square = (wkRank - 1) * 8 + file; board.getPiece(square) == Data::Piece::W_PAWN) {
+                if (const int square = (wkRank - 1) * 8 + file; board.getPiece(square) == Constants::Piece::W_PAWN) {
                     score += 10; }
                 else {
                     score -= 10; }
@@ -106,17 +106,17 @@ int kingSafety(const Board& board) {
     const int bkFile = bkPos % 8;
     const int bkRank = bkPos / 8;
 
-    if (bkPos == Data::Castling::BLACK_KINGSIDE_END || bkPos == Data::Castling::BLACK_QUEENSIDE_END) {
+    if (bkPos == Constants::Castling::BLACK_KINGSIDE_END || bkPos == Constants::Castling::BLACK_QUEENSIDE_END) {
         score -= 40;
     }
-    else if (bkPos == Data::Castling::BLACK_KING_START) {
+    else if (bkPos == Constants::Castling::BLACK_KING_START) {
         score += 20;
     }
 
     if (bkRank == 0) {
         for (int dFile = -1; dFile <= 1; dFile++) {
             if (const int file = bkFile + dFile; 0 <= file && file < 8) {
-                if (const int square = (bkRank + 1) * 8 + file; board.getPiece(square) == Data::Piece::B_PAWN) {
+                if (const int square = (bkRank + 1) * 8 + file; board.getPiece(square) == Constants::Piece::B_PAWN) {
                     score -= 10; }
                 else {
                     score += 10; }

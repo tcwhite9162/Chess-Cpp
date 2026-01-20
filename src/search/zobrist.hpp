@@ -2,11 +2,13 @@
 
 #include <cstdint>
 
+using u64 = uint64_t;
+
 namespace Zobrist {
-    extern uint64_t piece[12][64];
-    extern uint64_t castling[16];
-    extern uint64_t enpassant[8];
-    extern uint64_t side;
+    extern u64 piece[12][64];
+    extern u64 castling[16];
+    extern u64 enpassant[8];
+    extern u64 side;
 
     void initZobrist();
 }

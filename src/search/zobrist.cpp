@@ -3,11 +3,13 @@
 
 #include "search/zobrist.hpp"
 
+using u64 = uint64_t;
+
 namespace Zobrist {
-    uint64_t piece[12][64];      // 6 white + 6 black pieces
-    uint64_t castling[16];       // 4 bits → 16 possible castling states
-    uint64_t enpassant[8];       // file 0–7
-    uint64_t side;               // side to move
+    u64 piece[12][64];      // 6 white + 6 black pieces
+    u64 castling[16];       // 4 bits → 16 possible castling states
+    u64 enpassant[8];       // file 0–7
+    u64 side;               // side to move
 
     void initZobrist() {
         std::mt19937_64 rng(0xABCDEF123456789ULL);
