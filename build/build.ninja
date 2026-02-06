@@ -52,7 +52,7 @@ build cmake_object_order_depends_target_main: phony || .
 build CMakeFiles/main.dir/src/bitboard/bitboard.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/src/bitboard/bitboard.cpp || cmake_object_order_depends_target_main
   CONFIG = Debug
   DEP_FILE = CMakeFiles/main.dir/src/bitboard/bitboard.cpp.o.d
-  FLAGS = -g -std=gnu++17
+  FLAGS = -g -std=gnu++17 -Wall -Wextra -pedantic
   INCLUDES = -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests
   OBJECT_DIR = CMakeFiles/main.dir
   OBJECT_FILE_DIR = CMakeFiles/main.dir/src/bitboard
@@ -61,7 +61,7 @@ build CMakeFiles/main.dir/src/bitboard/bitboard.cpp.o: CXX_COMPILER__main_unscan
 build CMakeFiles/main.dir/src/core/board.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/src/core/board.cpp || cmake_object_order_depends_target_main
   CONFIG = Debug
   DEP_FILE = CMakeFiles/main.dir/src/core/board.cpp.o.d
-  FLAGS = -g -std=gnu++17
+  FLAGS = -g -std=gnu++17 -Wall -Wextra -pedantic
   INCLUDES = -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests
   OBJECT_DIR = CMakeFiles/main.dir
   OBJECT_FILE_DIR = CMakeFiles/main.dir/src/core
@@ -70,7 +70,7 @@ build CMakeFiles/main.dir/src/core/board.cpp.o: CXX_COMPILER__main_unscanned_Deb
 build CMakeFiles/main.dir/src/eval/eval-helpers.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/src/eval/eval-helpers.cpp || cmake_object_order_depends_target_main
   CONFIG = Debug
   DEP_FILE = CMakeFiles/main.dir/src/eval/eval-helpers.cpp.o.d
-  FLAGS = -g -std=gnu++17
+  FLAGS = -g -std=gnu++17 -Wall -Wextra -pedantic
   INCLUDES = -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests
   OBJECT_DIR = CMakeFiles/main.dir
   OBJECT_FILE_DIR = CMakeFiles/main.dir/src/eval
@@ -79,7 +79,7 @@ build CMakeFiles/main.dir/src/eval/eval-helpers.cpp.o: CXX_COMPILER__main_unscan
 build CMakeFiles/main.dir/src/eval/evaluate.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/src/eval/evaluate.cpp || cmake_object_order_depends_target_main
   CONFIG = Debug
   DEP_FILE = CMakeFiles/main.dir/src/eval/evaluate.cpp.o.d
-  FLAGS = -g -std=gnu++17
+  FLAGS = -g -std=gnu++17 -Wall -Wextra -pedantic
   INCLUDES = -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests
   OBJECT_DIR = CMakeFiles/main.dir
   OBJECT_FILE_DIR = CMakeFiles/main.dir/src/eval
@@ -88,7 +88,7 @@ build CMakeFiles/main.dir/src/eval/evaluate.cpp.o: CXX_COMPILER__main_unscanned_
 build CMakeFiles/main.dir/src/interface/interface.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/src/interface/interface.cpp || cmake_object_order_depends_target_main
   CONFIG = Debug
   DEP_FILE = CMakeFiles/main.dir/src/interface/interface.cpp.o.d
-  FLAGS = -g -std=gnu++17
+  FLAGS = -g -std=gnu++17 -Wall -Wextra -pedantic
   INCLUDES = -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests
   OBJECT_DIR = CMakeFiles/main.dir
   OBJECT_FILE_DIR = CMakeFiles/main.dir/src/interface
@@ -97,7 +97,7 @@ build CMakeFiles/main.dir/src/interface/interface.cpp.o: CXX_COMPILER__main_unsc
 build CMakeFiles/main.dir/src/interface/uci.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/src/interface/uci.cpp || cmake_object_order_depends_target_main
   CONFIG = Debug
   DEP_FILE = CMakeFiles/main.dir/src/interface/uci.cpp.o.d
-  FLAGS = -g -std=gnu++17
+  FLAGS = -g -std=gnu++17 -Wall -Wextra -pedantic
   INCLUDES = -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests
   OBJECT_DIR = CMakeFiles/main.dir
   OBJECT_FILE_DIR = CMakeFiles/main.dir/src/interface
@@ -106,7 +106,7 @@ build CMakeFiles/main.dir/src/interface/uci.cpp.o: CXX_COMPILER__main_unscanned_
 build CMakeFiles/main.dir/src/main.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/src/main.cpp || cmake_object_order_depends_target_main
   CONFIG = Debug
   DEP_FILE = CMakeFiles/main.dir/src/main.cpp.o.d
-  FLAGS = -g -std=gnu++17
+  FLAGS = -g -std=gnu++17 -Wall -Wextra -pedantic
   INCLUDES = -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests
   OBJECT_DIR = CMakeFiles/main.dir
   OBJECT_FILE_DIR = CMakeFiles/main.dir/src
@@ -115,7 +115,7 @@ build CMakeFiles/main.dir/src/main.cpp.o: CXX_COMPILER__main_unscanned_Debug /ho
 build CMakeFiles/main.dir/src/movegen/moveGen.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/src/movegen/moveGen.cpp || cmake_object_order_depends_target_main
   CONFIG = Debug
   DEP_FILE = CMakeFiles/main.dir/src/movegen/moveGen.cpp.o.d
-  FLAGS = -g -std=gnu++17
+  FLAGS = -g -std=gnu++17 -Wall -Wextra -pedantic
   INCLUDES = -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests
   OBJECT_DIR = CMakeFiles/main.dir
   OBJECT_FILE_DIR = CMakeFiles/main.dir/src/movegen
@@ -124,7 +124,7 @@ build CMakeFiles/main.dir/src/movegen/moveGen.cpp.o: CXX_COMPILER__main_unscanne
 build CMakeFiles/main.dir/src/search/ordering.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/src/search/ordering.cpp || cmake_object_order_depends_target_main
   CONFIG = Debug
   DEP_FILE = CMakeFiles/main.dir/src/search/ordering.cpp.o.d
-  FLAGS = -g -std=gnu++17
+  FLAGS = -g -std=gnu++17 -Wall -Wextra -pedantic
   INCLUDES = -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests
   OBJECT_DIR = CMakeFiles/main.dir
   OBJECT_FILE_DIR = CMakeFiles/main.dir/src/search
@@ -133,7 +133,7 @@ build CMakeFiles/main.dir/src/search/ordering.cpp.o: CXX_COMPILER__main_unscanne
 build CMakeFiles/main.dir/src/search/quiescence.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/src/search/quiescence.cpp || cmake_object_order_depends_target_main
   CONFIG = Debug
   DEP_FILE = CMakeFiles/main.dir/src/search/quiescence.cpp.o.d
-  FLAGS = -g -std=gnu++17
+  FLAGS = -g -std=gnu++17 -Wall -Wextra -pedantic
   INCLUDES = -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests
   OBJECT_DIR = CMakeFiles/main.dir
   OBJECT_FILE_DIR = CMakeFiles/main.dir/src/search
@@ -142,7 +142,7 @@ build CMakeFiles/main.dir/src/search/quiescence.cpp.o: CXX_COMPILER__main_unscan
 build CMakeFiles/main.dir/src/search/search.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/src/search/search.cpp || cmake_object_order_depends_target_main
   CONFIG = Debug
   DEP_FILE = CMakeFiles/main.dir/src/search/search.cpp.o.d
-  FLAGS = -g -std=gnu++17
+  FLAGS = -g -std=gnu++17 -Wall -Wextra -pedantic
   INCLUDES = -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests
   OBJECT_DIR = CMakeFiles/main.dir
   OBJECT_FILE_DIR = CMakeFiles/main.dir/src/search
@@ -151,7 +151,7 @@ build CMakeFiles/main.dir/src/search/search.cpp.o: CXX_COMPILER__main_unscanned_
 build CMakeFiles/main.dir/src/search/zobrist.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/src/search/zobrist.cpp || cmake_object_order_depends_target_main
   CONFIG = Debug
   DEP_FILE = CMakeFiles/main.dir/src/search/zobrist.cpp.o.d
-  FLAGS = -g -std=gnu++17
+  FLAGS = -g -std=gnu++17 -Wall -Wextra -pedantic
   INCLUDES = -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests
   OBJECT_DIR = CMakeFiles/main.dir
   OBJECT_FILE_DIR = CMakeFiles/main.dir/src/search
@@ -160,7 +160,7 @@ build CMakeFiles/main.dir/src/search/zobrist.cpp.o: CXX_COMPILER__main_unscanned
 build CMakeFiles/main.dir/tests/tests.cpp.o: CXX_COMPILER__main_unscanned_Debug /home/tcwhite/Projects/C-C++/Chess/tests/tests.cpp || cmake_object_order_depends_target_main
   CONFIG = Debug
   DEP_FILE = CMakeFiles/main.dir/tests/tests.cpp.o.d
-  FLAGS = -g -std=gnu++17
+  FLAGS = -g -std=gnu++17 -Wall -Wextra -pedantic
   INCLUDES = -I/home/tcwhite/Projects/C-C++/Chess/src -I/home/tcwhite/Projects/C-C++/Chess/data -I/home/tcwhite/Projects/C-C++/Chess/tests
   OBJECT_DIR = CMakeFiles/main.dir
   OBJECT_FILE_DIR = CMakeFiles/main.dir/tests
@@ -244,14 +244,14 @@ build /home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/cmake.verify_globs: VE
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja /home/tcwhite/Projects/C-C++/Chess/build/cmake_install.cmake: RERUN_CMAKE /home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/cmake.verify_globs | /home/tcwhite/Projects/C-C++/Chess/CMakeLists.txt /home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/VerifyGlobs.cmake /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /usr/share/cmake/Modules/Linker/GNU-CXX.cmake /usr/share/cmake/Modules/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.0/CMakeCXXCompiler.cmake CMakeFiles/4.2.0/CMakeSystem.cmake
+build build.ninja /home/tcwhite/Projects/C-C++/Chess/build/cmake_install.cmake: RERUN_CMAKE /home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/cmake.verify_globs | /home/tcwhite/Projects/C-C++/Chess/CMakeLists.txt /home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/VerifyGlobs.cmake /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /usr/share/cmake/Modules/Linker/GNU-CXX.cmake /usr/share/cmake/Modules/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.1/CMakeCXXCompiler.cmake CMakeFiles/4.2.1/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build /home/tcwhite/Projects/C-C++/Chess/CMakeLists.txt /home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/VerifyGlobs.cmake /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /usr/share/cmake/Modules/Linker/GNU-CXX.cmake /usr/share/cmake/Modules/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.0/CMakeCXXCompiler.cmake CMakeFiles/4.2.0/CMakeSystem.cmake: phony
+build /home/tcwhite/Projects/C-C++/Chess/CMakeLists.txt /home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/VerifyGlobs.cmake /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /usr/share/cmake/Modules/Linker/GNU-CXX.cmake /usr/share/cmake/Modules/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.1/CMakeCXXCompiler.cmake CMakeFiles/4.2.1/CMakeSystem.cmake: phony
 
 
 #############################################
