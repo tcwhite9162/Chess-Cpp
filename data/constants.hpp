@@ -30,9 +30,10 @@ namespace Flags {
 
 }
 
-namespace Data {
+// namespace Data {
+namespace Constants {
 
-namespace Board {
+namespace Squares {
 
     // index offsets for orthogonal moves
     constexpr int UP    = -8;
@@ -104,7 +105,7 @@ namespace Piece {
 
 }
 
-namespace Move {
+namespace Moves {
 
     // piece move directions
     constexpr int ROOK_DIRS[4]   = {-8, 8, -1, 1}; // up, down, left, right
@@ -206,7 +207,6 @@ namespace Search {
 
 }
 
-// fen's
 namespace FEN {
     const std::string startFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -220,4 +220,4 @@ namespace FEN {
     const std::string testFens[5] = {testFen_1, testFen_2, testFen_3, testFen_4, testFen_5};
 }
 
-}
+} // namespace Data

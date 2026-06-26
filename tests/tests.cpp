@@ -1,4 +1,5 @@
 #include <chrono>
+#include <iomanip>
 #include <string>
 #include <iostream>
 
@@ -20,7 +21,7 @@ long long perft(Board &board, int depth) {
         Move move = movesList.moves[i];
         board.makeMove(move, false);
         nodes += perft(board, depth - 1);
-        board.unmakeMove(move, false);
+        board.unmakeMove(false);
     }
     return nodes;
 }
@@ -28,13 +29,22 @@ long long perft(Board &board, int depth) {
 void testAllPerft(Board &board, int depth) {
     for (int d = 1; d <= depth; d++) {
         long long n = perft(board, d);
-        std::cout << "perft(" << d << ") = " << n << std::endl;
+        std::cout << "perft(" << d << ") = " << n << "\n";
     }
 }
 
 void testSinglePerft(Board &board, int depth) {
+
+    auto start = std::chrono::high_resolution_clock::now();
+
     long long n = perft(board, depth);
-    std::cout << "perft(" << depth << ") = " << n << std::endl;
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto ms  = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+    std::cout << std::fixed << std::setprecision(1);
+    std::cout << "perft(" << depth << ") = " << n << "\n";
+    std::cout << "time: " << (float)ms << "ms" << "\n";
 }
 
 long long perftDivide(Board &board, int depth) {
@@ -46,7 +56,7 @@ long long perftDivide(Board &board, int depth) {
         Move m = movesList.moves[i];
         board.makeMove(m, false);
         long long nodes = perft(board, depth - 1);
-        board.unmakeMove(m, false);
+        board.unmakeMove(false);
         std::cout << m.to_string() << ": " << nodes << "\n";
         total += nodes;
     }
@@ -78,12 +88,12 @@ long long perft_debug(Board &board, int depth) {
         if (board.isInCheck(board.getTurn())) {
             std::cout << "Illegal move (king in check): " << move.to_string()
                       << " at depth " << depth << "\n";
-            board.unmakeMove(move, false);
+            board.unmakeMove(false);
             continue;
         }
 
         nodes += perft_debug(board, depth - 1);
-        board.unmakeMove(move, false);
+        board.unmakeMove(false);
     }
     return nodes;
 }
@@ -95,7 +105,7 @@ void debugGeneratePawnMoves(const Board &board, int color) {
 
     std::cout << "count: " << moves.count << "\n";
 
-    std::cout << (color == Data::Piece::WHITE ? "White pawn moves:\n" : "Black pawn moves:\n");
+    std::cout << (color == Constants::Piece::WHITE ? "White pawn moves:\n" : "Black pawn moves:\n");
 
     for (int i = 0; i < moves.count; i++) {
         Move m = moves.moves[i];
@@ -118,7 +128,7 @@ void debugGeneratePawnMoves(const Board &board, int color) {
 }
 
 void perftTestSuite(Board& board, int depth) {
-    for (std::string fen : Data::FEN::testFens) {
+    for (const std::string& fen : Constants::FEN::testFens) {
         std::cout << "input FEN --- " << fen << "\n";
         board.setupFromFen(fen);
         std::cout << "--start position--\n";

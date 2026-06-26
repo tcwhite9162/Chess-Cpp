@@ -12,6 +12,7 @@ namespace Search {
 
     int negamax(Board& board, int depth, int alpha, int beta);
     SearchResult searchBestMove(Board& board, int depth);
+    SearchResult searchBestMovetime(Board& board, int time);
 
 
     inline void updateEntry(TTEntry& entry, const u64 key, const int depth, const int score, const Move& bestMove, const u8 flag) {

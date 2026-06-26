@@ -1,8 +1,8 @@
 #pragma once
 
 #include <array>
-#include <cstdint>
 #include <vector>
+#include <cstdint>
 
 #include "bitboard/bitboard.hpp"
 #include "core/undoInfo.hpp"
@@ -21,13 +21,15 @@ enum class PieceType : u8 { // used for index into bitboard array
 };
 
 struct PieceBitBoards {
-    std::array<u64, 12> data{};
 
     u64& operator[](PieceType p) { return data[static_cast<u8>(p)]; }
 
     const u64& operator[](PieceType p) const { return data[static_cast<u8>(p)]; }
 
     void fill(u64 val) { data.fill(val); }
+
+    private:
+        std::array<u64, 12> data{};
 };
 
 class Board {

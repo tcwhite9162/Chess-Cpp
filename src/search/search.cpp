@@ -1,5 +1,5 @@
-#include "eval/evaluate.hpp"
 #include "search/search.hpp"
+#include "eval/evaluate.hpp"
 #include "search/ordering.hpp"
 #include "search/quiescence.hpp"
 
@@ -20,7 +20,7 @@ int negamax(Board& board, int depth, int alpha, int beta) {
         return 0;
     }
 
-    const u64 key = board.getZobristKey();
+    const u64 key  = board.getZobristKey();
     TTEntry& entry = TT[key];
 
     if (board.isTerminal()) {
@@ -74,7 +74,7 @@ int negamax(Board& board, int depth, int alpha, int beta) {
         board.unmakeMove(true);
 
         if (value > maxVal) {
-            maxVal = value;
+            maxVal   = value;
             bestMove = m;
         }
 
@@ -101,7 +101,6 @@ SearchResult searchBestMove(Board& board, int depth) {
     MoveGen::generateLegalMoves(board, legalMoves);
     Ordering::scoreMoves(legalMoves, board);
 
-
     for (int i = 0; i < legalMoves.count; i++) {
         const Move m = legalMoves.moves[i];
         board.makeMove(m, true);
@@ -110,11 +109,17 @@ SearchResult searchBestMove(Board& board, int depth) {
 
         if (score > bestScore) {
             bestScore = score;
-            bestMove = m;
+            bestMove  = m;
         }
     }
 
-    return { bestMove, bestScore };
+    return {bestMove, bestScore};
 }
 
+SearchResult searchBestMovetime(Board& board, int time) {
+    (void)time;
+    (void)board;
+    return {Move(),0};
 }
+
+} // namespace Search

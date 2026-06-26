@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cctype>
+#include <algorithm>
 
 #include "constants.hpp"
 #include "core/board.hpp"
@@ -39,6 +39,14 @@ inline void trim(std::string& s) {
   while (!s.empty() && std::isspace(static_cast<unsigned char>(s.back()))) {
     s.pop_back();
   }
+}
+
+inline bool isDigitsOnly(const std::string& str) {
+    if (str.empty()) { return false; }
+    return std::all_of(str.begin(), str.end(), [](unsigned char c){
+            return std::isdigit(c);
+            });
+    return true;
 }
 
 inline int pieceToIndex(int piece) {

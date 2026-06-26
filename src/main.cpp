@@ -1,7 +1,7 @@
 #include "core/board.hpp"
+#include "core/utils.hpp"
 #include "interface/interface.hpp"
 #include "interface/uci.hpp"
-#include "core/utils.hpp"
 
 #include <iostream>
 #include <string>
@@ -17,10 +17,12 @@ int main() {
 
     trim(first);
 
-    if (first == "uci")
+    if (first == "uci") {
         UCI::uciLoop(board);
-    else
+    }
+    else {
         Interface::userLoop(board);
+    }
 
     return 0;
 }

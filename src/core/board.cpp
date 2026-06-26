@@ -1,12 +1,11 @@
-#include <cctype>
-#include <iostream>
 #include <sstream>
+#include <iostream>
 
-#include "bitboard/bitboard.hpp"
 #include "constants.hpp"
 #include "core/board.hpp"
 #include "core/utils.hpp"
 #include "movegen/moveGen.hpp"
+#include "bitboard/bitboard.hpp"
 
 Board::Board() {
     squares.fill(Constants::Piece::EMPTY);
@@ -185,7 +184,6 @@ void Board::makeMove(Move move, bool updateHash) {
 
     const int piece = squares[fromSquare];
 
-    // compute en-passant capture square if this move is en-passant
     int capSq = -1;
     if (flags & Flags::FLAG_EN_PASSANT)
         capSq = (turn == Constants::Piece::WHITE) ? toSquare + Constants::Squares::DOWN : toSquare + Constants::Squares::UP;
@@ -196,13 +194,18 @@ void Board::makeMove(Move move, bool updateHash) {
 
     // Save undo info (store previous castling/enpassant/halfmove/fullmove and king positions)
     undoInfo ui{move,
-
-                piece,          captured,       capSq,
-
-                castling,       en_passant,     halfmove,     fullmove, whiteKingPosition, blackKingPosition,
-
-                occupancyWhite, occupancyBlack, occupancyAll,
-
+                piece,
+                captured,
+                capSq,
+                castling,
+                en_passant,
+                halfmove,
+                fullmove,
+                whiteKingPosition,
+                blackKingPosition,
+                occupancyWhite,
+                occupancyBlack,
+                occupancyAll,
                 zobristKey};
 
     history.push_back(ui);
@@ -485,7 +488,7 @@ bool Board::isThreefoldRepetition() const {
     const u64 current = zobristKey;
 
     int count = 0;
-    for (int i = lastIrreversiblePly; i < repetitionHistory.size(); i++) {
+    for (int i = lastIrreversiblePly; i < (int)repetitionHistory.size(); i++) {
         if (repetitionHistory[i] == current) {
             count++;
             if (count >= 3)
@@ -679,15 +682,19 @@ void Board::setupFromFen(const std::string& fen) {
         }
         else {
             switch (c) {
+
             case 'p':
                 setPieceAndBitboard(squareIndex, Constants::Piece::B_PAWN);
                 break;
+
             case 'n':
                 setPieceAndBitboard(squareIndex, Constants::Piece::B_KNIGHT);
                 break;
+
             case 'b':
                 setPieceAndBitboard(squareIndex, Constants::Piece::B_BISHOP);
                 break;
+
             case 'r':
                 setPieceAndBitboard(squareIndex, Constants::Piece::B_ROOK);
                 break;
