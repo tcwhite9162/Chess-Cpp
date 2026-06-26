@@ -1,3 +1,0 @@
-/home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/main.dir
-/home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/edit_cache.dir
-/home/tcwhite/Projects/C-C++/Chess/build/CMakeFiles/rebuild_cache.dir
